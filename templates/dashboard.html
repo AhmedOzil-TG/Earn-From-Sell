@@ -122,11 +122,14 @@
             background: var(--bg-elevated); border: 1px solid var(--border);
             border-radius: 18px; padding: 22px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.4); margin-bottom: 15px;
-            transition: transform 0.3s var(--ease);
         }
 
-        /* Hover Zoom Effect for Session Details & Cards */
-        .card-zoom:hover { transform: scale(1.02); }
+        /* Hover Zoom Effect for Internal Rows only */
+        .row-item {
+            transition: transform 0.2s var(--ease);
+            cursor: pointer;
+        }
+        .row-item:hover { transform: scale(1.02); }
 
         .info-card-stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
         
@@ -268,7 +271,7 @@
                 <div class="info-card-icon" style="background: var(--accent); color: white;"><i class="fa-solid fa-plus"></i></div>
             </div>
 
-            <div class="card card-zoom" style="padding: 22px; margin-top: 15px;" id="accounts-card-container">
+            <div class="card" style="padding: 22px; margin-top: 15px;" id="accounts-card-container">
                 <div class="section-header" style="margin-top: 0; margin-bottom: 35px;">
                     <span>Linked Accounts</span>
                 </div>
@@ -281,7 +284,7 @@
         <!-- Channels View -->
         <div id="view-channels" class="view-panel">
             <div class="section-header" style="margin-top: 0;"><span>Source Control</span></div>
-            <div class="card card-zoom">
+            <div class="card">
                 <input type="text" id="channel-input" placeholder="@channel_username">
                 <button class="btn-action" style="width: 100%" onclick="addChannel()">+ Add Channel</button>
             </div>
@@ -300,7 +303,7 @@
         <!-- Settings View -->
         <div id="view-settings" class="view-panel">
             <div class="section-header" style="margin-top: 0;"><span>Preferences</span></div>
-            <div class="card card-zoom">
+            <div class="card">
                 <label style="display: block; font-size: 0.8rem; color: var(--text-s); margin-bottom: 10px;">Min Profit Threshold ($)</label>
                 <input type="number" id="min-profit-input" step="0.01">
                 <button class="btn-action" style="width: 100%" onclick="saveSettings()">Save Configuration</button>
@@ -344,8 +347,8 @@
             return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }
 
-        // Shared Row Style (to ensure uniform size and spacing)
-        const rowS = (c) => `height: 52px; background: ${hexToRgba(c, 0.02)}; border: 1px solid ${hexToRgba(c, 0.08)}; padding: 0 18px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 10px;`;
+        // Shared Row Style (to ensure uniform size) - Removed individual margins
+        const rowS = (c) => `height: 52px; background: ${hexToRgba(c, 0.02)}; border: 1px solid ${hexToRgba(c, 0.08)}; padding: 0 18px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; gap: 15px; width: 100%;`;
         const lblS = "color: var(--text-s); font-size: 0.8rem; font-weight: 500; text-transform: uppercase; opacity: 0.7; flex-shrink: 0;";
 
         function toggleSidebar() {
@@ -411,16 +414,16 @@
                             <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
                                 <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-s);"><i class="fas fa-user-shield" style="color: var(--accent); margin-right: 8px;"></i>Session Details</h3>
                             </div>
-                            <div style="display: flex; flex-direction: column;">
-                                <div style="${rowS('#10b981')}">
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <div class="row-item" style="${rowS('#10b981')}">
                                     <span style="${lblS}">STATUS</span>
                                     <span style="color: #10b981; font-weight: 700; font-size: 0.85rem; text-transform: uppercase;">CONNECTED</span>
                                 </div>
-                                <div style="${rowS('#8b5cf6')}">
+                                <div class="row-item" style="${rowS('#8b5cf6')}">
                                     <span style="${lblS}">NUMBER</span>
                                     <span style="color: var(--text-s); font-weight: 700; font-size: 1.1rem; direction: ltr;">${auth.phone}</span>
                                 </div>
-                                <button class="btn-action" onclick="deleteAccount()" style="width: 100%; height: 52px; margin-top: 5px; background: rgba(239, 68, 68, 0.05); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.1); box-shadow: none; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 12px;">
+                                <button class="btn-action row-item" onclick="deleteAccount()" style="width: 100%; height: 52px; background: rgba(239, 68, 68, 0.05); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.1); box-shadow: none; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 12px; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);">
                                     <i class="fa-solid fa-trash-can"></i> Delete Account
                                 </button>
                             </div>
