@@ -82,6 +82,7 @@
             text-transform: uppercase;
             background: linear-gradient(45deg, #fff, #a1a1aa);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -255,6 +256,7 @@
             font-weight: 800;
             background: linear-gradient(45deg, #fff, #a1a1aa);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -271,16 +273,26 @@
         .section-header {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             margin: 25px 0 15px 0;
             color: var(--text-s);
         }
 
+        .section-header i {
+            font-size: 1rem;
+            opacity: 0.8;
+            color: var(--text-s);
+        }
+
         .section-header span {
-            font-size: 0.8rem;
-            font-weight: 700;
+            font-size: 0.85rem;
+            font-weight: 800;
             letter-spacing: 1px;
             text-transform: uppercase;
+            background: linear-gradient(45deg, #fff, #a1a1aa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .list-item {
@@ -548,7 +560,7 @@
             <!-- Big Card: Linked Accounts -->
             <div class="card" style="padding: 22px; margin-top: 15px;" id="accounts-card-container">
                 <div class="section-header" style="margin-top: 0; margin-bottom: 35px;">
-                    <span>Linked Accounts</span>
+                    <i class="fa-solid fa-user-lock"></i><span>Linked Accounts</span>
                 </div>
                 <div id="linked-accounts-container">
                     <!-- Accounts items (Account cards) will be injected here -->
@@ -568,7 +580,7 @@
 
             <div class="card" style="padding: 22px; margin-top: 25px;" id="channels-list-container">
                 <div class="section-header" style="margin-top: 0; margin-bottom: 35px;">
-                    <span>Linked Channels</span>
+                    <i class="fa-solid fa-tower-broadcast"></i><span>Linked Channels</span>
                 </div>
                 <div id="channels-list" style="display: flex; flex-direction: column; gap: 15px;">
                     <!-- Channels items (Channel cards) will be injected here -->
