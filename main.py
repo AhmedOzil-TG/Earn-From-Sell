@@ -333,11 +333,93 @@ async def api_delete_channel(username: str):
 
 @app.post("/api/dashboard/settings")
 async def api_save_settings(data: dict):
-    # In a real app, save to DB. For now, we update global
     global MIN_PROFIT
     if "min_profit" in data:
         MIN_PROFIT = float(data["min_profit"])
     return {"status": "ok"}
+
+# --- Auth & Account API ---
+class LoginPhone(BaseModel):
+    phone: str
+
+@app.post("/api/auth/send-code")
+async def api_send_code(data: LoginPhone):
+    try:
+        if not client.is_connected(): await client.connect()
+        result = await client.send_code_request(data.phone)
+        return {"status": "ok", "phone_code_hash": result.phone_code_hash}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+class LoginCode(BaseModel):
+    phone: str
+    code: str
+    phone_code_hash: str
+
+@app.post("/api/auth/verify-code")
+async def api_verify_code(data: LoginCode):
+    try:
+        await client.sign_in(phone=data.phone, code=data.code, phone_code_hash=data.phone_code_hash)
+        return {"status": "ok"}
+    except SessionPasswordNeededError:
+        return {"status": "password_needed"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+class LoginPassword(BaseModel):
+    password: str
+
+@app.post("/api/auth/verify-password")
+async def api_verify_password(data: LoginPassword):
+    try:
+        await client.sign_in(password=data.password)
+        return {"status": "ok"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+@app.get("/api/auth/status")
+async def api_auth_status():
+    connected = await client.is_user_authorized() if client.is_connected() else False
+    me = await client.get_me() if connected else None
+    return {
+        "connected": connected,
+        "user": me.username if me else None,
+        "phone": me.phone if me else None
+    }
+
+# --- Manual Check API ---
+@app.post("/api/dashboard/manual-check")
+async def api_manual_check():
+    try:
+        buy_prices = await fetch_buy_prices_api()
+        channels = await get_channels_with_patterns()
+        
+        if not client.is_connected(): await client.connect()
+        
+        results_summary = []
+        for channel_user, pattern in channels:
+            msgs = await client.get_messages(channel_user, limit=20)
+            latest_prices = {}
+            for msg in msgs:
+                if not msg.text: continue
+                found = parse_price_message(msg.text, pattern)
+                for country, sell in found:
+                    if country not in latest_prices: latest_prices[country] = sell
+            
+            for country, sell in latest_prices.items():
+                if country in buy_prices:
+                    buy = buy_prices[country]
+                    profit = sell - buy
+                    results_summary.append({
+                        "country": country,
+                        "buy": buy,
+                        "sell": sell,
+                        "profit": round(profit, 2),
+                        "channel": channel_user
+                    })
+        return {"status": "ok", "results": results_summary}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 # --- Main ---
 async def main():

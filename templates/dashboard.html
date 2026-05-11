@@ -21,14 +21,11 @@
             --radius-lg: 28px;
             --ease: cubic-bezier(0.16, 1, 0.3, 1);
             --sidebar-width: 280px;
+            --success: #10b981;
+            --error: #ef4444;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             background-color: var(--bg);
@@ -55,132 +52,64 @@
         }
 
         .nav-trigger {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background: var(--card-glass);
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            cursor: pointer;
-            color: var(--text-p);
+            width: 44px; height: 44px; border-radius: 12px;
+            background: var(--card-glass); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; cursor: pointer; color: var(--text-p);
         }
 
         .page-title {
-            font-size: 1rem;
-            font-weight: 800;
-            letter-spacing: 0.5px;
+            font-size: 1rem; font-weight: 800; letter-spacing: 0.5px;
             background: linear-gradient(45deg, #fff, #a1a1aa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
         .user-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background: var(--accent);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 1.2rem;
+            width: 44px; height: 44px; border-radius: 12px;
+            background: var(--accent); color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.2rem;
             box-shadow: 0 0 15px var(--accent-glow);
         }
 
         /* --- Sidebar --- */
         .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: var(--sidebar-width);
-            height: 100%;
-            background: var(--bg-elevated);
-            z-index: 3000;
-            transform: translateX(-100%);
-            transition: transform 0.3s var(--ease);
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
+            position: fixed; top: 0; left: 0;
+            width: var(--sidebar-width); height: 100%;
+            background: var(--bg-elevated); z-index: 3000;
+            transform: translateX(-100%); transition: transform 0.3s var(--ease);
+            padding: 40px 20px; display: flex; flex-direction: column; gap: 40px;
             box-shadow: 10px 0 30px rgba(0,0,0,0.5);
         }
 
         .sidebar.open { transform: translateX(0); }
 
         .sidebar-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 2500;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
+            position: fixed; inset: 0; z-index: 2500;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+            opacity: 0; visibility: hidden; transition: all 0.3s;
         }
 
         .sidebar-overlay.show { opacity: 1; visibility: visible; }
 
-        .side-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .side-brand-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--accent);
-            box-shadow: 0 0 15px var(--accent);
-        }
-
-        .side-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            flex: 1;
-        }
+        .side-nav { display: flex; flex-direction: column; gap: 10px; flex: 1; }
 
         .nav-item {
-            padding: 16px 20px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            color: var(--text-s);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
+            padding: 16px 20px; border-radius: 16px;
+            display: flex; align-items: center; gap: 14px;
+            color: var(--text-s); font-weight: 600; cursor: pointer; transition: all 0.2s;
         }
 
-        .nav-item:hover, .nav-item.active {
-            background: var(--card-glass);
-            color: var(--text-p);
-        }
-
-        .nav-item.active {
-            border: 1px solid var(--border);
-            color: var(--accent);
-        }
+        .nav-item:hover, .nav-item.active { background: var(--card-glass); color: var(--text-p); }
+        .nav-item.active { border: 1px solid var(--border); color: var(--accent); }
 
         /* --- Content --- */
         .main-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 25px 20px 100px;
+            flex: 1; overflow-y: auto; padding: 25px 20px 100px;
             -webkit-overflow-scrolling: touch;
         }
 
-        .view-panel {
-            display: none;
-            animation: fadeIn 0.4s var(--ease);
-        }
-
+        .view-panel { display: none; animation: fadeIn 0.4s var(--ease); }
         .view-panel.active { display: block; }
 
         @keyframes fadeIn {
@@ -188,174 +117,112 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .info-card-stack {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            margin-bottom: 30px;
+        .card {
+            background: var(--bg-elevated); border: 1px solid var(--border);
+            border-radius: var(--radius-md); padding: 22px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-bottom: 20px;
         }
 
+        .info-card-stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        
         .info-card {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            padding: 22px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            background: var(--bg-elevated); border: 1px solid var(--border);
+            border-radius: var(--radius-md); padding: 22px;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
         .info-card-l { display: flex; flex-direction: column; gap: 4px; }
-        .info-card-lbl { font-size: 0.75rem; color: var(--text-s); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-        .info-card-val { font-size: 1.6rem; font-weight: 800; color: var(--text-p); }
+        .info-card-lbl { font-size: 0.7rem; color: var(--text-s); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .info-card-val { font-size: 1.4rem; font-weight: 800; color: var(--text-p); }
         .info-card-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 15px;
-            background: var(--card-glass);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            color: var(--accent);
-            border: 1px solid var(--border);
+            width: 45px; height: 45px; border-radius: 12px;
+            background: var(--card-glass); display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; color: var(--accent); border: 1px solid var(--border);
         }
 
         .section-header {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--text-s);
-            margin: 25px 0 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 0.85rem; font-weight: 700; color: var(--text-s);
+            margin: 25px 0 15px; display: flex; align-items: center; gap: 10px;
+            text-transform: uppercase; letter-spacing: 1px;
         }
-
-        .section-header::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
+        .section-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
         .list-item {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            padding: 18px 20px;
-            border-radius: 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            transition: transform 0.2s;
+            background: var(--bg-elevated); border: 1px solid var(--border);
+            padding: 16px 20px; border-radius: 18px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 12px; transition: transform 0.2s;
         }
 
-        .list-item:active { transform: scale(0.98); }
-
-        .item-info h4 { font-size: 1rem; margin-bottom: 4px; font-weight: 700; }
-        .item-info p { font-size: 0.8rem; color: var(--text-s); }
+        .item-info h4 { font-size: 0.95rem; margin-bottom: 4px; font-weight: 700; }
+        .item-info p { font-size: 0.75rem; color: var(--text-s); }
 
         .profit-badge {
-            background: rgba(16, 185, 129, 0.1);
-            color: #10b981;
-            padding: 6px 12px;
-            border-radius: 10px;
-            font-weight: 800;
-            font-size: 0.9rem;
+            background: rgba(16, 185, 129, 0.1); color: var(--success);
+            padding: 6px 12px; border-radius: 10px; font-weight: 800; font-size: 0.85rem;
         }
 
         .btn-action {
-            width: 100%;
-            background: var(--accent);
-            color: white;
-            padding: 18px;
-            border-radius: 16px;
-            border: none;
-            font-size: 1rem;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 8px 20px var(--accent-glow);
-            transition: all 0.3s;
-            margin-top: 20px;
+            background: var(--accent); color: white; padding: 15px 25px;
+            border-radius: 14px; border: none; font-size: 0.9rem; font-weight: 800;
+            cursor: pointer; box-shadow: 0 8px 20px var(--accent-glow); transition: all 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
-
         .btn-action:active { transform: scale(0.97); }
+        .btn-action.secondary { background: var(--card-glass); color: var(--text-p); border: 1px solid var(--border); box-shadow: none; }
 
         input {
-            width: 100%;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 15px;
-            padding: 15px;
-            color: #fff;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.3s;
+            width: 100%; background: var(--bg-elevated); border: 1px solid var(--border);
+            border-radius: 14px; padding: 14px; color: #fff; font-size: 0.95rem;
+            outline: none; transition: border-color 0.3s; margin-bottom: 15px;
         }
-
         input:focus { border-color: var(--accent); }
 
+        /* --- Modals --- */
+        .modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px); z-index: 4000; display: none;
+            justify-content: center; align-items: center; padding: 20px;
+        }
+        .modal-content {
+            background: var(--bg-elevated); border: 1px solid var(--border);
+            border-radius: var(--radius-lg); padding: 35px; width: 100%; max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+        }
+
         #loader {
-            position: fixed;
-            inset: 0;
-            background: var(--bg);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.5s;
+            position: fixed; inset: 0; background: var(--bg); z-index: 9999;
+            display: flex; justify-content: center; align-items: center; transition: opacity 0.5s;
         }
-
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border);
-            border-top: 3px solid var(--accent);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+            width: 40px; height: 40px; border: 3px solid var(--border);
+            border-top: 3px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite;
         }
-
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+        .status-dot.online { background: var(--success); box-shadow: 0 0 10px var(--success); }
+        .status-dot.offline { background: var(--error); }
     </style>
 </head>
-<body class="dark-mode">
-    <div id="loader">
-        <div class="spinner"></div>
-    </div>
+<body>
+    <div id="loader"><div class="spinner"></div></div>
 
     <div class="top-bar">
-        <div class="nav-trigger" onclick="toggleSidebar()">
-            <i class="fa-solid fa-bars-staggered"></i>
-        </div>
+        <div class="nav-trigger" onclick="toggleSidebar()"><i class="fa-solid fa-bars-staggered"></i></div>
         <div class="page-title">DASHBOARD</div>
-        <div class="user-avatar">A</div>
+        <div class="user-avatar" id="user-initial">A</div>
     </div>
 
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
-    
     <div class="sidebar" id="sidebar">
-        <div class="side-brand">
-            <div class="side-brand-dot"></div>
-            <div style="font-weight: 800; font-size: 1.2rem;">Arbitrage Pro</div>
-        </div>
+        <div class="side-brand"><div class="side-brand-dot"></div><div style="font-weight: 800; font-size: 1.2rem;">Arbitrage Pro</div></div>
         <div class="side-nav">
-            <div class="nav-item active" onclick="switchView('home', this)">
-                <i class="fa-solid fa-house"></i>
-                <span>Home</span>
-            </div>
-            <div class="nav-item" onclick="switchView('channels', this)">
-                <i class="fa-solid fa-tower-broadcast"></i>
-                <span>Channels</span>
-            </div>
-            <div class="nav-item" onclick="switchView('settings', this)">
-                <i class="fa-solid fa-gears"></i>
-                <span>Settings</span>
-            </div>
+            <div class="nav-item active" onclick="switchView('home', this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
+            <div class="nav-item" onclick="switchView('accounts', this)"><i class="fa-solid fa-user-shield"></i><span>Accounts</span></div>
+            <div class="nav-item" onclick="switchView('channels', this)"><i class="fa-solid fa-tower-broadcast"></i><span>Channels</span></div>
+            <div class="nav-item" onclick="switchView('scraper', this)"><i class="fa-solid fa-magnifying-glass-chart"></i><span>Manual Check</span></div>
+            <div class="nav-item" onclick="switchView('settings', this)"><i class="fa-solid fa-gears"></i><span>Settings</span></div>
         </div>
     </div>
 
@@ -363,57 +230,87 @@
         <!-- Home View -->
         <div id="view-home" class="view-panel active">
             <div class="info-card-stack">
-                <div class="info-card">
-                    <div class="info-card-l">
-                        <span class="info-card-lbl">Monitored Channels</span>
-                        <span class="info-card-val" id="count-channels">0</span>
-                    </div>
-                    <div class="info-card-icon"><i class="fa-solid fa-satellite"></i></div>
-                </div>
-                <div class="info-card">
-                    <div class="info-card-l">
-                        <span class="info-card-lbl">Opportunities Found</span>
-                        <span class="info-card-val" id="count-opportunities">0</span>
-                    </div>
-                    <div class="info-card-icon"><i class="fa-solid fa-bolt"></i></div>
-                </div>
+                <div class="info-card"><div class="info-card-l"><span class="info-card-lbl">Channels</span><span class="info-card-val" id="stat-channels">0</span></div><div class="info-card-icon"><i class="fa-solid fa-satellite"></i></div></div>
+                <div class="info-card"><div class="info-card-l"><span class="info-card-lbl">Opportunities</span><span class="info-card-val" id="stat-opps">0</span></div><div class="info-card-icon"><i class="fa-solid fa-bolt"></i></div></div>
             </div>
+            <div class="section-header">Live Feed</div>
+            <div id="live-feed"></div>
+        </div>
 
-            <div class="section-header">Recent Live Updates</div>
-            <div id="opportunities-list">
-                <!-- Data here -->
+        <!-- Accounts View -->
+        <div id="view-accounts" class="view-panel">
+            <div class="section-header">Account Management</div>
+            <div class="card" id="account-status-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 id="acc-name">Telethon Client</h4>
+                        <p id="acc-status"><span class="status-dot offline"></span>Disconnected</p>
+                    </div>
+                    <button class="btn-action" onclick="showLoginModal()"><i class="fa-solid fa-link"></i> Link Account</button>
+                </div>
             </div>
         </div>
 
         <!-- Channels View -->
         <div id="view-channels" class="view-panel">
-            <div class="section-header">Source Management</div>
-            <div style="margin-bottom: 25px;">
-                <p style="color: var(--text-s); font-size: 0.85rem; margin-bottom: 15px;">Add channel usernames you want to monitor automatically.</p>
-                <input type="text" id="channel-input" placeholder="@username">
-                <button class="btn-action" onclick="addChannel()">+ Add Monitoring Channel</button>
+            <div class="section-header">Source Control</div>
+            <div class="card">
+                <input type="text" id="channel-input" placeholder="@channel_username">
+                <button class="btn-action" style="width: 100%" onclick="addChannel()">+ Add Channel</button>
             </div>
-            <div class="section-header">Channel List</div>
             <div id="channels-list"></div>
+        </div>
+
+        <!-- Scraper View -->
+        <div id="view-scraper" class="view-panel">
+            <div class="section-header">Heuristic Scraper</div>
+            <button class="btn-action" style="width: 100%; margin-bottom: 20px;" onclick="runManualCheck()" id="btn-run-check">
+                <i class="fa-solid fa-play"></i> Run Universal Check Now
+            </button>
+            <div id="check-results"></div>
         </div>
 
         <!-- Settings View -->
         <div id="view-settings" class="view-panel">
-            <div class="section-header">Engine Settings</div>
-            <div style="background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 20px; padding: 25px;">
-                <label style="display: block; font-size: 0.8rem; color: var(--text-s); margin-bottom: 10px;">Minimum Profit Threshold ($)</label>
+            <div class="section-header">Preferences</div>
+            <div class="card">
+                <label style="display: block; font-size: 0.8rem; color: var(--text-s); margin-bottom: 10px;">Min Profit Threshold ($)</label>
                 <input type="number" id="min-profit-input" step="0.01">
-                <p style="font-size: 0.7rem; color: var(--text-s); margin-top: 10px;">The bot will ignore any deals with a profit lower than this value.</p>
-                <button class="btn-action" onclick="saveSettings()">Update Settings</button>
+                <button class="btn-action" style="width: 100%" onclick="saveSettings()">Save Configuration</button>
             </div>
         </div>
     </main>
+
+    <!-- Login Modal -->
+    <div class="modal" id="modal-login">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px;">Link Telegram Account</h3>
+            <div id="step-phone">
+                <p style="font-size: 0.85rem; color: var(--text-s); margin-bottom: 15px;">Enter your phone number with country code (e.g., +1234567890)</p>
+                <input type="text" id="login-phone" placeholder="+1...">
+                <button class="btn-action" style="width: 100%" onclick="sendCode()">Send Code</button>
+            </div>
+            <div id="step-code" style="display: none;">
+                <p style="font-size: 0.85rem; color: var(--text-s); margin-bottom: 15px;">Enter the code sent to your Telegram app.</p>
+                <input type="text" id="login-code" placeholder="12345">
+                <button class="btn-action" style="width: 100%" onclick="verifyCode()">Verify Code</button>
+            </div>
+            <div id="step-password" style="display: none;">
+                <p style="font-size: 0.85rem; color: var(--text-s); margin-bottom: 15px;">Two-factor authentication is enabled. Enter your password.</p>
+                <input type="password" id="login-password" placeholder="Password">
+                <button class="btn-action" style="width: 100%" onclick="verifyPassword()">Login</button>
+            </div>
+            <button class="btn-action secondary" style="width: 100%; margin-top: 10px;" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
         tg.headerColor = '#111113';
         tg.backgroundColor = '#1a1a1c';
+
+        let loginData = { phone: '', hash: '' };
 
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
@@ -424,11 +321,9 @@
         function switchView(id, el) {
             document.querySelectorAll('.view-panel').forEach(v => v.classList.remove('active'));
             document.getElementById('view-' + id).classList.add('active');
-            
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             el.classList.add('active');
-            
-            toggleSidebar();
+            if(window.innerWidth < 800) toggleSidebar();
             tg.HapticFeedback.selectionChanged();
         }
 
@@ -437,78 +332,128 @@
                 const res = await fetch('/api/dashboard/data');
                 const data = await res.json();
                 
-                document.getElementById('count-channels').innerText = data.channels.length;
-                document.getElementById('count-opportunities').innerText = data.opportunities.length;
+                document.getElementById('stat-channels').innerText = data.channels.length;
+                document.getElementById('stat-opps').innerText = data.opportunities.length;
                 document.getElementById('min-profit-input').value = data.min_profit;
 
-                // Render Channels
-                const cList = document.getElementById('channels-list');
-                cList.innerHTML = data.channels.map(c => `
+                document.getElementById('channels-list').innerHTML = data.channels.map(c => `
                     <div class="list-item">
-                        <div class="item-info">
-                            <h4>${c.username}</h4>
-                            <p>Status: Live Monitoring</p>
-                        </div>
-                        <div onclick="deleteChannel('${c.username}')" style="color: #ef4444; font-size: 1.2rem; cursor: pointer;">
-                            <i class="fa-solid fa-circle-xmark"></i>
-                        </div>
+                        <div class="item-info"><h4>${c.username}</h4><p>Pattern: Universal Extraction</p></div>
+                        <div onclick="deleteChannel('${c.username}')" style="color: var(--error); cursor: pointer;"><i class="fa-solid fa-trash"></i></div>
                     </div>
-                `).join('') || '<p style="text-align: center; color: var(--text-s);">No channels yet</p>';
+                `).join('') || '<p style="text-align: center; color: var(--text-s);">No channels</p>';
 
-                // Render Opps
-                const oList = document.getElementById('opportunities-list');
-                oList.innerHTML = data.opportunities.map(o => `
+                document.getElementById('live-feed').innerHTML = data.opportunities.map(o => `
                     <div class="list-item">
-                        <div class="item-info">
-                            <h4>🌍 ${o.country}</h4>
-                            <p>${o.channel}</p>
-                        </div>
+                        <div class="item-info"><h4>🌍 ${o.country}</h4><p>${o.channel}</p></div>
                         <div class="profit-badge">+$${o.profit}</div>
                     </div>
-                `).join('') || '<p style="text-align: center; color: var(--text-s);">Waiting for opportunities...</p>';
+                `).join('') || '<p style="text-align: center; color: var(--text-s);">Listening for opportunities...</p>';
 
-            } catch (e) {
-                console.error(e);
-            } finally {
+                // Check Auth Status
+                const authRes = await fetch('/api/auth/status');
+                const auth = await authRes.json();
+                if(auth.connected) {
+                    document.getElementById('acc-name').innerText = auth.user || auth.phone;
+                    document.getElementById('acc-status').innerHTML = '<span class="status-dot online"></span>Connected';
+                    document.getElementById('user-initial').innerText = (auth.user || 'A')[0].toUpperCase();
+                }
+            } catch (e) { console.error(e); }
+            finally {
                 document.getElementById('loader').style.opacity = '0';
                 setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+            }
+        }
+
+        // --- Auth Flow ---
+        function showLoginModal() { document.getElementById('modal-login').style.display = 'flex'; }
+        function closeModal() { document.getElementById('modal-login').style.display = 'none'; }
+
+        async function sendCode() {
+            const phone = document.getElementById('login-phone').value;
+            const res = await fetch('/api/auth/send-code', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({phone})
+            });
+            const data = await res.json();
+            if(data.status === 'ok') {
+                loginData.phone = phone; loginData.hash = data.phone_code_hash;
+                document.getElementById('step-phone').style.display = 'none';
+                document.getElementById('step-code').style.display = 'block';
+            } else tg.showAlert(data.message);
+        }
+
+        async function verifyCode() {
+            const code = document.getElementById('login-code').value;
+            const res = await fetch('/api/auth/verify-code', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({phone: loginData.phone, code, phone_code_hash: loginData.hash})
+            });
+            const data = await res.json();
+            if(data.status === 'ok') { closeModal(); loadData(); tg.showAlert("Linked Successfully!"); }
+            else if(data.status === 'password_needed') {
+                document.getElementById('step-code').style.display = 'none';
+                document.getElementById('step-password').style.display = 'block';
+            } else tg.showAlert(data.message);
+        }
+
+        async function verifyPassword() {
+            const password = document.getElementById('login-password').value;
+            const res = await fetch('/api/auth/verify-password', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({password})
+            });
+            const data = await res.json();
+            if(data.status === 'ok') { closeModal(); loadData(); tg.showAlert("Linked Successfully!"); }
+            else tg.showAlert(data.message);
+        }
+
+        // --- Actions ---
+        async function runManualCheck() {
+            const btn = document.getElementById('btn-run-check');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking Channels...';
+            btn.disabled = true;
+            try {
+                const res = await fetch('/api/dashboard/manual-check', {method: 'POST'});
+                const data = await res.json();
+                if(data.status === 'ok') {
+                    document.getElementById('check-results').innerHTML = data.results.map(r => `
+                        <div class="list-item">
+                            <div class="item-info"><h4>${r.country}</h4><p>${r.channel} | Buy: ${r.buy}$ | Sell: ${r.sell}$</p></div>
+                            <div class="profit-badge">+$${r.profit}</div>
+                        </div>
+                    `).join('') || '<p style="text-align: center; color: var(--text-s);">No profit opportunities found.</p>';
+                    tg.HapticFeedback.notificationOccurred('success');
+                }
+            } catch(e) { tg.showAlert("Check failed"); }
+            finally {
+                btn.innerHTML = '<i class="fa-solid fa-play"></i> Run Universal Check Now';
+                btn.disabled = false;
             }
         }
 
         async function addChannel() {
             const user = document.getElementById('channel-input').value;
             if(!user) return;
-            const res = await fetch('/api/dashboard/channels', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+            await fetch('/api/dashboard/channels', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({username: user})
             });
-            if(res.ok) {
-                document.getElementById('channel-input').value = '';
-                loadData();
-                tg.HapticFeedback.notificationOccurred('success');
-            }
+            document.getElementById('channel-input').value = ''; loadData();
         }
 
         async function deleteChannel(user) {
-            const res = await fetch(`/api/dashboard/channels/${user}`, {method: 'DELETE'});
-            if(res.ok) {
-                loadData();
-                tg.HapticFeedback.notificationOccurred('warning');
-            }
+            await fetch(`/api/dashboard/channels/${user}`, {method: 'DELETE'});
+            loadData();
         }
 
         async function saveSettings() {
             const min = document.getElementById('min-profit-input').value;
-            const res = await fetch('/api/dashboard/settings', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+            await fetch('/api/dashboard/settings', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({min_profit: min})
             });
-            if(res.ok) {
-                tg.showAlert("Settings Saved");
-                tg.HapticFeedback.notificationOccurred('success');
-            }
+            tg.showAlert("Settings Saved");
         }
 
         window.onload = loadData;
