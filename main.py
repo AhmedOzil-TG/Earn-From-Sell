@@ -74,8 +74,8 @@ async def start_cmd(message: types.Message, state: FSMContext):
     lang = await get_user_language(message.from_user.id)
     await state.clear()
     await message.answer(welcome_text, reply_markup=kb)
-    # Also send main keyboard
-    await message.answer("Main Menu:", reply_markup=main_keyboard(lang))
+    # Just update the reply markup without sending a new text message
+    await bot.send_message(message.chat.id, "Ready to start monitoring.", reply_markup=main_keyboard(lang))
 
 # -- Login Flow --
 @dp.message(F.text.in_([STRINGS["btn_add_account"]["en"], STRINGS["btn_add_account"]["ar"]]))
