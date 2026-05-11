@@ -504,29 +504,19 @@
                     <span>Linked Accounts</span>
                 </div>
                 <div id="linked-accounts-container">
-                    <!-- Accounts items (Session Details cards) will be injected here -->
+                    <!-- Accounts items (Account cards) will be injected here -->
                 </div>
             </div>
         </div>
 
         <!-- Channels View -->
         <div id="view-channels" class="view-panel">
-            <div class="info-card card-zoom" onclick="document.getElementById('channel-input').focus()">
+            <div class="info-card card-zoom" onclick="showChannelModal()">
                 <div class="info-card-l">
                     <span class="info-card-val">Add New Channel</span>
                 </div>
                 <div class="info-card-icon" style="background: var(--accent); color: white;"><i
-                        class="fa-solid fa-tower-broadcast"></i></div>
-            </div>
-
-            <div class="card" style="padding: 22px; margin-top: 15px;">
-                <div class="section-header" style="margin-top: 0; margin-bottom: 25px;">
-                    <span>Source Control</span>
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <input type="text" id="channel-input" placeholder="@channel_username" style="margin-bottom: 0;">
-                    <button class="btn-action" style="width: 100%" onclick="addChannel()">+ Link Channel</button>
-                </div>
+                        class="fa-solid fa-plus"></i></div>
             </div>
 
             <div class="card" style="padding: 22px; margin-top: 25px;" id="channels-list-container">
@@ -585,6 +575,17 @@
             </div>
             <button class="btn-action secondary" style="width: 100%; margin-top: 10px;"
                 onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Channel Modal -->
+    <div class="modal" id="modal-channel">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px;">Add Source Channel</h3>
+            <p style="font-size: 0.85rem; color: var(--text-s); margin-bottom: 15px;">Enter the Telegram channel username or link (e.g., @channelname)</p>
+            <input type="text" id="modal-channel-input" placeholder="@channel_username">
+            <button class="btn-action" style="width: 100%" onclick="addChannelFromModal()">Link Channel</button>
+            <button class="btn-action secondary" style="width: 100%; margin-top: 10px;" onclick="closeChannelModal()">Cancel</button>
         </div>
     </div>
 
@@ -685,10 +686,10 @@
 
                 if (auth.connected) {
                     container.innerHTML = `
-                        <!-- Inner Card: Session (with Zoom) -->
+                        <!-- Inner Card: Account (with Zoom) -->
                         <div class="card card-zoom" style="padding: 24px 20px 20px; box-shadow: none; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 0; cursor: pointer;">
                             <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
-                                <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-s);"><i class="fas fa-user-shield" style="color: var(--accent); margin-right: 8px;"></i>Session</h3>
+                                <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-s);"><i class="fas fa-user-shield" style="color: var(--accent); margin-right: 8px;"></i>Account</h3>
                             </div>
                             <!-- Internal Data Items -->
                             <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -772,6 +773,23 @@
             else tg.showAlert(data.message);
         }
 
+        // --- Channel Modal ---
+        function showChannelModal() { document.getElementById('modal-channel').style.display = 'flex'; }
+        function closeChannelModal() { document.getElementById('modal-channel').style.display = 'none'; }
+
+        async function addChannelFromModal() {
+            const user = document.getElementById('modal-channel-input').value;
+            if (!user) return;
+            await fetch('/api/dashboard/channels', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user })
+            });
+            document.getElementById('modal-channel-input').value = '';
+            closeChannelModal();
+            loadData();
+            tg.showAlert("Channel Linked!");
+        }
+
         // --- Actions ---
         async function runManualCheck() {
             const btn = document.getElementById('btn-run-check');
@@ -794,16 +812,6 @@
                 btn.innerHTML = '<i class="fa-solid fa-play"></i> Run Universal Check Now';
                 btn.disabled = false;
             }
-        }
-
-        async function addChannel() {
-            const user = document.getElementById('channel-input').value;
-            if (!user) return;
-            await fetch('/api/dashboard/channels', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: user })
-            });
-            document.getElementById('channel-input').value = ''; loadData();
         }
 
         async function deleteChannel(user) {
