@@ -555,7 +555,7 @@
             border-radius: 28px;
             padding: 35px 25px;
             text-align: center;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
             margin: 0 auto 40px auto;
             max-width: 420px;
             width: 100%;
@@ -578,7 +578,10 @@
             font-size: 1.5rem;
             font-weight: 800;
             margin-bottom: 10px;
-            color: #fff;
+            background: linear-gradient(45deg, #fff, #a1a1aa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .w-desc {
@@ -781,7 +784,7 @@
                 
                 <div class="input-group">
                     <label>Channel Username</label>
-                    <input type="text" class="w-input" id="inline-channel-input" placeholder="@channel">
+                    <input type="text" class="w-input" id="inline-channel-input" placeholder="@channel_username">
                 </div>
                 
                 <button class="btn-action-premium" style="background: #4c1d95;" onclick="addChannelInline()">Link Source Channel</button>
