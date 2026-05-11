@@ -87,8 +87,8 @@
 
         .sidebar-overlay {
             position: fixed; inset: 0; z-index: 2500;
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
-            opacity: 0; visibility: hidden; transition: all 0.3s;
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px);
+            opacity: 0; visibility: hidden; transition: opacity 0.2s var(--ease);
         }
 
         .sidebar-overlay.show { opacity: 1; visibility: visible; }
@@ -120,16 +120,17 @@
 
         .card {
             background: var(--bg-elevated); border: 1px solid var(--border);
-            border-radius: var(--radius-md); padding: 22px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-bottom: 20px;
+            border-radius: 18px; padding: 22px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4); margin-bottom: 15px;
         }
 
-        .info-card-stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .info-card-stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
         
         .info-card {
             background: var(--bg-elevated); border: 1px solid var(--border);
-            border-radius: var(--radius-md); padding: 22px;
+            border-radius: 18px; padding: 20px;
             display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4); margin-bottom: 15px;
             cursor: pointer; transition: transform 0.2s;
         }
         .info-card:active { transform: scale(0.98); }
@@ -138,17 +139,16 @@
         .info-card-lbl { font-size: 0.7rem; color: var(--text-s); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
         .info-card-val { font-size: 1.4rem; font-weight: 800; color: var(--text-p); }
         .info-card-icon {
-            width: 45px; height: 45px; border-radius: 12px;
-            background: var(--card-glass); display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; color: var(--accent); border: 1px solid var(--border);
+            width: 45px; height: 45px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
         }
 
         .section-header {
-            font-size: 0.85rem; font-weight: 700; color: var(--text-s);
-            margin: 25px 0 15px; display: flex; align-items: center; gap: 10px;
-            text-transform: uppercase; letter-spacing: 1px;
+            display: flex; align-items: center; gap: 10px;
+            margin: 25px 0 15px 0; color: var(--text-s);
         }
-        .section-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .section-header span { font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
 
         .list-item {
             background: var(--bg-elevated); border: 1px solid var(--border);
@@ -156,9 +156,6 @@
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 12px; transition: transform 0.2s;
         }
-
-        .item-info h4 { font-size: 0.95rem; margin-bottom: 4px; font-weight: 700; }
-        .item-info p { font-size: 0.75rem; color: var(--text-s); }
 
         .profit-badge {
             background: rgba(16, 185, 129, 0.1); color: var(--success);
@@ -168,11 +165,10 @@
         .btn-action {
             background: var(--accent); color: white; padding: 15px 25px;
             border-radius: 14px; border: none; font-size: 0.9rem; font-weight: 800;
-            cursor: pointer; box-shadow: 0 8px 20px var(--accent-glow); transition: all 0.3s;
+            cursor: pointer; box-shadow: 0 8px 25px var(--accent-glow); transition: all 0.3s;
             display: flex; align-items: center; justify-content: center; gap: 10px;
         }
         .btn-action:active { transform: scale(0.97); }
-        .btn-action.secondary { background: var(--card-glass); color: var(--text-p); border: 1px solid var(--border); box-shadow: none; }
 
         input {
             width: 100%; background: var(--bg-elevated); border: 1px solid var(--border);
@@ -181,33 +177,18 @@
         }
         input:focus { border-color: var(--accent); }
 
-        /* --- Empty State --- */
+        /* --- Empty Placeholder (Store Style) --- */
         .empty-placeholder {
-            border: 2px dashed var(--border);
-            border-radius: 20px;
-            padding: 60px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            text-align: center;
-            background: rgba(255,255,255,0.01);
-            margin-top: 10px;
+            text-align: center; padding: 40px 20px;
+            background: var(--card-glass); border-radius: 16px;
+            border: 1px dashed var(--border); margin-top: 0;
+            display: flex; flex-direction: column; align-items: center;
         }
-        .empty-icon {
-            font-size: 3rem;
-            color: var(--text-s);
-            opacity: 0.2;
-            position: relative;
+        .empty-placeholder i {
+            font-size: 2.5rem; color: var(--text-s); opacity: 0.15; margin-bottom: 12px;
         }
-        .empty-icon i:last-child {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            font-size: 1.5rem; opacity: 0.5;
-        }
-        .empty-text {
-            font-size: 0.9rem;
-            color: var(--text-s);
-            font-weight: 600;
+        .empty-placeholder p {
+            color: var(--text-s); font-weight: 600; font-size: 0.95rem;
         }
 
         /* --- Modals --- */
@@ -227,8 +208,8 @@
             display: flex; justify-content: center; align-items: center; transition: opacity 0.5s;
         }
         .spinner {
-            width: 40px; height: 40px; border: 3px solid var(--border);
-            border-top: 3px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite;
+            width: 44px; height: 44px; border: 3.5px solid var(--border);
+            border-top: 3.5px solid var(--accent); border-radius: 50%; animation: spin 0.9s linear infinite;
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
@@ -241,7 +222,7 @@
     <div id="loader"><div class="spinner"></div></div>
 
     <div class="top-bar">
-        <div class="nav-trigger" onclick="toggleSidebar()"><i class="fa-solid fa-bars-staggered"></i></div>
+        <div class="nav-trigger" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></div>
         <div class="page-title" id="current-page-title">Home</div>
         <div class="user-avatar" id="user-initial">A</div>
     </div>
@@ -261,28 +242,35 @@
     <main class="main-content">
         <!-- Home View -->
         <div id="view-home" class="view-panel active">
+            <div class="section-header" style="margin-top: 0;"><i class="fa-solid fa-chart-line"></i><span>STATISTICS</span></div>
             <div class="info-card-stack">
-                <div class="info-card"><div class="info-card-l"><span class="info-card-lbl">Channels</span><span class="info-card-val" id="stat-channels">0</span></div><div class="info-card-icon"><i class="fa-solid fa-satellite"></i></div></div>
-                <div class="info-card"><div class="info-card-l"><span class="info-card-lbl">Opportunities</span><span class="info-card-val" id="stat-opps">0</span></div><div class="info-card-icon"><i class="fa-solid fa-bolt"></i></div></div>
+                <div class="info-card">
+                    <div class="info-card-l"><span class="info-card-lbl">Channels</span><span class="info-card-val" id="stat-channels">0</span></div>
+                    <div class="info-card-icon" style="background: rgba(88, 101, 242, 0.1); color: var(--accent);"><i class="fa-solid fa-satellite"></i></div>
+                </div>
+                <div class="info-card">
+                    <div class="info-card-l"><span class="info-card-lbl">Opportunities</span><span class="info-card-val" id="stat-opps">0</span></div>
+                    <div class="info-card-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);"><i class="fa-solid fa-bolt"></i></div>
+                </div>
             </div>
-            <div class="section-header">Live Feed</div>
+            <div class="section-header"><span>Live Feed</span></div>
             <div id="live-feed"></div>
         </div>
 
         <!-- Accounts View -->
         <div id="view-accounts" class="view-panel">
-            <div class="info-card-stack" style="margin-bottom: 25px;">
-                <div class="info-card" onclick="showLoginModal()">
-                    <div class="info-card-l">
-                        <span class="info-card-lbl">Add New Account</span>
-                        <span class="info-card-val" style="font-size: 1.1rem;">Link Session</span>
-                    </div>
-                    <div class="info-card-icon" style="background: var(--accent); color: white;"><i class="fa-solid fa-plus"></i></div>
+            <div class="info-card" onclick="showLoginModal()">
+                <div class="info-card-l">
+                    <span class="info-card-lbl">Add New Account</span>
+                    <span class="info-card-val" style="font-size: 1.1rem;">Link Session</span>
                 </div>
+                <div class="info-card-icon" style="background: var(--accent); color: white;"><i class="fa-solid fa-plus"></i></div>
             </div>
 
-            <div class="section-header">Linked Accounts</div>
-            <div class="card" style="padding: 25px; min-height: 200px;">
+            <div class="card" style="padding: 22px; margin-top: 15px;">
+                <div class="section-header" style="margin-top: 0; margin-bottom: 35px;">
+                    <span>Linked Accounts</span>
+                </div>
                 <div id="linked-accounts-container">
                     <div id="account-card" style="display: none;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -296,8 +284,8 @@
                         </div>
                     </div>
                     <div class="empty-placeholder" id="account-empty">
-                        <div class="empty-icon"><i class="fa-solid fa-user-slash"></i></div>
-                        <div class="empty-text">No accounts linked found.</div>
+                        <i class="fas fa-history"></i>
+                        <p>No accounts linked found.</p>
                     </div>
                 </div>
             </div>
@@ -305,7 +293,7 @@
 
         <!-- Channels View -->
         <div id="view-channels" class="view-panel">
-            <div class="section-header">Source Control</div>
+            <div class="section-header" style="margin-top: 0;"><span>Source Control</span></div>
             <div class="card">
                 <input type="text" id="channel-input" placeholder="@channel_username">
                 <button class="btn-action" style="width: 100%" onclick="addChannel()">+ Add Channel</button>
@@ -315,7 +303,7 @@
 
         <!-- Scraper View -->
         <div id="view-scraper" class="view-panel">
-            <div class="section-header">Heuristic Scraper</div>
+            <div class="section-header" style="margin-top: 0;"><span>Heuristic Scraper</span></div>
             <button class="btn-action" style="width: 100%; margin-bottom: 20px;" onclick="runManualCheck()" id="btn-run-check">
                 <i class="fa-solid fa-play"></i> Run Universal Check Now
             </button>
@@ -324,7 +312,7 @@
 
         <!-- Settings View -->
         <div id="view-settings" class="view-panel">
-            <div class="section-header">Preferences</div>
+            <div class="section-header" style="margin-top: 0;"><span>Preferences</span></div>
             <div class="card">
                 <label style="display: block; font-size: 0.8rem; color: var(--text-s); margin-bottom: 10px;">Min Profit Threshold ($)</label>
                 <input type="number" id="min-profit-input" step="0.01">
