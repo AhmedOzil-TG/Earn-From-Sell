@@ -706,6 +706,8 @@
                     class="fa-solid fa-user-shield"></i><span>Accounts</span></div>
             <div class="nav-item" data-page="Channels" onclick="switchView('channels', this)"><i
                     class="fa-solid fa-tower-broadcast"></i><span>Channels</span></div>
+            <div class="nav-item" data-page="API Servers" onclick="switchView('api-servers', this)"><i
+                    class="fa-solid fa-server"></i><span>API Servers</span></div>
             <div class="nav-item" data-page="Scraper" onclick="switchView('scraper', this)"><i
                     class="fa-solid fa-magnifying-glass-chart"></i><span>Manual Check</span></div>
             <div class="nav-item" data-page="Settings" onclick="switchView('settings', this)"><i
@@ -802,6 +804,32 @@
                 </div>
                 <div id="channels-list" style="display: flex; flex-direction: column; gap: 15px;">
                     <!-- Channels items (Channel cards) will be injected here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- API Servers View -->
+        <div id="view-api-servers" class="view-panel">
+            <!-- Inline Add API Server Form -->
+            <div class="wizard-pane">
+                <div class="w-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;"><i class="fa-solid fa-server"></i></div>
+                <h2 class="w-title">API Server Details</h2>
+                <p class="w-desc">Enter the API server endpoint URL to fetch real-time country pricing data.</p>
+                
+                <div class="input-group">
+                    <label>Server Endpoint URL</label>
+                    <input type="text" class="w-input" id="inline-api-server-input" placeholder="https://api.example.com" oninput="toggleAddApiBtn()">
+                </div>
+                
+                <button class="btn-action-premium" id="inline-add-api-btn" style="background: #059669;" onclick="addApiServerInline()" disabled>Add API Server</button>
+            </div>
+
+            <div class="card" style="padding: 22px; margin-top: 25px;" id="api-servers-card-container">
+                <div class="section-header" style="margin-top: 0; margin-bottom: 35px;">
+                    <i class="fa-solid fa-server"></i><span>Configured Servers</span>
+                </div>
+                <div id="api-servers-list" style="display: flex; flex-direction: column; gap: 15px;">
+                    <!-- API server items will be injected here -->
                 </div>
             </div>
         </div>
@@ -981,11 +1009,38 @@
                             </div>
                         </div>
                     `).join('');
+                    `;
+                }
+
+                // Render API Servers
+                const apiContainer = document.getElementById('api-servers-list');
+                const servers = data.api_servers || [];
+                if (servers.length > 0) {
+                    apiContainer.innerHTML = servers.map(s => `
+                        <div class="card card-zoom" style="padding: 24px 20px 20px; box-shadow: none; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 0; cursor: pointer;">
+                            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+                                <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-s);"><i class="fas fa-server" style="color: #10b981; margin-right: 8px;"></i>Server</h3>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <div style="${rowS('#10b981')}">
+                                    <span style="${lblS}">STATUS</span>
+                                    <span style="color: #10b981; font-weight: 700; font-size: 0.85rem; text-transform: uppercase;">CONNECTED</span>
+                                </div>
+                                <div style="${rowS('#0ea5e9')}">
+                                    <span style="${lblS}">ENDPOINT</span>
+                                    <span style="color: var(--text-s); font-weight: 700; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${s.url}</span>
+                                </div>
+                                <button class="btn-action" onclick="askDeleteApiServer('${s.url}')" style="width: 100%; height: 52px; background: rgba(239, 68, 68, 0.05); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.1); box-shadow: none; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 12px; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);">
+                                    <i class="fa-solid fa-trash-can"></i> REMOVE SERVER
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
                 } else {
-                    channelsContainer.innerHTML = `
+                    apiContainer.innerHTML = `
                         <div class="empty-placeholder">
-                            <i class="fas fa-tower-broadcast"></i>
-                            <p>No active sources found.</p>
+                            <i class="fas fa-server"></i>
+                            <p>No servers configured.</p>
                         </div>
                     `;
                 }
@@ -1183,7 +1238,42 @@
             btn.disabled = !(user.startsWith('@') && user.length >= 5); // @ + 4 chars
         }
 
+        function toggleAddApiBtn() {
+            const url = document.getElementById('inline-api-server-input').value.trim();
+            const btn = document.getElementById('inline-add-api-btn');
+            btn.disabled = url.length < 10 || !url.startsWith('http');
+        }
+
         // --- Inline Form Handlers ---
+        async function addApiServerInline() {
+            const url = document.getElementById('inline-api-server-input').value;
+            if (!url) return;
+            const res = await fetch('/api/dashboard/api-servers', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url })
+            });
+            const data = await res.json();
+            if (data.status === 'ok') {
+                document.getElementById('inline-api-server-input').value = '';
+                loadData();
+                showToast("API Server added!");
+            } else showToast(data.message, 'error');
+        }
+
+        function askDeleteApiServer(url) {
+            confirmCallback = async () => {
+                const res = await fetch('/api/dashboard/api-servers', {
+                    method: 'DELETE', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+                const data = await res.json();
+                if (data.status === 'ok') { showToast("Server removed"); loadData(); }
+                else showToast(data.message, 'error');
+                closeConfirmModal();
+            };
+            document.getElementById('confirm-text').innerText = `Are you sure you want to remove the server: ${url}?`;
+            document.getElementById('modal-confirm').style.display = 'flex';
+        }
         async function sendCodeInline() {
             const phone = document.getElementById('inline-login-phone').value;
             const res = await fetch('/api/auth/send-code', {
