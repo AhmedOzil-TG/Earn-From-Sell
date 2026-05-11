@@ -556,7 +556,9 @@
             padding: 35px 25px;
             text-align: center;
             box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
-            margin-bottom: 25px;
+            margin: 0 auto 25px auto;
+            max-width: 420px;
+            width: 100%;
         }
 
         .w-icon {
@@ -604,14 +606,17 @@
         }
 
         .w-input {
-            width: 100%;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--text-p);
-            font-size: 1.3rem;
-            font-weight: 700;
-            font-family: inherit;
+            width: 100% !important;
+            background: transparent !important;
+            border: none !important;
+            outline: none !important;
+            color: var(--text-p) !important;
+            font-size: 1.3rem !important;
+            font-weight: 700 !important;
+            font-family: inherit !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            box-shadow: none !important;
         }
 
         .w-input::placeholder {
