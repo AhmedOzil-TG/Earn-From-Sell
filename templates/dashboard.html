@@ -21,13 +21,14 @@
             --text-p: #fafafa;
             --text-s: #a1a1aa;
             --radius-md: 20px;
-            --radius-lg: 28px;
+            --radius-lg: 32px;
             --ease: cubic-bezier(0.16, 1, 0.3, 1);
             --sidebar-width: 280px;
             --success: #10b981;
             --error: #ef4444;
             --btn-primary: #27272a;
             --btn-hover: #3f3f46;
+            --modal-bg: #0f0f11;
         }
 
         * {
@@ -352,51 +353,6 @@
             color: var(--text-p);
         }
 
-        input {
-            width: 100%;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 15px 18px;
-            color: #fff;
-            font-size: 0.95rem;
-            outline: none;
-            transition: all 0.3s var(--ease);
-            margin-bottom: 15px;
-        }
-
-        input:focus {
-            border-color: var(--accent);
-            background: rgba(88, 101, 242, 0.05);
-            box-shadow: 0 0 20px rgba(88, 101, 242, 0.1);
-        }
-
-        /* --- Empty Placeholder --- */
-        .empty-placeholder {
-            text-align: center;
-            padding: 40px 20px;
-            background: var(--card-glass);
-            border-radius: 16px;
-            border: 1px dashed var(--border);
-            margin-top: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .empty-placeholder i {
-            font-size: 2.5rem;
-            color: var(--text-s);
-            opacity: 0.15;
-            margin-bottom: 12px;
-        }
-
-        .empty-placeholder p {
-            color: var(--text-s);
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
         /* --- Modals --- */
         .modal {
             position: fixed;
@@ -411,58 +367,113 @@
         }
 
         .modal-content {
-            background: var(--bg-elevated);
+            background: var(--modal-bg);
             border: 1px solid var(--border);
             border-radius: var(--radius-lg);
-            padding: 40px;
+            padding: 45px 35px;
             width: 100%;
-            max-width: 450px;
-            box-shadow: 0 30px 100px rgba(0, 0, 0, 0.8);
+            max-width: 420px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
             position: relative;
-            overflow: hidden;
+            text-align: center;
         }
 
         .modal-header {
-            text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
 
-        .modal-icon {
-            width: 65px;
-            height: 65px;
-            background: var(--card-glass);
-            border: 1px solid var(--border);
-            border-radius: 20px;
+        .modal-icon-container {
+            width: 75px;
+            height: 75px;
+            background: #141417;
+            border-radius: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.6rem;
-            margin: 0 auto 20px;
-            color: var(--accent);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            font-size: 1.8rem;
+            margin: 0 auto 25px;
+            color: #3b82f6;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
         .modal-title {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             font-weight: 800;
-            background: linear-gradient(45deg, #fff, #a1a1aa);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
+            color: #fff;
+            margin-bottom: 12px;
         }
 
         .modal-desc {
-            font-size: 0.85rem;
-            color: var(--text-s);
-            line-height: 1.6;
+            font-size: 0.95rem;
+            color: #71717a;
+            line-height: 1.5;
+            padding: 0 10px;
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 30px;
+            margin-top: 40px;
+        }
+
+        .input-label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #71717a;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .modal-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #27272a;
+            padding: 12px 0;
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .modal-input:focus {
+            border-color: #3b82f6;
+        }
+
+        .modal-input::placeholder {
+            color: #3f3f46;
+        }
+
+        .btn-modal-primary {
+            width: 100%;
+            background: #2b357e;
+            color: #94a3b8;
+            border: none;
+            padding: 18px;
+            border-radius: 20px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-modal-primary:hover {
+            background: #354199;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .btn-modal-primary:active {
+            transform: scale(0.98);
         }
 
         /* --- Toast System (Refined Side Slide) --- */
         .toast-container {
             position: fixed;
             top: 85px;
-            /* Just below top bar (70px + 15px gap) */
             right: 20px;
             z-index: 9999;
             display: flex;
@@ -491,36 +502,17 @@
             pointer-events: auto;
         }
 
-        .toast.success {
-            border-left-color: var(--success);
-        }
-
-        .toast.error {
-            border-left-color: var(--error);
-        }
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--error); }
 
         @keyframes toastSlideIn {
-            from {
-                opacity: 0;
-                transform: translateX(120%);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(120%); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         @keyframes toastSlideOut {
-            from {
-                opacity: 1;
-                transform: translateX(0);
-            }
-
-            to {
-                opacity: 0;
-                transform: translateX(120%);
-            }
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(120%); }
         }
 
         #loader {
@@ -544,9 +536,7 @@
         }
 
         @keyframes spin {
-            100% {
-                transform: rotate(360deg);
-            }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -571,36 +561,26 @@
             <div style="font-weight: 800; font-size: 1.2rem;">Arbitrage Pro</div>
         </div>
         <div class="side-nav">
-            <div class="nav-item" data-page="Home" onclick="switchView('home', this)"><i
-                    class="fa-solid fa-house"></i><span>Home</span></div>
-            <div class="nav-item" data-page="Accounts" onclick="switchView('accounts', this)"><i
-                    class="fa-solid fa-user-shield"></i><span>Accounts</span></div>
-            <div class="nav-item" data-page="Channels" onclick="switchView('channels', this)"><i
-                    class="fa-solid fa-tower-broadcast"></i><span>Channels</span></div>
-            <div class="nav-item" data-page="Scraper" onclick="switchView('scraper', this)"><i
-                    class="fa-solid fa-magnifying-glass-chart"></i><span>Manual Check</span></div>
-            <div class="nav-item" data-page="Settings" onclick="switchView('settings', this)"><i
-                    class="fa-solid fa-gears"></i><span>Settings</span></div>
+            <div class="nav-item" data-page="Home" onclick="switchView('home', this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
+            <div class="nav-item" data-page="Accounts" onclick="switchView('accounts', this)"><i class="fa-solid fa-user-shield"></i><span>Accounts</span></div>
+            <div class="nav-item" data-page="Channels" onclick="switchView('channels', this)"><i class="fa-solid fa-tower-broadcast"></i><span>Channels</span></div>
+            <div class="nav-item" data-page="Scraper" onclick="switchView('scraper', this)"><i class="fa-solid fa-magnifying-glass-chart"></i><span>Manual Check</span></div>
+            <div class="nav-item" data-page="Settings" onclick="switchView('settings', this)"><i class="fa-solid fa-gears"></i><span>Settings</span></div>
         </div>
     </div>
 
     <main class="main-content">
         <!-- Home View -->
         <div id="view-home" class="view-panel active">
-            <div class="section-header" style="margin-top: 0;"><i
-                    class="fa-solid fa-chart-line"></i><span>STATISTICS</span></div>
+            <div class="section-header" style="margin-top: 0;"><i class="fa-solid fa-chart-line"></i><span>STATISTICS</span></div>
             <div class="info-card-stack">
                 <div class="info-card">
-                    <div class="info-card-l"><span class="info-card-lbl">Channels</span><span class="info-card-val"
-                            id="stat-channels">0</span></div>
-                    <div class="info-card-icon" style="background: rgba(88, 101, 242, 0.1); color: var(--accent);"><i
-                            class="fa-solid fa-satellite"></i></div>
+                    <div class="info-card-l"><span class="info-card-lbl">Channels</span><span class="info-card-val" id="stat-channels">0</span></div>
+                    <div class="info-card-icon" style="background: rgba(88, 101, 242, 0.1); color: var(--accent);"><i class="fa-solid fa-satellite"></i></div>
                 </div>
                 <div class="info-card">
-                    <div class="info-card-l"><span class="info-card-lbl">Opportunities</span><span class="info-card-val"
-                            id="stat-opps">0</span></div>
-                    <div class="info-card-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);"><i
-                            class="fa-solid fa-bolt"></i></div>
+                    <div class="info-card-l"><span class="info-card-lbl">Opportunities</span><span class="info-card-val" id="stat-opps">0</span></div>
+                    <div class="info-card-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);"><i class="fa-solid fa-bolt"></i></div>
                 </div>
             </div>
             <div class="section-header"><span>Live Feed</span></div>
@@ -610,51 +590,31 @@
         <!-- Accounts View -->
         <div id="view-accounts" class="view-panel">
             <div class="info-card card-zoom" onclick="showLoginModal()">
-                <div class="info-card-l">
-                    <span class="info-card-val">Add New Account</span>
-                </div>
-                <div class="info-card-icon" style="background: var(--accent); color: white;"><i
-                        class="fa-solid fa-plus"></i></div>
+                <div class="info-card-l"><span class="info-card-val">Add New Account</span></div>
+                <div class="info-card-icon" style="background: var(--accent); color: white;"><i class="fa-solid fa-plus"></i></div>
             </div>
-
-            <!-- Big Card: Linked Accounts -->
             <div class="card" style="padding: 22px; margin-top: 15px;" id="accounts-card-container">
-                <div class="section-header" style="margin-top: 0; margin-bottom: 35px;">
-                    <i class="fa-solid fa-user-lock"></i><span>Linked Accounts</span>
-                </div>
-                <div id="linked-accounts-container">
-                    <!-- Accounts items (Account cards) will be injected here -->
-                </div>
+                <div class="section-header" style="margin-top: 0; margin-bottom: 35px;"><i class="fa-solid fa-user-lock"></i><span>Linked Accounts</span></div>
+                <div id="linked-accounts-container"></div>
             </div>
         </div>
 
         <!-- Channels View -->
         <div id="view-channels" class="view-panel">
             <div class="info-card card-zoom" onclick="showChannelModal()">
-                <div class="info-card-l">
-                    <span class="info-card-val">Add New Channel</span>
-                </div>
-                <div class="info-card-icon" style="background: var(--accent); color: white;"><i
-                        class="fa-solid fa-plus"></i></div>
+                <div class="info-card-l"><span class="info-card-val">Add New Channel</span></div>
+                <div class="info-card-icon" style="background: var(--accent); color: white;"><i class="fa-solid fa-plus"></i></div>
             </div>
-
             <div class="card" style="padding: 22px; margin-top: 25px;" id="channels-list-container">
-                <div class="section-header" style="margin-top: 0; margin-bottom: 35px;">
-                    <i class="fa-solid fa-tower-broadcast"></i><span>Linked Channels</span>
-                </div>
-                <div id="channels-list" style="display: flex; flex-direction: column; gap: 15px;">
-                    <!-- Channels items (Channel cards) will be injected here -->
-                </div>
+                <div class="section-header" style="margin-top: 0; margin-bottom: 35px;"><i class="fa-solid fa-tower-broadcast"></i><span>Linked Channels</span></div>
+                <div id="channels-list" style="display: flex; flex-direction: column; gap: 15px;"></div>
             </div>
         </div>
 
         <!-- Scraper View -->
         <div id="view-scraper" class="view-panel">
             <div class="section-header" style="margin-top: 0;"><span>Heuristic Scraper</span></div>
-            <button class="btn-action" style="width: 100%; margin-bottom: 20px;" onclick="runManualCheck()"
-                id="btn-run-check">
-                <i class="fa-solid fa-play"></i> Run Universal Check Now
-            </button>
+            <button class="btn-action" style="width: 100%; margin-bottom: 20px;" onclick="runManualCheck()" id="btn-run-check"><i class="fa-solid fa-play"></i> Run Universal Check Now</button>
             <div id="check-results"></div>
         </div>
 
@@ -662,8 +622,7 @@
         <div id="view-settings" class="view-panel">
             <div class="section-header" style="margin-top: 0;"><span>Preferences</span></div>
             <div class="card card-zoom">
-                <label style="display: block; font-size: 0.8rem; color: var(--text-s); margin-bottom: 10px;">Min Profit
-                    Threshold ($)</label>
+                <label style="display: block; font-size: 0.8rem; color: var(--text-s); margin-bottom: 10px;">Min Profit Threshold ($)</label>
                 <input type="number" id="min-profit-input" step="0.01">
                 <button class="btn-action" style="width: 100%" onclick="saveSettings()">Save Configuration</button>
             </div>
@@ -674,25 +633,36 @@
     <div class="modal" id="modal-login">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-icon"><i class="fas fa-user-plus"></i></div>
-                <div class="modal-title">Link Account</div>
-                <div class="modal-desc" id="modal-login-desc">Enter your phone number with country code to start the
-                    secure linking process.</div>
+                <div class="modal-icon-container"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                <div class="modal-title">Account Details</div>
+                <div class="modal-desc" id="modal-login-desc">Enter the international phone number. We'll automatically detect the country and your reward price.</div>
             </div>
+            
             <div id="step-phone">
-                <input type="text" id="login-phone" placeholder="+1 234 567 890">
-                <button class="btn-action" style="width: 100%" onclick="sendCode()">Send Secure Code</button>
+                <div class="input-group">
+                    <label class="input-label">PHONE NUMBER</label>
+                    <input type="text" class="modal-input" id="login-phone" placeholder="+123...">
+                </div>
+                <button class="btn-modal-primary" onclick="sendCode()">Get Verification Code</button>
             </div>
+
             <div id="step-code" style="display: none;">
-                <input type="text" id="login-code" placeholder="Enter 5-digit code">
-                <button class="btn-action" style="width: 100%" onclick="verifyCode()">Verify Identity</button>
+                <div class="input-group">
+                    <label class="input-label">VERIFICATION CODE</label>
+                    <input type="text" class="modal-input" id="login-code" placeholder="Enter code">
+                </div>
+                <button class="btn-modal-primary" onclick="verifyCode()">Verify Account</button>
             </div>
+
             <div id="step-password" style="display: none;">
-                <input type="password" id="login-password" placeholder="2FA Password">
-                <button class="btn-action" style="width: 100%" onclick="verifyPassword()">Complete Login</button>
+                <div class="input-group">
+                    <label class="input-label">2FA PASSWORD</label>
+                    <input type="password" class="modal-input" id="login-password" placeholder="Password">
+                </div>
+                <button class="btn-modal-primary" onclick="verifyPassword()">Finalize Linking</button>
             </div>
-            <button class="btn-action secondary" style="width: 100%; margin-top: 10px;"
-                onclick="closeModal()">Cancel</button>
+            
+            <button class="btn-action secondary" style="width: 100%; margin-top: 20px; border: none;" onclick="closeModal()">Cancel</button>
         </div>
     </div>
 
@@ -700,33 +670,30 @@
     <div class="modal" id="modal-channel">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-icon"><i class="fas fa-satellite-dish"></i></div>
-                <div class="modal-title">Add Source</div>
-                <div class="modal-desc">Enter the Telegram channel username or link to start monitoring for arbitrage
-                    opportunities.</div>
+                <div class="modal-icon-container" style="color: #8b5cf6;"><i class="fa-solid fa-tower-broadcast"></i></div>
+                <div class="modal-title">Channel Details</div>
+                <div class="modal-desc">Enter the Telegram channel username or link to start monitoring for opportunities.</div>
             </div>
-            <input type="text" id="modal-channel-input" placeholder="@channel_username">
-            <button class="btn-action" style="width: 100%" onclick="addChannelFromModal()">Link Source Channel</button>
-            <button class="btn-action secondary" style="width: 100%; margin-top: 10px;"
-                onclick="closeChannelModal()">Cancel</button>
+            
+            <div class="input-group">
+                <label class="input-label">CHANNEL USERNAME</label>
+                <input type="text" class="modal-input" id="modal-channel-input" placeholder="@channel">
+            </div>
+            
+            <button class="btn-modal-primary" style="background: #4c1d95;" onclick="addChannelFromModal()">Link Source Channel</button>
+            <button class="btn-action secondary" style="width: 100%; margin-top: 20px; border: none;" onclick="closeChannelModal()">Cancel</button>
         </div>
     </div>
 
     <!-- Confirmation Modal -->
     <div class="modal" id="modal-confirm">
         <div class="modal-content" style="text-align: center;">
-            <div
-                style="width: 65px; height: 65px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 1.6rem;">
-                <i class="fas fa-trash-can"></i>
-            </div>
+            <div class="modal-icon-container" style="color: #ef4444; background: rgba(239, 68, 68, 0.05);"><i class="fa-solid fa-trash-can"></i></div>
             <h3 style="margin-bottom: 10px; font-size: 1.3rem; font-weight: 800;">Are you sure?</h3>
-            <p id="confirm-text"
-                style="font-size: 0.9rem; color: var(--text-s); margin-bottom: 25px; line-height: 1.6;">This action will
-                permanently remove this item from your dashboard.</p>
+            <p id="confirm-text" style="font-size: 0.9rem; color: #71717a; margin-bottom: 25px; line-height: 1.6;">This action will permanently remove this item from your dashboard.</p>
             <div style="display: flex; gap: 12px;">
-                <button class="btn-action secondary" style="flex: 1;" onclick="closeConfirmModal()">Cancel</button>
-                <button id="confirm-yes" class="btn-action"
-                    style="flex: 1; background: #ef4444; border-color: #ef4444;">Delete</button>
+                <button class="btn-action secondary" style="flex: 1; border: none; background: #1a1a1c;" onclick="closeConfirmModal()">Cancel</button>
+                <button id="confirm-yes" class="btn-action" style="flex: 1; background: #ef4444; border: none; color: white;">Delete</button>
             </div>
         </div>
     </div>
@@ -745,11 +712,9 @@
             return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }
 
-        // Shared Row Style (to ensure uniform size)
         const rowS = (c) => `height: 52px; background: ${hexToRgba(c, 0.02)}; border: 1px solid ${hexToRgba(c, 0.08)}; padding: 0 18px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; gap: 15px; width: 100%;`;
         const lblS = "color: var(--text-s); font-size: 0.8rem; font-weight: 500; text-transform: uppercase; opacity: 0.7; flex-shrink: 0;";
 
-        // --- Custom Toast System (Refined) ---
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -772,7 +737,6 @@
             document.querySelectorAll('.view-panel').forEach(v => v.classList.remove('active'));
             document.getElementById('view-' + id).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-
             let pageTitle = "Home";
             if (el) { el.classList.add('active'); pageTitle = el.getAttribute('data-page'); }
             else {
@@ -791,97 +755,51 @@
         async function loadData() {
             const savedView = localStorage.getItem('active_view') || 'home';
             switchView(savedView);
-
             try {
                 const res = await fetch('/api/dashboard/data');
                 const data = await res.json();
-
                 document.getElementById('stat-channels').innerText = data.channels.length;
                 document.getElementById('stat-opps').innerText = data.opportunities.length;
                 document.getElementById('min-profit-input').value = data.min_profit;
-
-                // Render Channels as Cards
                 const channelsContainer = document.getElementById('channels-list');
                 if (data.channels.length > 0) {
                     channelsContainer.innerHTML = data.channels.map(c => `
-                        <div class="card card-zoom" style="padding: 24px 20px 20px; box-shadow: none; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 0; cursor: pointer;">
+                        <div class="card card-zoom" style="padding: 24px 20px 20px; border-radius: 18px; cursor: pointer; box-shadow: none;">
                             <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
-                                <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-s);"><i class="fas fa-satellite-dish" style="color: var(--accent); margin-right: 8px;"></i>Channel</h3>
+                                <h3 style="margin: 0; font-size: 1rem; color: var(--text-s); font-weight: 700;"><i class="fa-solid fa-tower-broadcast" style="color: var(--accent); margin-right: 8px;"></i>Channel</h3>
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 12px;">
-                                <div style="${rowS('#10b981')}">
-                                    <span style="${lblS}">STATUS</span>
-                                    <span style="color: #10b981; font-weight: 700; font-size: 0.85rem; text-transform: uppercase;">ACTIVE</span>
-                                </div>
-                                <div style="${rowS('#8b5cf6')}">
-                                    <span style="${lblS}">USERNAME</span>
-                                    <span style="color: var(--text-s); font-weight: 700; font-size: 1.1rem;">${c.username}</span>
-                                </div>
-                                <button class="btn-action" onclick="askDeleteChannel('${c.username}')" style="width: 100%; height: 52px; background: rgba(239, 68, 68, 0.05); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.1); box-shadow: none; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 12px; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);">
-                                    <i class="fa-solid fa-trash-can"></i> DELETE CHANNEL
-                                </button>
+                                <div style="${rowS('#10b981')}"><span style="${lblS}">STATUS</span><span style="color: #10b981; font-weight: 700;">ACTIVE</span></div>
+                                <div style="${rowS('#8b5cf6')}"><span style="${lblS}">USERNAME</span><span style="color: var(--text-s); font-weight: 700;">${c.username}</span></div>
+                                <button class="btn-action" onclick="askDeleteChannel('${c.username}')" style="width: 100%; height: 52px; background: rgba(239, 68, 68, 0.05); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.1); border-radius: 12px; font-weight: 700;"><i class="fa-solid fa-trash-can"></i> DELETE CHANNEL</button>
                             </div>
-                        </div>
-                    `).join('');
-                } else {
-                    channelsContainer.innerHTML = `
-                        <div class="empty-placeholder">
-                            <i class="fas fa-tower-broadcast"></i>
-                            <p>No active sources found.</p>
-                        </div>
-                    `;
-                }
+                        </div>`).join('');
+                } else { channelsContainer.innerHTML = '<div class="empty-placeholder"><i class="fa-solid fa-tower-broadcast"></i><p>No active sources found.</p></div>'; }
 
                 document.getElementById('live-feed').innerHTML = data.opportunities.map(o => `
-                    <div class="list-item">
-                        <div class="item-info"><h4>🌍 ${o.country}</h4><p>${o.channel}</p></div>
-                        <div class="profit-badge">+$${o.profit}</div>
-                    </div>
+                    <div class="list-item"><div class="item-info"><h4>🌍 ${o.country}</h4><p>${o.channel}</p></div><div class="profit-badge">+$${o.profit}</div></div>
                 `).join('') || '<p style="text-align: center; color: var(--text-s);">Listening for opportunities...</p>';
 
-                // Check Auth Status & Render Account Card
                 const authRes = await fetch('/api/auth/status');
                 const auth = await authRes.json();
                 const container = document.getElementById('linked-accounts-container');
-
                 if (auth.connected) {
-                    container.innerHTML = `
-                        <div class="card card-zoom" style="padding: 24px 20px 20px; box-shadow: none; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 0; cursor: pointer;">
+                    container.innerHTML = `<div class="card card-zoom" style="padding: 24px 20px 20px; border-radius: 18px; cursor: pointer; box-shadow: none;">
                             <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
-                                <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-s);"><i class="fas fa-user-shield" style="color: var(--accent); margin-right: 8px;"></i>Account</h3>
+                                <h3 style="margin: 0; font-size: 1rem; color: var(--text-s); font-weight: 700;"><i class="fa-solid fa-user-shield" style="color: var(--accent); margin-right: 8px;"></i>Account</h3>
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 12px;">
-                                <div style="${rowS('#10b981')}">
-                                    <span style="${lblS}">STATUS</span>
-                                    <span style="color: #10b981; font-weight: 700; font-size: 0.85rem; text-transform: uppercase;">CONNECTED</span>
-                                </div>
-                                <div style="${rowS('#8b5cf6')}">
-                                    <span style="${lblS}">NUMBER</span>
-                                    <span style="color: var(--text-s); font-weight: 700; font-size: 1.1rem; direction: ltr;">${auth.phone}</span>
-                                </div>
-                                <button class="btn-action" onclick="askDeleteAccount(event)" style="width: 100%; height: 52px; background: rgba(239, 68, 68, 0.05); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.1); box-shadow: none; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 12px; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);">
-                                    <i class="fa-solid fa-trash-can"></i> Delete Account
-                                </button>
+                                <div style="${rowS('#10b981')}"><span style="${lblS}">STATUS</span><span style="color: #10b981; font-weight: 700;">CONNECTED</span></div>
+                                <div style="${rowS('#8b5cf6')}"><span style="${lblS}">NUMBER</span><span style="color: var(--text-s); font-weight: 700;">${auth.phone}</span></div>
+                                <button class="btn-action" onclick="askDeleteAccount(event)" style="width: 100%; height: 52px; background: rgba(239, 68, 68, 0.05); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.1); border-radius: 12px; font-weight: 700;"><i class="fa-solid fa-trash-can"></i> Delete Account</button>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                     document.getElementById('user-initial').innerText = (auth.user || auth.phone)[0].toUpperCase();
-                } else {
-                    container.innerHTML = `
-                        <div class="empty-placeholder">
-                            <i class="fas fa-history"></i>
-                            <p>No accounts linked found.</p>
-                        </div>
-                    `;
-                }
+                } else { container.innerHTML = '<div class="empty-placeholder"><i class="fa-solid fa-history"></i><p>No accounts linked found.</p></div>'; }
             } catch (e) { console.error(e); }
-            finally {
-                document.getElementById('loader').style.opacity = '0';
-                setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
-            }
+            finally { document.getElementById('loader').style.opacity = '0'; setTimeout(() => document.getElementById('loader').style.display = 'none', 500); }
         }
 
-        // --- Custom Confirm Logic ---
         function showConfirmModal(text, callback) {
             document.getElementById('confirm-text').innerText = text;
             confirmCallback = callback;
@@ -889,98 +807,54 @@
             tg.HapticFeedback.notificationOccurred('warning');
         }
         function closeConfirmModal() { document.getElementById('modal-confirm').style.display = 'none'; }
-        document.getElementById('confirm-yes').onclick = () => {
-            if (confirmCallback) confirmCallback();
-            closeConfirmModal();
-        };
+        document.getElementById('confirm-yes').onclick = () => { if (confirmCallback) confirmCallback(); closeConfirmModal(); };
 
-        function askDeleteAccount(event) {
-            if (event) event.stopPropagation();
-            showConfirmModal("Are you sure you want to delete this account? This will end your session.", async () => {
-                await fetch('/api/auth/logout', { method: 'POST' });
-                loadData();
-                showToast("Account deleted successfully!");
-            });
-        }
+        function askDeleteAccount(event) { if (event) event.stopPropagation(); showConfirmModal("Are you sure you want to delete this account? This will end your session.", async () => { await fetch('/api/auth/logout', { method: 'POST' }); loadData(); showToast("Account deleted successfully!"); }); }
+        function askDeleteChannel(user) { showConfirmModal(`Are you sure you want to remove ${user}?`, async () => { await fetch(`/api/dashboard/channels/${user}`, { method: 'DELETE' }); loadData(); showToast("Channel removed successfully!"); }); }
 
-        function askDeleteChannel(user) {
-            showConfirmModal(`Are you sure you want to remove ${user}?`, async () => {
-                await fetch(`/api/dashboard/channels/${user}`, { method: 'DELETE' });
-                loadData();
-                showToast("Channel removed successfully!");
-            });
-        }
-
-        // --- Auth Flow ---
-        function showLoginModal() {
-            document.getElementById('modal-login').style.display = 'flex';
+        function showLoginModal() { 
+            document.getElementById('modal-login').style.display = 'flex'; 
             document.getElementById('step-phone').style.display = 'block';
             document.getElementById('step-code').style.display = 'none';
             document.getElementById('step-password').style.display = 'none';
-            document.getElementById('modal-login-desc').innerText = "Enter your phone number with country code to start the secure linking process.";
+            document.getElementById('modal-login-desc').innerText = "Enter the international phone number. We'll automatically detect the country and your reward price.";
         }
         function closeModal() { document.getElementById('modal-login').style.display = 'none'; }
 
         async function sendCode() {
             const phone = document.getElementById('login-phone').value;
-            const res = await fetch('/api/auth/send-code', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone })
-            });
+            const res = await fetch('/api/auth/send-code', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone }) });
             const data = await res.json();
-            if (data.status === 'ok') {
-                loginData.phone = phone; loginData.hash = data.phone_code_hash;
-                document.getElementById('step-phone').style.display = 'none';
-                document.getElementById('step-code').style.display = 'block';
-                document.getElementById('modal-login-desc').innerText = "Check your Telegram app for the verification code.";
-                showToast("Code sent!");
-            } else showToast(data.message, 'error');
+            if (data.status === 'ok') { loginData.phone = phone; loginData.hash = data.phone_code_hash; document.getElementById('step-phone').style.display = 'none'; document.getElementById('step-code').style.display = 'block'; document.getElementById('modal-login-desc').innerText = "Check your Telegram app for the verification code."; showToast("Code sent!"); }
+            else showToast(data.message, 'error');
         }
 
         async function verifyCode() {
             const code = document.getElementById('login-code').value;
-            const res = await fetch('/api/auth/verify-code', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone: loginData.phone, code, phone_code_hash: loginData.hash })
-            });
+            const res = await fetch('/api/auth/verify-code', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone: loginData.phone, code, phone_code_hash: loginData.hash }) });
             const data = await res.json();
             if (data.status === 'ok') { closeModal(); loadData(); showToast("Logged in successfully!"); }
-            else if (data.status === 'password_needed') {
-                document.getElementById('step-code').style.display = 'none';
-                document.getElementById('step-password').style.display = 'block';
-                document.getElementById('modal-login-desc').innerText = "Enter your 2FA password to complete the verification.";
-            } else showToast(data.message, 'error');
+            else if (data.status === 'password_needed') { document.getElementById('step-code').style.display = 'none'; document.getElementById('step-password').style.display = 'block'; document.getElementById('modal-login-desc').innerText = "Enter your 2FA password to complete the verification."; }
+            else showToast(data.message, 'error');
         }
 
         async function verifyPassword() {
             const password = document.getElementById('login-password').value;
-            const res = await fetch('/api/auth/verify-password', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password })
-            });
+            const res = await fetch('/api/auth/verify-password', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password }) });
             const data = await res.json();
             if (data.status === 'ok') { closeModal(); loadData(); showToast("Logged in successfully!"); }
             else showToast(data.message, 'error');
         }
 
-        // --- Channel Modal ---
         function showChannelModal() { document.getElementById('modal-channel').style.display = 'flex'; }
         function closeChannelModal() { document.getElementById('modal-channel').style.display = 'none'; }
-
         async function addChannelFromModal() {
             const user = document.getElementById('modal-channel-input').value;
             if (!user) return;
-            await fetch('/api/dashboard/channels', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: user })
-            });
-            document.getElementById('modal-channel-input').value = '';
-            closeChannelModal();
-            loadData();
-            showToast("Channel linked successfully!");
+            await fetch('/api/dashboard/channels', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: user }) });
+            document.getElementById('modal-channel-input').value = ''; closeChannelModal(); loadData(); showToast("Channel linked successfully!");
         }
 
-        // --- Actions ---
         async function runManualCheck() {
             const btn = document.getElementById('btn-run-check');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking Channels...';
@@ -988,28 +862,14 @@
             try {
                 const res = await fetch('/api/dashboard/manual-check', { method: 'POST' });
                 const data = await res.json();
-                if (data.status === 'ok') {
-                    document.getElementById('check-results').innerHTML = data.results.map(r => `
-                        <div class="list-item">
-                            <div class="item-info"><h4>${r.country}</h4><p>${r.channel} | Buy: ${r.buy}$ | Sell: ${r.sell}$</p></div>
-                            <div class="profit-badge">+$${r.profit}</div>
-                        </div>
-                    `).join('') || '<p style="text-align: center; color: var(--text-s);">No profit opportunities found.</p>';
-                    showToast("Check completed!");
-                }
+                if (data.status === 'ok') { loadData(); showToast("Check completed!"); }
             } catch (e) { showToast("Check failed", 'error'); }
-            finally {
-                btn.innerHTML = '<i class="fa-solid fa-play"></i> Run Universal Check Now';
-                btn.disabled = false;
-            }
+            finally { btn.innerHTML = '<i class="fa-solid fa-play"></i> Run Universal Check Now'; btn.disabled = false; }
         }
 
         async function saveSettings() {
             const min = document.getElementById('min-profit-input').value;
-            await fetch('/api/dashboard/settings', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ min_profit: min })
-            });
+            await fetch('/api/dashboard/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ min_profit: min }) });
             showToast("Settings saved!");
         }
 
