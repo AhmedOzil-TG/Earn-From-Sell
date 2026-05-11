@@ -548,100 +548,120 @@
                 transform: rotate(360deg);
             }
         }
-
-        /* --- Inline Form Cards (As per requested image) --- */
-        .inline-card {
+        /* --- Inline Form Cards (Matched to seller.html) --- */
+        .wizard-pane {
             background: #0f0f11;
             border: 1px solid var(--border);
-            border-radius: 32px;
-            padding: 45px 35px;
-            width: 100%;
-            margin-bottom: 25px;
+            border-radius: 28px;
+            padding: 35px 25px;
             text-align: center;
             box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+            margin-bottom: 25px;
         }
 
-        .inline-icon-container {
-            width: 75px;
-            height: 75px;
-            background: #141417;
-            border-radius: 22px;
+        .w-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 25px;
+            background: rgba(88, 101, 242, 0.1);
+            color: var(--accent);
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.8rem;
-            margin: 0 auto 25px;
-            color: #3b82f6;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
-        .inline-title {
-            font-size: 1.6rem;
+        .w-title {
+            font-size: 1.5rem;
             font-weight: 800;
+            margin-bottom: 10px;
             color: #fff;
-            margin-bottom: 12px;
         }
 
-        .inline-desc {
-            font-size: 0.95rem;
-            color: #71717a;
-            line-height: 1.5;
+        .w-desc {
+            font-size: 0.9rem;
+            color: var(--text-s);
+            margin-bottom: 30px;
+            line-height: 1.6;
             padding: 0 10px;
-            margin-bottom: 30px;
         }
 
-        .inline-input-group {
+        .input-group {
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 30px;
+            padding-bottom: 8px;
             text-align: left;
-            margin-bottom: 30px;
         }
 
-        .inline-input-label {
-            font-size: 0.75rem;
-            font-weight: 800;
-            color: #71717a;
-            letter-spacing: 0.5px;
-            margin-bottom: 12px;
+        .input-group label {
             display: block;
+            font-size: 0.7rem;
+            color: var(--text-s);
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 6px;
         }
 
-        .inline-input {
+        .w-input {
             width: 100%;
             background: transparent;
             border: none;
-            border-bottom: 1px solid #27272a;
-            padding: 12px 0;
-            color: #fff;
-            font-size: 1.4rem;
-            font-weight: 600;
             outline: none;
-            transition: border-color 0.3s;
+            color: var(--text-p);
+            font-size: 1.3rem;
+            font-weight: 700;
+            font-family: inherit;
         }
 
-        .inline-input:focus {
-            border-color: #3b82f6;
-        }
-
-        .inline-input::placeholder {
+        .w-input::placeholder {
             color: #3f3f46;
+            opacity: 0.5;
         }
 
-        .btn-inline-primary {
+        .btn-action-premium {
             width: 100%;
-            background: #2b357e;
-            color: #94a3b8;
+            background: var(--accent);
+            color: white;
+            padding: 20px;
+            border-radius: 18px;
             border: none;
-            padding: 18px;
-            border-radius: 20px;
-            font-size: 1.05rem;
+            font-size: 1rem;
             font-weight: 800;
             cursor: pointer;
-            transition: all 0.2s;
+            box-shadow: 0 5px 15px var(--accent-glow);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
         }
 
-        .btn-inline-primary:hover {
-            background: #354199;
-            color: #fff;
-            transform: translateY(-2px);
+        .btn-action-premium:active {
+            transform: scale(0.97);
+        }
+
+        .btn-secondary-premium {
+            width: 100%;
+            background: var(--card-glass);
+            color: var(--text-p);
+            padding: 18px;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
+
+        .btn-secondary-premium:active {
+            background: var(--border);
+            transform: scale(0.97);
         }
     </style>
 </head>
@@ -704,34 +724,34 @@
 
         <!-- Accounts View -->
         <div id="view-accounts" class="view-panel">
-            <!-- Inline Add Account Form -->
-            <div class="inline-card">
-                <div class="inline-icon-container"><i class="fa-solid fa-mobile-screen-button"></i></div>
-                <div class="inline-title">Account Details</div>
-                <div class="inline-desc" id="inline-login-desc">Enter the international phone number. We'll automatically detect the country and your reward price.</div>
+            <!-- Inline Add Account Form (Matched to seller.html) -->
+            <div class="wizard-pane">
+                <div class="w-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                <h2 class="w-title">Account Details</h2>
+                <p class="w-desc" id="inline-login-desc">Enter the international phone number. We'll automatically detect the country and your reward price.</p>
                 
                 <div id="inline-step-phone">
-                    <div class="inline-input-group">
-                        <label class="inline-input-label">PHONE NUMBER</label>
-                        <input type="text" class="inline-input" id="inline-login-phone" placeholder="+123...">
+                    <div class="input-group">
+                        <label>Phone Number</label>
+                        <input type="text" class="w-input" id="inline-login-phone" placeholder="+123...">
                     </div>
-                    <button class="btn-inline-primary" onclick="sendCodeInline()">Get Verification Code</button>
+                    <button class="btn-action-premium" onclick="sendCodeInline()">Get Verification Code</button>
                 </div>
 
                 <div id="inline-step-code" style="display: none;">
-                    <div class="inline-input-group">
-                        <label class="inline-input-label">VERIFICATION CODE</label>
-                        <input type="text" class="inline-input" id="inline-login-code" placeholder="Enter code">
+                    <div class="input-group">
+                        <label>Verification Code</label>
+                        <input type="text" class="w-input" id="inline-login-code" placeholder="Enter code">
                     </div>
-                    <button class="btn-inline-primary" onclick="verifyCodeInline()">Verify Account</button>
+                    <button class="btn-action-premium" onclick="verifyCodeInline()">Verify Account</button>
                 </div>
 
                 <div id="inline-step-password" style="display: none;">
-                    <div class="inline-input-group">
-                        <label class="inline-input-label">2FA PASSWORD</label>
-                        <input type="password" class="inline-input" id="inline-login-password" placeholder="Password">
+                    <div class="input-group">
+                        <label>2FA Password</label>
+                        <input type="password" class="w-input" id="inline-login-password" placeholder="Password">
                     </div>
-                    <button class="btn-inline-primary" onclick="verifyPasswordInline()">Finalize Linking</button>
+                    <button class="btn-action-premium" onclick="verifyPasswordInline()">Finalize Linking</button>
                 </div>
             </div>
 
@@ -748,18 +768,18 @@
 
         <!-- Channels View -->
         <div id="view-channels" class="view-panel">
-            <!-- Inline Add Channel Form -->
-            <div class="inline-card">
-                <div class="inline-icon-container" style="color: #8b5cf6;"><i class="fa-solid fa-tower-broadcast"></i></div>
-                <div class="inline-title">Channel Details</div>
-                <div class="inline-desc">Enter the Telegram channel username or link to start monitoring for arbitrage opportunities.</div>
+            <!-- Inline Add Channel Form (Matched to seller.html) -->
+            <div class="wizard-pane">
+                <div class="w-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;"><i class="fa-solid fa-tower-broadcast"></i></div>
+                <h2 class="w-title">Channel Details</h2>
+                <p class="w-desc">Enter the Telegram channel username or link to start monitoring for arbitrage opportunities.</p>
                 
-                <div class="inline-input-group">
-                    <label class="inline-input-label">CHANNEL USERNAME</label>
-                    <input type="text" class="inline-input" id="inline-channel-input" placeholder="@channel">
+                <div class="input-group">
+                    <label>Channel Username</label>
+                    <input type="text" class="w-input" id="inline-channel-input" placeholder="@channel">
                 </div>
                 
-                <button class="btn-inline-primary" style="background: #4c1d95;" onclick="addChannelInline()">Link Source Channel</button>
+                <button class="btn-action-premium" style="background: #4c1d95;" onclick="addChannelInline()">Link Source Channel</button>
             </div>
 
             <div class="card" style="padding: 22px; margin-top: 25px;" id="channels-list-container">
