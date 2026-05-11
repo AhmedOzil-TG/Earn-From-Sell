@@ -336,7 +336,9 @@ async def api_save_settings(data: dict):
 
 # --- Main ---
 async def main():
+    logger.info("--- Starting Arbitrage Bot System ---")
     await init_db()
+    logger.info("Database initialized.")
     
     # Set bot commands menu
     await bot.set_my_commands([
@@ -345,17 +347,25 @@ async def main():
     ])
 
     try:
+        logger.info("Connecting Telethon client...")
         await client.connect()
-    except: pass
+        logger.info("Telethon client connected.")
+    except Exception as e:
+        logger.error(f"Failed to connect Telethon: {e}")
 
     # Run FastAPI in background
+    logger.info(f"Starting Web Dashboard on port {WEB_PORT}...")
     config = uvicorn.Config(app, host="0.0.0.0", port=WEB_PORT, log_level="info")
     server = uvicorn.Server(config)
     
-    loop = asyncio.get_event_loop()
-    loop.create_task(server.serve())
+    # We use create_task to run uvicorn alongside aiogram
+    asyncio.create_task(server.serve())
     
+    logger.info("Starting Bot Polling...")
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except (KeyboardInterrupt, SystemExit):
+        logger.info("System stopped.")

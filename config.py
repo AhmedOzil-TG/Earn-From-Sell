@@ -13,4 +13,5 @@ MIN_PROFIT = float(os.getenv("MIN_PROFIT", "0.05"))
 
 # Web Dashboard Settings
 WEBAPP_URL = os.getenv("WEBAPP_URL", "https://your-ngrok-url.ngrok-free.app")
-WEB_PORT = int(os.getenv("WEB_PORT", "8000"))
+# Railway and other hosts provide 'PORT' env var
+WEB_PORT = int(os.getenv("PORT", os.getenv("WEB_PORT", "8080")))
