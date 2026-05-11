@@ -406,6 +406,50 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
         }
 
+        /* --- Toast System --- */
+        .toast-container {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 90%;
+            max-width: 400px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            padding: 16px 24px;
+            border-radius: 16px;
+            color: var(--text-p);
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: toastIn 0.5s var(--ease), toastOut 0.5s 2.5s var(--ease) forwards;
+            border-left: 4px solid var(--accent);
+        }
+
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--error); }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes toastOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+
         #loader {
             position: fixed;
             inset: 0;
@@ -438,6 +482,8 @@
     <div id="loader">
         <div class="spinner"></div>
     </div>
+
+    <div class="toast-container" id="toast-container"></div>
 
     <div class="top-bar">
         <div class="nav-trigger" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></div>
@@ -597,9 +643,9 @@
             </div>
             <h3 style="margin-bottom: 10px;">Are you sure?</h3>
             <p id="confirm-text" style="font-size: 0.9rem; color: var(--text-s); margin-bottom: 25px;">This action cannot be undone.</p>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <button id="confirm-yes" class="btn-action" style="width: 100%; background: #ef4444; border-color: #ef4444;">Yes, Delete</button>
-                <button class="btn-action secondary" style="width: 100%;" onclick="closeConfirmModal()">Cancel</button>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn-action secondary" style="flex: 1;" onclick="closeConfirmModal()">Cancel</button>
+                <button id="confirm-yes" class="btn-action" style="flex: 1; background: #ef4444; border-color: #ef4444;">Delete</button>
             </div>
         </div>
     </div>
@@ -621,6 +667,19 @@
         // Shared Row Style (to ensure uniform size)
         const rowS = (c) => `height: 52px; background: ${hexToRgba(c, 0.02)}; border: 1px solid ${hexToRgba(c, 0.08)}; padding: 0 18px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; gap: 15px; width: 100%;`;
         const lblS = "color: var(--text-s); font-size: 0.8rem; font-weight: 500; text-transform: uppercase; opacity: 0.7; flex-shrink: 0;";
+
+        // --- Custom Toast System ---
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+            if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
+            else tg.HapticFeedback.notificationOccurred('error');
+        }
 
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
@@ -660,7 +719,7 @@
                 document.getElementById('stat-opps').innerText = data.opportunities.length;
                 document.getElementById('min-profit-input').value = data.min_profit;
 
-                // Render Channels as Cards (Mirroring Accounts layout)
+                // Render Channels as Cards
                 const channelsContainer = document.getElementById('channels-list');
                 if (data.channels.length > 0) {
                     channelsContainer.innerHTML = data.channels.map(c => `
@@ -706,12 +765,10 @@
 
                 if (auth.connected) {
                     container.innerHTML = `
-                        <!-- Inner Card: Account (with Zoom) -->
                         <div class="card card-zoom" style="padding: 24px 20px 20px; box-shadow: none; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 0; cursor: pointer;">
                             <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
                                 <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-s);"><i class="fas fa-user-shield" style="color: var(--accent); margin-right: 8px;"></i>Account</h3>
                             </div>
-                            <!-- Internal Data Items -->
                             <div style="display: flex; flex-direction: column; gap: 12px;">
                                 <div style="${rowS('#10b981')}">
                                     <span style="${lblS}">STATUS</span>
@@ -758,10 +815,10 @@
 
         function askDeleteAccount(event) {
             if (event) event.stopPropagation();
-            showConfirmModal("Are you sure you want to delete this session? This will log you out.", async () => {
+            showConfirmModal("Are you sure you want to delete this account? This will end your session.", async () => {
                 await fetch('/api/auth/logout', { method: 'POST' });
                 loadData();
-                tg.showAlert("Account Deleted");
+                showToast("Account deleted successfully!");
             });
         }
 
@@ -769,7 +826,7 @@
             showConfirmModal(`Are you sure you want to remove ${user}?`, async () => {
                 await fetch(`/api/dashboard/channels/${user}`, { method: 'DELETE' });
                 loadData();
-                tg.showAlert("Channel Deleted");
+                showToast("Channel removed successfully!");
             });
         }
 
@@ -788,7 +845,8 @@
                 loginData.phone = phone; loginData.hash = data.phone_code_hash;
                 document.getElementById('step-phone').style.display = 'none';
                 document.getElementById('step-code').style.display = 'block';
-            } else tg.showAlert(data.message);
+                showToast("Code sent!");
+            } else showToast(data.message, 'error');
         }
 
         async function verifyCode() {
@@ -798,11 +856,11 @@
                 body: JSON.stringify({ phone: loginData.phone, code, phone_code_hash: loginData.hash })
             });
             const data = await res.json();
-            if (data.status === 'ok') { closeModal(); loadData(); tg.showAlert("Linked Successfully!"); }
+            if (data.status === 'ok') { closeModal(); loadData(); showToast("Logged in successfully!"); }
             else if (data.status === 'password_needed') {
                 document.getElementById('step-code').style.display = 'none';
                 document.getElementById('step-password').style.display = 'block';
-            } else tg.showAlert(data.message);
+            } else showToast(data.message, 'error');
         }
 
         async function verifyPassword() {
@@ -812,8 +870,8 @@
                 body: JSON.stringify({ password })
             });
             const data = await res.json();
-            if (data.status === 'ok') { closeModal(); loadData(); tg.showAlert("Linked Successfully!"); }
-            else tg.showAlert(data.message);
+            if (data.status === 'ok') { closeModal(); loadData(); showToast("Logged in successfully!"); }
+            else showToast(data.message, 'error');
         }
 
         // --- Channel Modal ---
@@ -830,7 +888,7 @@
             document.getElementById('modal-channel-input').value = '';
             closeChannelModal();
             loadData();
-            tg.showAlert("Channel Linked!");
+            showToast("Channel linked successfully!");
         }
 
         // --- Actions ---
@@ -848,9 +906,9 @@
                             <div class="profit-badge">+$${r.profit}</div>
                         </div>
                     `).join('') || '<p style="text-align: center; color: var(--text-s);">No profit opportunities found.</p>';
-                    tg.HapticFeedback.notificationOccurred('success');
+                    showToast("Check completed!");
                 }
-            } catch (e) { tg.showAlert("Check failed"); }
+            } catch (e) { showToast("Check failed", 'error'); }
             finally {
                 btn.innerHTML = '<i class="fa-solid fa-play"></i> Run Universal Check Now';
                 btn.disabled = false;
@@ -863,7 +921,7 @@
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ min_profit: min })
             });
-            tg.showAlert("Settings Saved");
+            showToast("Settings saved!");
         }
 
         window.onload = loadData;
