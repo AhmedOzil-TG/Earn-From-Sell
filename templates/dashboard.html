@@ -357,16 +357,18 @@
             background: var(--bg-elevated);
             border: 1px solid var(--border);
             border-radius: 14px;
-            padding: 14px;
+            padding: 15px 18px;
             color: #fff;
             font-size: 0.95rem;
             outline: none;
-            transition: border-color 0.3s;
+            transition: all 0.3s var(--ease);
             margin-bottom: 15px;
         }
 
         input:focus {
             border-color: var(--accent);
+            background: rgba(88, 101, 242, 0.05);
+            box-shadow: 0 0 20px rgba(88, 101, 242, 0.1);
         }
 
         /* --- Empty Placeholder --- */
@@ -412,10 +414,48 @@
             background: var(--bg-elevated);
             border: 1px solid var(--border);
             border-radius: var(--radius-lg);
-            padding: 35px;
+            padding: 40px;
             width: 100%;
             max-width: 450px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 30px 100px rgba(0, 0, 0, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-icon {
+            width: 65px;
+            height: 65px;
+            background: var(--card-glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin: 0 auto 20px;
+            color: var(--accent);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #fff, #a1a1aa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .modal-desc {
+            font-size: 0.85rem;
+            color: var(--text-s);
+            line-height: 1.6;
         }
 
         /* --- Toast System (Refined Side Slide) --- */
@@ -613,24 +653,22 @@
     <!-- Login Modal -->
     <div class="modal" id="modal-login">
         <div class="modal-content">
-            <h3 style="margin-bottom: 20px;">Link Telegram Account</h3>
+            <div class="modal-header">
+                <div class="modal-icon"><i class="fas fa-user-plus"></i></div>
+                <div class="modal-title">Link Account</div>
+                <div class="modal-desc" id="modal-login-desc">Enter your phone number with country code to start the secure linking process.</div>
+            </div>
             <div id="step-phone">
-                <p style="font-size: 0.85rem; color: var(--text-s); margin-bottom: 15px;">Enter your phone number with
-                    country code (e.g., +1234567890)</p>
-                <input type="text" id="login-phone" placeholder="+1...">
-                <button class="btn-action" style="width: 100%" onclick="sendCode()">Send Code</button>
+                <input type="text" id="login-phone" placeholder="+1 234 567 890">
+                <button class="btn-action" style="width: 100%" onclick="sendCode()">Send Secure Code</button>
             </div>
             <div id="step-code" style="display: none;">
-                <p style="font-size: 0.85rem; color: var(--text-s); margin-bottom: 15px;">Enter the code sent to your
-                    Telegram app.</p>
-                <input type="text" id="login-code" placeholder="12345">
-                <button class="btn-action" style="width: 100%" onclick="verifyCode()">Verify Code</button>
+                <input type="text" id="login-code" placeholder="Enter 5-digit code">
+                <button class="btn-action" style="width: 100%" onclick="verifyCode()">Verify Identity</button>
             </div>
             <div id="step-password" style="display: none;">
-                <p style="font-size: 0.85rem; color: var(--text-s); margin-bottom: 15px;">Two-factor authentication is
-                    enabled. Enter your password.</p>
-                <input type="password" id="login-password" placeholder="Password">
-                <button class="btn-action" style="width: 100%" onclick="verifyPassword()">Login</button>
+                <input type="password" id="login-password" placeholder="2FA Password">
+                <button class="btn-action" style="width: 100%" onclick="verifyPassword()">Complete Login</button>
             </div>
             <button class="btn-action secondary" style="width: 100%; margin-top: 10px;"
                 onclick="closeModal()">Cancel</button>
@@ -640,10 +678,13 @@
     <!-- Channel Modal -->
     <div class="modal" id="modal-channel">
         <div class="modal-content">
-            <h3 style="margin-bottom: 20px;">Add Source Channel</h3>
-            <p style="font-size: 0.85rem; color: var(--text-s); margin-bottom: 15px;">Enter the Telegram channel username or link (e.g., @channelname)</p>
+            <div class="modal-header">
+                <div class="modal-icon"><i class="fas fa-satellite-dish"></i></div>
+                <div class="modal-title">Add Source</div>
+                <div class="modal-desc">Enter the Telegram channel username or link to start monitoring for arbitrage opportunities.</div>
+            </div>
             <input type="text" id="modal-channel-input" placeholder="@channel_username">
-            <button class="btn-action" style="width: 100%" onclick="addChannelFromModal()">Link Channel</button>
+            <button class="btn-action" style="width: 100%" onclick="addChannelFromModal()">Link Source Channel</button>
             <button class="btn-action secondary" style="width: 100%; margin-top: 10px;" onclick="closeChannelModal()">Cancel</button>
         </div>
     </div>
@@ -651,11 +692,11 @@
     <!-- Confirmation Modal -->
     <div class="modal" id="modal-confirm">
         <div class="modal-content" style="text-align: center;">
-            <div style="width: 60px; height: 60px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 1.5rem;">
-                <i class="fas fa-exclamation-triangle"></i>
+            <div style="width: 65px; height: 65px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 1.6rem;">
+                <i class="fas fa-trash-can"></i>
             </div>
-            <h3 style="margin-bottom: 10px;">Are you sure?</h3>
-            <p id="confirm-text" style="font-size: 0.9rem; color: var(--text-s); margin-bottom: 25px;">This action cannot be undone.</p>
+            <h3 style="margin-bottom: 10px; font-size: 1.3rem; font-weight: 800;">Are you sure?</h3>
+            <p id="confirm-text" style="font-size: 0.9rem; color: var(--text-s); margin-bottom: 25px; line-height: 1.6;">This action will permanently remove this item from your dashboard.</p>
             <div style="display: flex; gap: 12px;">
                 <button class="btn-action secondary" style="flex: 1;" onclick="closeConfirmModal()">Cancel</button>
                 <button id="confirm-yes" class="btn-action" style="flex: 1; background: #ef4444; border-color: #ef4444;">Delete</button>
@@ -844,7 +885,13 @@
         }
 
         // --- Auth Flow ---
-        function showLoginModal() { document.getElementById('modal-login').style.display = 'flex'; }
+        function showLoginModal() { 
+            document.getElementById('modal-login').style.display = 'flex'; 
+            document.getElementById('step-phone').style.display = 'block';
+            document.getElementById('step-code').style.display = 'none';
+            document.getElementById('step-password').style.display = 'none';
+            document.getElementById('modal-login-desc').innerText = "Enter your phone number with country code to start the secure linking process.";
+        }
         function closeModal() { document.getElementById('modal-login').style.display = 'none'; }
 
         async function sendCode() {
@@ -858,6 +905,7 @@
                 loginData.phone = phone; loginData.hash = data.phone_code_hash;
                 document.getElementById('step-phone').style.display = 'none';
                 document.getElementById('step-code').style.display = 'block';
+                document.getElementById('modal-login-desc').innerText = "Check your Telegram app for the verification code.";
                 showToast("Code sent!");
             } else showToast(data.message, 'error');
         }
@@ -873,6 +921,7 @@
             else if (data.status === 'password_needed') {
                 document.getElementById('step-code').style.display = 'none';
                 document.getElementById('step-password').style.display = 'block';
+                document.getElementById('modal-login-desc').innerText = "Enter your 2FA password to complete the verification.";
             } else showToast(data.message, 'error');
         }
 
