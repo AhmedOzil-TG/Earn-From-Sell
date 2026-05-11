@@ -46,6 +46,12 @@ async def init_db():
                 timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         """)
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS api_servers (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                url TEXT UNIQUE NOT NULL
+            )
+        """)
         await db.commit()
 
 async def get_user_language(user_id: int) -> str:
@@ -99,3 +105,19 @@ async def get_stats():
         async with db.execute("SELECT COUNT(*) FROM opportunities") as cursor:
             opp_count = (await cursor.fetchone())[0]
         return {"channel_count": channel_count, "opportunity_count": opp_count}
+
+async def add_api_server(url: str):
+    async with aiosqlite.connect(DATABASE_PATH) as db:
+        await db.execute("INSERT OR IGNORE INTO api_servers (url) VALUES (?)", (url,))
+        await db.commit()
+
+async def get_api_servers():
+    async with aiosqlite.connect(DATABASE_PATH) as db:
+        async with db.execute("SELECT url FROM api_servers") as cursor:
+            rows = await cursor.fetchall()
+            return [{"url": r[0]} for r in rows]
+
+async def remove_api_server(url: str):
+    async with aiosqlite.connect(DATABASE_PATH) as db:
+        await db.execute("DELETE FROM api_servers WHERE url = ?", (url,))
+        await db.commit()

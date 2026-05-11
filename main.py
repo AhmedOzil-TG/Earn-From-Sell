@@ -12,7 +12,7 @@ from config import API_ID, API_HASH, BOT_TOKEN, ADMIN_ID, MIN_PROFIT, WEBAPP_URL
 from scrapers import parse_price_message, fetch_buy_prices_api
 from database import (init_db, add_channel, get_channels_with_patterns, remove_channel, 
                      get_channel_pattern, get_user_language, set_user_language, save_opportunity, 
-                     get_opportunities, get_stats)
+                     get_opportunities, get_stats, add_api_server, get_api_servers, remove_api_server)
 from strings import _, STRINGS
 
 from fastapi import FastAPI, Request
@@ -311,10 +311,12 @@ async def get_dashboard_data():
     opps = await get_opportunities(10)
     channels_raw = await get_channels_with_patterns()
     channels = [{"username": c[0], "pattern": c[1]} for c in channels_raw]
+    api_servers = await get_api_servers()
     
     return {
         "channels": channels,
         "opportunities": opps,
+        "api_servers": api_servers,
         "min_profit": MIN_PROFIT
     }
 
@@ -329,6 +331,19 @@ async def api_add_channel(data: ChannelData):
 @app.delete("/api/dashboard/channels/{username}")
 async def api_delete_channel(username: str):
     await remove_channel(username)
+    return {"status": "ok"}
+
+class ApiServerData(BaseModel):
+    url: str
+
+@app.post("/api/dashboard/api-servers")
+async def api_add_server(data: ApiServerData):
+    await add_api_server(data.url)
+    return {"status": "ok"}
+
+@app.delete("/api/dashboard/api-servers")
+async def api_delete_server(data: ApiServerData):
+    await remove_api_server(data.url)
     return {"status": "ok"}
 
 @app.post("/api/dashboard/settings")
