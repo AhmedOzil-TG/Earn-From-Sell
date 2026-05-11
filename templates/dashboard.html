@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Arbitrage Pro | Dashboard</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --accent: #5865F2;
@@ -25,7 +28,12 @@
             --error: #ef4444;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
         body {
             background-color: var(--bg);
@@ -52,175 +60,365 @@
         }
 
         .nav-trigger {
-            width: 44px; height: 44px; border-radius: 12px;
-            background: var(--card-glass); border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; cursor: pointer; color: var(--text-p);
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--card-glass);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--text-p);
         }
 
         .page-title {
-            font-size: 1rem; font-weight: 800; letter-spacing: 0.5px;
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
             text-transform: uppercase;
             background: linear-gradient(45deg, #fff, #a1a1aa);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .user-avatar {
-            width: 44px; height: 44px; border-radius: 12px;
-            background: var(--accent); color: white;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 1.2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.2rem;
             box-shadow: 0 0 15px var(--accent-glow);
         }
 
         /* --- Sidebar --- */
         .sidebar {
-            position: fixed; top: 0; left: 0;
-            width: var(--sidebar-width); height: 100%;
-            background: var(--bg-elevated); z-index: 3000;
-            transform: translateX(-100%); transition: transform 0.3s var(--ease);
-            padding: 40px 20px; display: flex; flex-direction: column; gap: 40px;
-            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100%;
+            background: var(--bg-elevated);
+            z-index: 3000;
+            transform: translateX(-100%);
+            transition: transform 0.3s var(--ease);
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
         }
 
-        .sidebar.open { transform: translateX(0); }
+        .sidebar.open {
+            transform: translateX(0);
+        }
 
         .sidebar-overlay {
-            position: fixed; inset: 0; z-index: 2500;
-            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px);
-            opacity: 0; visibility: hidden; transition: opacity 0.2s var(--ease);
+            position: fixed;
+            inset: 0;
+            z-index: 2500;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s var(--ease);
         }
 
-        .sidebar-overlay.show { opacity: 1; visibility: visible; }
+        .sidebar-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
 
-        .side-nav { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+        .side-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
 
         .nav-item {
-            padding: 16px 20px; border-radius: 16px;
-            display: flex; align-items: center; gap: 14px;
-            color: var(--text-s); font-weight: 600; cursor: pointer; transition: all 0.2s;
+            padding: 16px 20px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: var(--text-s);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .nav-item:hover, .nav-item.active { background: var(--card-glass); color: var(--text-p); }
-        .nav-item.active { border: 1px solid var(--border); color: var(--accent); }
+        .nav-item:hover,
+        .nav-item.active {
+            background: var(--card-glass);
+            color: var(--text-p);
+        }
+
+        .nav-item.active {
+            border: 1px solid var(--border);
+            color: var(--accent);
+        }
 
         /* --- Content --- */
         .main-content {
-            flex: 1; overflow-y: auto; padding: 25px 20px 100px;
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px 20px 100px;
             -webkit-overflow-scrolling: touch;
         }
 
-        .view-panel { display: none; animation: fadeIn 0.4s var(--ease); }
-        .view-panel.active { display: block; }
+        .view-panel {
+            display: none;
+            animation: fadeIn 0.4s var(--ease);
+        }
+
+        .view-panel.active {
+            display: block;
+        }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .card {
-            background: var(--bg-elevated); border: 1px solid var(--border);
-            border-radius: 18px; padding: 22px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4); margin-bottom: 15px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            margin-bottom: 15px;
             transition: transform 0.3s var(--ease);
         }
 
-        /* Hover Zoom Effect for Individual Cards */
-        .card-zoom:hover { transform: scale(1.02); }
-
-        .info-card-stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        
-        .info-card {
-            background: var(--bg-elevated); border: 1px solid var(--border);
-            border-radius: 18px; padding: 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4); margin-bottom: 15px;
-            cursor: pointer; transition: transform 0.2s;
+        /* Hover Zoom Effect */
+        .card-zoom:hover {
+            transform: scale(1.02);
         }
-        .info-card:active { transform: scale(0.98); }
 
-        .info-card-l { display: flex; flex-direction: column; gap: 4px; }
-        .info-card-lbl { font-size: 0.7rem; color: var(--text-s); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-        .info-card-val { font-size: 1.4rem; font-weight: 800; color: var(--text-p); }
+        .info-card-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .info-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .info-card:active {
+            transform: scale(0.98);
+        }
+
+        .info-card-l {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-card-lbl {
+            font-size: 0.7rem;
+            color: var(--text-s);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-card-val {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-p);
+        }
+
         .info-card-icon {
-            width: 45px; height: 45px; border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
+            width: 45px;
+            height: 45px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 1.1rem;
         }
 
         .section-header {
-            display: flex; align-items: center; gap: 10px;
-            margin: 25px 0 15px 0; color: var(--text-s);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 25px 0 15px 0;
+            color: var(--text-s);
         }
-        .section-header span { font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+
+        .section-header span {
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
 
         .list-item {
-            background: var(--bg-elevated); border: 1px solid var(--border);
-            padding: 16px 20px; border-radius: 18px;
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 12px; transition: transform 0.2s;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            padding: 16px 20px;
+            border-radius: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            transition: transform 0.2s;
         }
 
         .profit-badge {
-            background: rgba(16, 185, 129, 0.1); color: var(--success);
-            padding: 6px 12px; border-radius: 10px; font-weight: 800; font-size: 0.85rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 0.85rem;
         }
 
         .btn-action {
-            background: var(--accent); color: white; padding: 15px 25px;
-            border-radius: 14px; border: none; font-size: 0.9rem; font-weight: 800;
-            cursor: pointer; box-shadow: 0 8px 25px var(--accent-glow); transition: all 0.3s;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: var(--accent);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 14px;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 8px 25px var(--accent-glow);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
-        .btn-action:active { transform: scale(0.97); }
+
+        .btn-action:active {
+            transform: scale(0.97);
+        }
 
         input {
-            width: 100%; background: var(--bg-elevated); border: 1px solid var(--border);
-            border-radius: 14px; padding: 14px; color: #fff; font-size: 0.95rem;
-            outline: none; transition: border-color 0.3s; margin-bottom: 15px;
+            width: 100%;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.3s;
+            margin-bottom: 15px;
         }
-        input:focus { border-color: var(--accent); }
+
+        input:focus {
+            border-color: var(--accent);
+        }
 
         /* --- Empty Placeholder --- */
         .empty-placeholder {
-            text-align: center; padding: 40px 20px;
-            background: var(--card-glass); border-radius: 16px;
-            border: 1px dashed var(--border); margin-top: 0;
-            display: flex; flex-direction: column; align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+            background: var(--card-glass);
+            border-radius: 16px;
+            border: 1px dashed var(--border);
+            margin-top: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
+
         .empty-placeholder i {
-            font-size: 2.5rem; color: var(--text-s); opacity: 0.15; margin-bottom: 12px;
+            font-size: 2.5rem;
+            color: var(--text-s);
+            opacity: 0.15;
+            margin-bottom: 12px;
         }
+
         .empty-placeholder p {
-            color: var(--text-s); font-weight: 600; font-size: 0.95rem;
+            color: var(--text-s);
+            font-weight: 600;
+            font-size: 0.95rem;
         }
 
         /* --- Modals --- */
         .modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px); z-index: 4000; display: none;
-            justify-content: center; align-items: center; padding: 20px;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 4000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
+
         .modal-content {
-            background: var(--bg-elevated); border: 1px solid var(--border);
-            border-radius: var(--radius-lg); padding: 35px; width: 100%; max-width: 450px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 35px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
         }
 
         #loader {
-            position: fixed; inset: 0; background: var(--bg); z-index: 9999;
-            display: flex; justify-content: center; align-items: center; transition: opacity 0.5s;
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s;
         }
-        .spinner {
-            width: 44px; height: 44px; border: 3.5px solid var(--border);
-            border-top: 3.5px solid var(--accent); border-radius: 50%; animation: spin 0.9s linear infinite;
-        }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
 
+        .spinner {
+            width: 44px;
+            height: 44px;
+            border: 3.5px solid var(--border);
+            border-top: 3.5px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
+
 <body>
-    <div id="loader"><div class="spinner"></div></div>
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
 
     <div class="top-bar">
         <div class="nav-trigger" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></div>
@@ -230,28 +428,41 @@
 
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
     <div class="sidebar" id="sidebar">
-        <div class="side-brand"><div class="side-brand-dot"></div><div style="font-weight: 800; font-size: 1.2rem;">Arbitrage Pro</div></div>
+        <div class="side-brand">
+            <div class="side-brand-dot"></div>
+            <div style="font-weight: 800; font-size: 1.2rem;">Arbitrage Pro</div>
+        </div>
         <div class="side-nav">
-            <div class="nav-item" data-page="Home" onclick="switchView('home', this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
-            <div class="nav-item" data-page="Accounts" onclick="switchView('accounts', this)"><i class="fa-solid fa-user-shield"></i><span>Accounts</span></div>
-            <div class="nav-item" data-page="Channels" onclick="switchView('channels', this)"><i class="fa-solid fa-tower-broadcast"></i><span>Channels</span></div>
-            <div class="nav-item" data-page="Scraper" onclick="switchView('scraper', this)"><i class="fa-solid fa-magnifying-glass-chart"></i><span>Manual Check</span></div>
-            <div class="nav-item" data-page="Settings" onclick="switchView('settings', this)"><i class="fa-solid fa-gears"></i><span>Settings</span></div>
+            <div class="nav-item" data-page="Home" onclick="switchView('home', this)"><i
+                    class="fa-solid fa-house"></i><span>Home</span></div>
+            <div class="nav-item" data-page="Accounts" onclick="switchView('accounts', this)"><i
+                    class="fa-solid fa-user-shield"></i><span>Accounts</span></div>
+            <div class="nav-item" data-page="Channels" onclick="switchView('channels', this)"><i
+                    class="fa-solid fa-tower-broadcast"></i><span>Channels</span></div>
+            <div class="nav-item" data-page="Scraper" onclick="switchView('scraper', this)"><i
+                    class="fa-solid fa-magnifying-glass-chart"></i><span>Manual Check</span></div>
+            <div class="nav-item" data-page="Settings" onclick="switchView('settings', this)"><i
+                    class="fa-solid fa-gears"></i><span>Settings</span></div>
         </div>
     </div>
 
     <main class="main-content">
         <!-- Home View -->
         <div id="view-home" class="view-panel active">
-            <div class="section-header" style="margin-top: 0;"><i class="fa-solid fa-chart-line"></i><span>STATISTICS</span></div>
+            <div class="section-header" style="margin-top: 0;"><i
+                    class="fa-solid fa-chart-line"></i><span>STATISTICS</span></div>
             <div class="info-card-stack">
                 <div class="info-card">
-                    <div class="info-card-l"><span class="info-card-lbl">Channels</span><span class="info-card-val" id="stat-channels">0</span></div>
-                    <div class="info-card-icon" style="background: rgba(88, 101, 242, 0.1); color: var(--accent);"><i class="fa-solid fa-satellite"></i></div>
+                    <div class="info-card-l"><span class="info-card-lbl">Channels</span><span class="info-card-val"
+                            id="stat-channels">0</span></div>
+                    <div class="info-card-icon" style="background: rgba(88, 101, 242, 0.1); color: var(--accent);"><i
+                            class="fa-solid fa-satellite"></i></div>
                 </div>
                 <div class="info-card">
-                    <div class="info-card-l"><span class="info-card-lbl">Opportunities</span><span class="info-card-val" id="stat-opps">0</span></div>
-                    <div class="info-card-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);"><i class="fa-solid fa-bolt"></i></div>
+                    <div class="info-card-l"><span class="info-card-lbl">Opportunities</span><span class="info-card-val"
+                            id="stat-opps">0</span></div>
+                    <div class="info-card-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);"><i
+                            class="fa-solid fa-bolt"></i></div>
                 </div>
             </div>
             <div class="section-header"><span>Live Feed</span></div>
@@ -260,20 +471,22 @@
 
         <!-- Accounts View -->
         <div id="view-accounts" class="view-panel">
-            <div class="info-card card-zoom" onclick="showLoginModal()">
+            <div class="info-card" onclick="showLoginModal()">
                 <div class="info-card-l">
                     <span class="info-card-lbl">Add New Account</span>
                     <span class="info-card-val" style="font-size: 1.1rem;">Link Session</span>
                 </div>
-                <div class="info-card-icon" style="background: var(--accent); color: white;"><i class="fa-solid fa-plus"></i></div>
+                <div class="info-card-icon" style="background: var(--accent); color: white;"><i
+                        class="fa-solid fa-plus"></i></div>
             </div>
 
-            <div id="accounts-list-container" style="margin-top: 25px;">
-                <div class="section-header" style="margin-top: 0; margin-bottom: 20px;">
+            <!-- Big Card: Linked Accounts -->
+            <div class="card" style="padding: 22px; margin-top: 15px;" id="accounts-card-container">
+                <div class="section-header" style="margin-top: 0; margin-bottom: 35px;">
                     <span>Linked Accounts</span>
                 </div>
                 <div id="linked-accounts-container">
-                    <!-- Accounts items will be injected here -->
+                    <!-- Accounts items (Session Details cards) will be injected here -->
                 </div>
             </div>
         </div>
@@ -281,7 +494,7 @@
         <!-- Channels View -->
         <div id="view-channels" class="view-panel">
             <div class="section-header" style="margin-top: 0;"><span>Source Control</span></div>
-            <div class="card card-zoom">
+            <div class="card">
                 <input type="text" id="channel-input" placeholder="@channel_username">
                 <button class="btn-action" style="width: 100%" onclick="addChannel()">+ Add Channel</button>
             </div>
@@ -291,7 +504,8 @@
         <!-- Scraper View -->
         <div id="view-scraper" class="view-panel">
             <div class="section-header" style="margin-top: 0;"><span>Heuristic Scraper</span></div>
-            <button class="btn-action" style="width: 100%; margin-bottom: 20px;" onclick="runManualCheck()" id="btn-run-check">
+            <button class="btn-action" style="width: 100%; margin-bottom: 20px;" onclick="runManualCheck()"
+                id="btn-run-check">
                 <i class="fa-solid fa-play"></i> Run Universal Check Now
             </button>
             <div id="check-results"></div>
@@ -300,8 +514,9 @@
         <!-- Settings View -->
         <div id="view-settings" class="view-panel">
             <div class="section-header" style="margin-top: 0;"><span>Preferences</span></div>
-            <div class="card card-zoom">
-                <label style="display: block; font-size: 0.8rem; color: var(--text-s); margin-bottom: 10px;">Min Profit Threshold ($)</label>
+            <div class="card">
+                <label style="display: block; font-size: 0.8rem; color: var(--text-s); margin-bottom: 10px;">Min Profit
+                    Threshold ($)</label>
                 <input type="number" id="min-profit-input" step="0.01">
                 <button class="btn-action" style="width: 100%" onclick="saveSettings()">Save Configuration</button>
             </div>
@@ -313,21 +528,25 @@
         <div class="modal-content">
             <h3 style="margin-bottom: 20px;">Link Telegram Account</h3>
             <div id="step-phone">
-                <p style="font-size: 0.85rem; color: var(--text-s); margin-bottom: 15px;">Enter your phone number with country code (e.g., +1234567890)</p>
+                <p style="font-size: 0.85rem; color: var(--text-s); margin-bottom: 15px;">Enter your phone number with
+                    country code (e.g., +1234567890)</p>
                 <input type="text" id="login-phone" placeholder="+1...">
                 <button class="btn-action" style="width: 100%" onclick="sendCode()">Send Code</button>
             </div>
             <div id="step-code" style="display: none;">
-                <p style="font-size: 0.85rem; color: var(--text-s); margin-bottom: 15px;">Enter the code sent to your Telegram app.</p>
+                <p style="font-size: 0.85rem; color: var(--text-s); margin-bottom: 15px;">Enter the code sent to your
+                    Telegram app.</p>
                 <input type="text" id="login-code" placeholder="12345">
                 <button class="btn-action" style="width: 100%" onclick="verifyCode()">Verify Code</button>
             </div>
             <div id="step-password" style="display: none;">
-                <p style="font-size: 0.85rem; color: var(--text-s); margin-bottom: 15px;">Two-factor authentication is enabled. Enter your password.</p>
+                <p style="font-size: 0.85rem; color: var(--text-s); margin-bottom: 15px;">Two-factor authentication is
+                    enabled. Enter your password.</p>
                 <input type="password" id="login-password" placeholder="Password">
                 <button class="btn-action" style="width: 100%" onclick="verifyPassword()">Login</button>
             </div>
-            <button class="btn-action secondary" style="width: 100%; margin-top: 10px;" onclick="closeModal()">Cancel</button>
+            <button class="btn-action secondary" style="width: 100%; margin-top: 10px;"
+                onclick="closeModal()">Cancel</button>
         </div>
     </div>
 
@@ -344,6 +563,7 @@
             return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }
 
+        // Shared Row Style (to ensure uniform size)
         const rowS = (c) => `height: 52px; background: ${hexToRgba(c, 0.02)}; border: 1px solid ${hexToRgba(c, 0.08)}; padding: 0 18px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; gap: 15px; width: 100%;`;
         const lblS = "color: var(--text-s); font-size: 0.8rem; font-weight: 500; text-transform: uppercase; opacity: 0.7; flex-shrink: 0;";
 
@@ -357,16 +577,16 @@
             document.querySelectorAll('.view-panel').forEach(v => v.classList.remove('active'));
             document.getElementById('view-' + id).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            
+
             let pageTitle = "Home";
-            if(el) { el.classList.add('active'); pageTitle = el.getAttribute('data-page'); }
+            if (el) { el.classList.add('active'); pageTitle = el.getAttribute('data-page'); }
             else {
                 const navItem = document.querySelector(`.nav-item[onclick*="${id}"]`);
-                if(navItem) { navItem.classList.add('active'); pageTitle = navItem.getAttribute('data-page'); }
+                if (navItem) { navItem.classList.add('active'); pageTitle = navItem.getAttribute('data-page'); }
             }
             document.getElementById('current-page-title').innerText = pageTitle;
             localStorage.setItem('active_view', id);
-            if(window.innerWidth < 800) {
+            if (window.innerWidth < 800) {
                 document.getElementById('sidebar').classList.remove('open');
                 document.getElementById('sidebar-overlay').classList.remove('show');
             }
@@ -380,7 +600,7 @@
             try {
                 const res = await fetch('/api/dashboard/data');
                 const data = await res.json();
-                
+
                 document.getElementById('stat-channels').innerText = data.channels.length;
                 document.getElementById('stat-opps').innerText = data.opportunities.length;
                 document.getElementById('min-profit-input').value = data.min_profit;
@@ -404,12 +624,14 @@
                 const auth = await authRes.json();
                 const container = document.getElementById('linked-accounts-container');
 
-                if(auth.connected) {
+                if (auth.connected) {
                     container.innerHTML = `
-                        <div class="card card-zoom" style="display: flex; flex-direction: column; padding: 24px 20px 20px; box-shadow: none; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 0; cursor: pointer;">
+                        <!-- Inner Card: Session Details (with Zoom) -->
+                        <div class="card card-zoom" style="padding: 24px 20px 20px; box-shadow: none; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 0; cursor: pointer;">
                             <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
                                 <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-s);"><i class="fas fa-user-shield" style="color: var(--accent); margin-right: 8px;"></i>Session Details</h3>
                             </div>
+                            <!-- Internal Data Items -->
                             <div style="display: flex; flex-direction: column; gap: 12px;">
                                 <div style="${rowS('#10b981')}">
                                     <span style="${lblS}">STATUS</span>
@@ -442,9 +664,9 @@
         }
 
         async function deleteAccount(event) {
-            if(event) event.stopPropagation();
-            if(!confirm("Are you sure you want to delete this session?")) return;
-            await fetch('/api/auth/logout', {method: 'POST'});
+            if (event) event.stopPropagation();
+            if (!confirm("Are you sure you want to delete this session?")) return;
+            await fetch('/api/auth/logout', { method: 'POST' });
             loadData();
         }
 
@@ -455,11 +677,11 @@
         async function sendCode() {
             const phone = document.getElementById('login-phone').value;
             const res = await fetch('/api/auth/send-code', {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({phone})
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone })
             });
             const data = await res.json();
-            if(data.status === 'ok') {
+            if (data.status === 'ok') {
                 loginData.phone = phone; loginData.hash = data.phone_code_hash;
                 document.getElementById('step-phone').style.display = 'none';
                 document.getElementById('step-code').style.display = 'block';
@@ -469,12 +691,12 @@
         async function verifyCode() {
             const code = document.getElementById('login-code').value;
             const res = await fetch('/api/auth/verify-code', {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({phone: loginData.phone, code, phone_code_hash: loginData.hash})
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone: loginData.phone, code, phone_code_hash: loginData.hash })
             });
             const data = await res.json();
-            if(data.status === 'ok') { closeModal(); loadData(); tg.showAlert("Linked Successfully!"); }
-            else if(data.status === 'password_needed') {
+            if (data.status === 'ok') { closeModal(); loadData(); tg.showAlert("Linked Successfully!"); }
+            else if (data.status === 'password_needed') {
                 document.getElementById('step-code').style.display = 'none';
                 document.getElementById('step-password').style.display = 'block';
             } else tg.showAlert(data.message);
@@ -483,11 +705,11 @@
         async function verifyPassword() {
             const password = document.getElementById('login-password').value;
             const res = await fetch('/api/auth/verify-password', {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({password})
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password })
             });
             const data = await res.json();
-            if(data.status === 'ok') { closeModal(); loadData(); tg.showAlert("Linked Successfully!"); }
+            if (data.status === 'ok') { closeModal(); loadData(); tg.showAlert("Linked Successfully!"); }
             else tg.showAlert(data.message);
         }
 
@@ -497,9 +719,9 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking Channels...';
             btn.disabled = true;
             try {
-                const res = await fetch('/api/dashboard/manual-check', {method: 'POST'});
+                const res = await fetch('/api/dashboard/manual-check', { method: 'POST' });
                 const data = await res.json();
-                if(data.status === 'ok') {
+                if (data.status === 'ok') {
                     document.getElementById('check-results').innerHTML = data.results.map(r => `
                         <div class="list-item">
                             <div class="item-info"><h4>${r.country}</h4><p>${r.channel} | Buy: ${r.buy}$ | Sell: ${r.sell}$</p></div>
@@ -508,7 +730,7 @@
                     `).join('') || '<p style="text-align: center; color: var(--text-s);">No profit opportunities found.</p>';
                     tg.HapticFeedback.notificationOccurred('success');
                 }
-            } catch(e) { tg.showAlert("Check failed"); }
+            } catch (e) { tg.showAlert("Check failed"); }
             finally {
                 btn.innerHTML = '<i class="fa-solid fa-play"></i> Run Universal Check Now';
                 btn.disabled = false;
@@ -517,24 +739,24 @@
 
         async function addChannel() {
             const user = document.getElementById('channel-input').value;
-            if(!user) return;
+            if (!user) return;
             await fetch('/api/dashboard/channels', {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({username: user})
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user })
             });
             document.getElementById('channel-input').value = ''; loadData();
         }
 
         async function deleteChannel(user) {
-            await fetch(`/api/dashboard/channels/${user}`, {method: 'DELETE'});
+            await fetch(`/api/dashboard/channels/${user}`, { method: 'DELETE' });
             loadData();
         }
 
         async function saveSettings() {
             const min = document.getElementById('min-profit-input').value;
             await fetch('/api/dashboard/settings', {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({min_profit: min})
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ min_profit: min })
             });
             tg.showAlert("Settings Saved");
         }
@@ -542,4 +764,5 @@
         window.onload = loadData;
     </script>
 </body>
+
 </html>
