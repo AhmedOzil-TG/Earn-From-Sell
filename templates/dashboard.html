@@ -60,6 +60,7 @@
 
         .page-title {
             font-size: 1rem; font-weight: 800; letter-spacing: 0.5px;
+            text-transform: uppercase;
             background: linear-gradient(45deg, #fff, #a1a1aa);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
@@ -129,7 +130,9 @@
             background: var(--bg-elevated); border: 1px solid var(--border);
             border-radius: var(--radius-md); padding: 22px;
             display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; transition: transform 0.2s;
         }
+        .info-card:active { transform: scale(0.98); }
 
         .info-card-l { display: flex; flex-direction: column; gap: 4px; }
         .info-card-lbl { font-size: 0.7rem; color: var(--text-s); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
@@ -210,7 +213,7 @@
 
     <div class="top-bar">
         <div class="nav-trigger" onclick="toggleSidebar()"><i class="fa-solid fa-bars-staggered"></i></div>
-        <div class="page-title">DASHBOARD</div>
+        <div class="page-title" id="current-page-title">Home</div>
         <div class="user-avatar" id="user-initial">A</div>
     </div>
 
@@ -218,11 +221,11 @@
     <div class="sidebar" id="sidebar">
         <div class="side-brand"><div class="side-brand-dot"></div><div style="font-weight: 800; font-size: 1.2rem;">Arbitrage Pro</div></div>
         <div class="side-nav">
-            <div class="nav-item active" onclick="switchView('home', this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
-            <div class="nav-item" onclick="switchView('accounts', this)"><i class="fa-solid fa-user-shield"></i><span>Accounts</span></div>
-            <div class="nav-item" onclick="switchView('channels', this)"><i class="fa-solid fa-tower-broadcast"></i><span>Channels</span></div>
-            <div class="nav-item" onclick="switchView('scraper', this)"><i class="fa-solid fa-magnifying-glass-chart"></i><span>Manual Check</span></div>
-            <div class="nav-item" onclick="switchView('settings', this)"><i class="fa-solid fa-gears"></i><span>Settings</span></div>
+            <div class="nav-item" data-page="Home" onclick="switchView('home', this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
+            <div class="nav-item" data-page="Accounts" onclick="switchView('accounts', this)"><i class="fa-solid fa-user-shield"></i><span>Accounts</span></div>
+            <div class="nav-item" data-page="Channels" onclick="switchView('channels', this)"><i class="fa-solid fa-tower-broadcast"></i><span>Channels</span></div>
+            <div class="nav-item" data-page="Scraper" onclick="switchView('scraper', this)"><i class="fa-solid fa-magnifying-glass-chart"></i><span>Manual Check</span></div>
+            <div class="nav-item" data-page="Settings" onclick="switchView('settings', this)"><i class="fa-solid fa-gears"></i><span>Settings</span></div>
         </div>
     </div>
 
@@ -239,14 +242,27 @@
 
         <!-- Accounts View -->
         <div id="view-accounts" class="view-panel">
-            <div class="section-header">Account Management</div>
-            <div class="card" id="account-status-card">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <h4 id="acc-name">Telethon Client</h4>
-                        <p id="acc-status"><span class="status-dot offline"></span>Disconnected</p>
+            <div class="info-card-stack" style="margin-bottom: 25px;">
+                <div class="info-card" onclick="showLoginModal()">
+                    <div class="info-card-l">
+                        <span class="info-card-lbl">Add New Account</span>
+                        <span class="info-card-val" style="font-size: 1.1rem;">Link Session</span>
                     </div>
-                    <button class="btn-action" onclick="showLoginModal()"><i class="fa-solid fa-link"></i> Link Account</button>
+                    <div class="info-card-icon" style="background: var(--accent); color: white;"><i class="fa-solid fa-plus"></i></div>
+                </div>
+            </div>
+
+            <div class="section-header">Linked Accounts</div>
+            <div class="card" id="account-status-card" style="padding: 25px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div class="user-avatar" style="width: 50px; height: 50px; border-radius: 14px; font-size: 1.4rem;">T</div>
+                        <div>
+                            <h4 id="acc-name" style="font-size: 1.1rem;">Telethon Client</h4>
+                            <p id="acc-status" style="font-size: 0.85rem; margin-top: 4px;"><span class="status-dot offline"></span>Disconnected</p>
+                        </div>
+                    </div>
+                    <div id="acc-actions"></div>
                 </div>
             </div>
         </div>
@@ -319,15 +335,43 @@
         }
 
         function switchView(id, el) {
+            // Update UI
             document.querySelectorAll('.view-panel').forEach(v => v.classList.remove('active'));
             document.getElementById('view-' + id).classList.add('active');
+            
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            el.classList.add('active');
-            if(window.innerWidth < 800) toggleSidebar();
+            
+            let pageTitle = "Home";
+            if(el) {
+                el.classList.add('active');
+                pageTitle = el.getAttribute('data-page');
+            } else {
+                // Fallback for direct calls
+                const navItem = document.querySelector(`.nav-item[onclick*="${id}"]`);
+                if(navItem) {
+                    navItem.classList.add('active');
+                    pageTitle = navItem.getAttribute('data-page');
+                }
+            }
+            
+            // Set dynamic title
+            document.getElementById('current-page-title').innerText = pageTitle;
+            
+            // Save to persistence
+            localStorage.setItem('active_view', id);
+
+            if(window.innerWidth < 800) {
+                document.getElementById('sidebar').classList.remove('open');
+                document.getElementById('sidebar-overlay').classList.remove('show');
+            }
             tg.HapticFeedback.selectionChanged();
         }
 
         async function loadData() {
+            // Restore persistence
+            const savedView = localStorage.getItem('active_view') || 'home';
+            switchView(savedView);
+
             try {
                 const res = await fetch('/api/dashboard/data');
                 const data = await res.json();
