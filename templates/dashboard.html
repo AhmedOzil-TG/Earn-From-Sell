@@ -251,7 +251,7 @@
         }
 
         .info-card-val {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 800;
             color: var(--text-p);
         }
@@ -490,7 +490,6 @@
         <div id="view-accounts" class="view-panel">
             <div class="info-card card-zoom" onclick="showLoginModal()">
                 <div class="info-card-l">
-                    <span class="info-card-lbl">ACCOUNT MANAGEMENT</span>
                     <span class="info-card-val">Add New Account</span>
                 </div>
                 <div class="info-card-icon" style="background: var(--accent); color: white;"><i
@@ -510,12 +509,32 @@
 
         <!-- Channels View -->
         <div id="view-channels" class="view-panel">
-            <div class="section-header" style="margin-top: 0;"><span>Source Control</span></div>
-            <div class="card card-zoom">
-                <input type="text" id="channel-input" placeholder="@channel_username">
-                <button class="btn-action" style="width: 100%" onclick="addChannel()">+ Add Channel</button>
+            <div class="info-card card-zoom" onclick="document.getElementById('channel-input').focus()">
+                <div class="info-card-l">
+                    <span class="info-card-val">Add New Channel</span>
+                </div>
+                <div class="info-card-icon" style="background: var(--accent); color: white;"><i
+                        class="fa-solid fa-tower-broadcast"></i></div>
             </div>
-            <div id="channels-list"></div>
+
+            <div class="card" style="padding: 22px; margin-top: 15px;">
+                <div class="section-header" style="margin-top: 0; margin-bottom: 25px;">
+                    <span>Source Control</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <input type="text" id="channel-input" placeholder="@channel_username" style="margin-bottom: 0;">
+                    <button class="btn-action" style="width: 100%" onclick="addChannel()">+ Link Channel</button>
+                </div>
+            </div>
+
+            <div class="card" style="padding: 22px; margin-top: 25px;" id="channels-list-container">
+                <div class="section-header" style="margin-top: 0; margin-bottom: 35px;">
+                    <span>Linked Channels</span>
+                </div>
+                <div id="channels-list" style="display: flex; flex-direction: column; gap: 15px;">
+                    <!-- Channels items (Channel Details cards) will be injected here -->
+                </div>
+            </div>
         </div>
 
         <!-- Scraper View -->
@@ -622,12 +641,37 @@
                 document.getElementById('stat-opps').innerText = data.opportunities.length;
                 document.getElementById('min-profit-input').value = data.min_profit;
 
-                document.getElementById('channels-list').innerHTML = data.channels.map(c => `
-                    <div class="list-item">
-                        <div class="item-info"><h4>${c.username}</h4><p>Pattern: Universal Extraction</p></div>
-                        <div onclick="deleteChannel('${c.username}')" style="color: var(--error); cursor: pointer;"><i class="fa-solid fa-trash"></i></div>
-                    </div>
-                `).join('') || '<p style="text-align: center; color: var(--text-s);">No channels</p>';
+                // Render Channels as Cards (Mirroring Accounts layout)
+                const channelsContainer = document.getElementById('channels-list');
+                if (data.channels.length > 0) {
+                    channelsContainer.innerHTML = data.channels.map(c => `
+                        <div class="card card-zoom" style="padding: 24px 20px 20px; box-shadow: none; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 0; cursor: pointer;">
+                            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+                                <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-s);"><i class="fas fa-satellite-dish" style="color: var(--accent); margin-right: 8px;"></i>Channel Details</h3>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <div style="${rowS('#8b5cf6')}">
+                                    <span style="${lblS}">USERNAME</span>
+                                    <span style="color: var(--text-s); font-weight: 700; font-size: 1.1rem;">${c.username}</span>
+                                </div>
+                                <div style="${rowS('#10b981')}">
+                                    <span style="${lblS}">PATTERN</span>
+                                    <span style="color: #10b981; font-weight: 700; font-size: 0.85rem; text-transform: uppercase;">UNIVERSAL EXTRACTION</span>
+                                </div>
+                                <button class="btn-action" onclick="deleteChannel('${c.username}')" style="width: 100%; height: 52px; background: rgba(239, 68, 68, 0.05); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.1); box-shadow: none; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 12px; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);">
+                                    <i class="fa-solid fa-trash-can"></i> Remove Channel
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    channelsContainer.innerHTML = `
+                        <div class="empty-placeholder">
+                            <i class="fas fa-tower-broadcast"></i>
+                            <p>No active sources found.</p>
+                        </div>
+                    `;
+                }
 
                 document.getElementById('live-feed').innerHTML = data.opportunities.map(o => `
                     <div class="list-item">
