@@ -60,15 +60,20 @@ def parse_price_message(text: str, pattern: str = None):
     
     return results
 
-async def fetch_buy_prices_api():
-    url = "https://www.max-tg.com/sub/api/?apiKay=syi3tvulvjgp1clefn4x&action=getCountrys"
-    try:
-        async with httpx.AsyncClient() as client:
-            response = await client.get(url)
-            data = response.json()
-            if data.get("ok"):
-                countries_data = data["result"]["countries"]["1"]
-                return {k: float(v) for k, v in countries_data.items()}
-    except Exception as e:
-        logger.error(f"Error fetching: {e}")
-    return {}
+async def fetch_buy_prices_api(server_urls: list):
+    aggregated_prices = {}
+    async with httpx.AsyncClient() as client:
+        for url in server_urls:
+            try:
+                response = await client.get(url)
+                data = response.json()
+                if data.get("ok"):
+                    # Assuming the structure is result -> countries -> '1' (common pattern)
+                    countries_data = data["result"]["countries"]["1"]
+                    for k, v in countries_data.items():
+                        # Update if not present or found better price (lower buy price is better)
+                        if k not in aggregated_prices or float(v) < aggregated_prices[k]:
+                            aggregated_prices[k] = float(v)
+            except Exception as e:
+                logger.error(f"Error fetching from {url}: {e}")
+    return aggregated_prices

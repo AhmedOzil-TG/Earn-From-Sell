@@ -195,7 +195,10 @@ async def process_manual_check(message: types.Message, state: FSMContext):
         return await start_cmd(message, state)
     
     await message.answer(_("starting_manual_check", lang))
-    buy_prices = await fetch_buy_prices_api()
+    
+    servers_data = await get_api_servers()
+    server_urls = [s['url'] for s in servers_data]
+    buy_prices = await fetch_buy_prices_api(server_urls)
     
     to_check = []
     if choice == "All Channels" or choice == "كل القنوات":
@@ -263,7 +266,9 @@ async def telethon_handler(event):
     results = parse_price_message(event.message.message, pattern)
     if not results: return
     
-    buy_prices = await fetch_buy_prices_api()
+    servers_data = await get_api_servers()
+    server_urls = [s['url'] for s in servers_data]
+    buy_prices = await fetch_buy_prices_api(server_urls)
     admin_lang = await get_user_language(ADMIN_ID)
     
     for country, sell in results:
@@ -415,7 +420,10 @@ async def api_auth_status():
 @app.post("/api/dashboard/manual-check")
 async def api_manual_check():
     try:
-        buy_prices = await fetch_buy_prices_api()
+        servers_data = await get_api_servers()
+        server_urls = [s['url'] for s in servers_data]
+        buy_prices = await fetch_buy_prices_api(server_urls)
+        
         channels = await get_channels_with_patterns()
         
         if not client.is_connected(): await client.connect()
