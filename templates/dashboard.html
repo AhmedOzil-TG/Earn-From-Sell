@@ -2,512 +2,496 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Arbitrage Dashboard | لوحة التحكم</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Arbitrage Pro | Dashboard</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #050505;
-            --glass-bg: rgba(20, 20, 20, 0.7);
-            --gold: #d4af37;
-            --gold-bright: #ffdf00;
-            --gold-gradient: linear-gradient(45deg, #8a6d3b, #d4af37, #f7ef8a, #d4af37, #8a6d3b);
-            --text-color: #ffffff;
-            --text-dim: #b0b0b0;
-            --border-color: rgba(212, 175, 55, 0.2);
-            --accent-glow: 0 0 15px rgba(212, 175, 55, 0.3);
+            --accent: #5865F2;
+            --accent-glow: rgba(88, 101, 242, 0.2);
+            --bg: #1a1a1c;
+            --bg-elevated: #111113;
+            --card-glass: rgba(255, 255, 255, 0.02);
+            --border: rgba(255, 255, 255, 0.06);
+            --text-p: #fafafa;
+            --text-s: #a1a1aa;
+            --radius-md: 20px;
+            --radius-lg: 28px;
+            --ease: cubic-bezier(0.16, 1, 0.3, 1);
+            --sidebar-width: 280px;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background: var(--bg-color);
-            color: var(--text-color);
-            overflow-x: hidden;
-            min-height: 100vh;
+            background-color: var(--bg);
+            color: var(--text-p);
+            font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
         }
 
-        #loader {
+        /* --- Top Bar --- */
+        .top-bar {
+            height: 70px;
+            background: var(--bg-elevated);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1000;
+            flex-shrink: 0;
+        }
+
+        .nav-trigger {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--card-glass);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--text-p);
+        }
+
+        .page-title {
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            background: linear-gradient(45deg, #fff, #a1a1aa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.2rem;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
             position: fixed;
             top: 0;
-            left: 0;
-            width: 100%;
+            right: 0; /* Changed to right for RTL */
+            width: var(--sidebar-width);
             height: 100%;
-            background: var(--bg-color);
+            background: var(--bg-elevated);
+            z-index: 3000;
+            transform: translateX(100%);
+            transition: transform 0.3s var(--ease);
+            padding: 40px 20px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            gap: 40px;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+        }
+
+        .sidebar.open { transform: translateX(0); }
+
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2500;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .sidebar-overlay.show { opacity: 1; visibility: visible; }
+
+        .side-brand {
+            display: flex;
             align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(212, 175, 55, 0.1);
-            border-top: 3px solid var(--gold);
+        .side-brand-dot {
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            background: var(--accent);
+            box-shadow: 0 0 15px var(--accent);
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .side-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            padding-bottom: 100px;
+        .nav-item {
+            padding: 16px 20px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: var(--text-s);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-top: 10px;
+        .nav-item:hover, .nav-item.active {
+            background: var(--card-glass);
+            color: var(--text-p);
         }
 
-        .header-logo {
-            font-size: 2.2rem;
-            background: var(--gold-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-            margin-bottom: 5px;
-            text-shadow: var(--accent-glow);
+        .nav-item.active {
+            border: 1px solid var(--border);
+            color: var(--accent);
         }
 
-        .header-subtitle {
-            color: var(--text-dim);
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+        /* --- Content --- */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px 20px 100px;
+            -webkit-overflow-scrolling: touch;
         }
 
-        .stats-grid {
+        .view-panel {
+            display: none;
+            animation: fadeIn 0.4s var(--ease);
+        }
+
+        .view-panel.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .info-card-stack {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr;
             gap: 15px;
             margin-bottom: 30px;
         }
 
-        .stat-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            transition: transform 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .stat-card:active { transform: scale(0.95); }
-
-        .stat-card i {
-            font-size: 1.5rem;
-            color: var(--gold);
-            margin-bottom: 10px;
-        }
-
-        .stat-value {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin: 5px 0;
-        }
-
-        .stat-label {
-            color: var(--text-dim);
-            font-size: 0.75rem;
-        }
-
-        .section-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--gold);
-        }
-
-        .section-title::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border-color);
-        }
-
-        .card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .item-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .list-item {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 15px;
+        .info-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 22px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
-        .item-info h4 {
-            font-size: 0.95rem;
-            margin-bottom: 4px;
-        }
-
-        .item-info p {
-            font-size: 0.8rem;
-            color: var(--text-dim);
-        }
-
-        .item-actions {
+        .info-card-l { display: flex; flex-direction: column; gap: 4px; }
+        .info-card-lbl { font-size: 0.75rem; color: var(--text-s); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .info-card-val { font-size: 1.6rem; font-weight: 800; color: var(--text-p); }
+        .info-card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            background: var(--card-glass);
             display: flex;
-            gap: 8px;
-        }
-
-        .btn-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            display: flex;
+            align-items: center;
             justify-content: center;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-dim);
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-            transition: all 0.2s ease;
+            font-size: 1.3rem;
+            color: var(--accent);
+            border: 1px solid var(--border);
         }
 
-        .btn-icon:hover {
-            background: rgba(212, 175, 55, 0.1);
-            color: var(--gold);
-        }
-
-        .btn-icon.delete { color: #ff4d4d; }
-        .btn-icon.delete:hover { background: rgba(255, 77, 77, 0.1); }
-
-        .navbar {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 92%;
-            max-width: 450px;
-            background: rgba(10, 10, 10, 0.85);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: 25px;
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 10px;
-            z-index: 1000;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--text-dim);
-            text-decoration: none;
-            font-size: 0.7rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .nav-item.active { color: var(--gold); }
-        .nav-item i { font-size: 1.3rem; margin-bottom: 4px; }
-
-        .btn-primary {
-            background: var(--gold-gradient);
-            color: #000;
-            border: none;
-            border-radius: 12px;
-            padding: 12px 20px;
-            font-weight: 700;
+        .section-header {
             font-size: 0.9rem;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            box-shadow: var(--accent-glow);
+            font-weight: 700;
+            color: var(--text-s);
+            margin: 25px 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-header::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .list-item {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            padding: 18px 20px;
+            border-radius: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
             transition: transform 0.2s;
         }
 
-        .btn-primary:active { transform: scale(0.97); }
+        .list-item:active { transform: scale(0.98); }
 
-        .content-section {
-            display: none;
-            animation: slideUp 0.4s ease-out;
+        .item-info h4 { font-size: 1rem; margin-bottom: 4px; font-weight: 700; }
+        .item-info p { font-size: 0.8rem; color: var(--text-s); }
+
+        .profit-badge {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 0.9rem;
         }
 
-        .content-section.active { display: block; }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .btn-action {
+            width: 100%;
+            background: var(--accent);
+            color: white;
+            padding: 18px;
+            border-radius: 16px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 8px 20px var(--accent-glow);
+            transition: all 0.3s;
+            margin-top: 20px;
         }
 
-        .input-group { margin-bottom: 15px; }
-        .input-group label {
-            display: block;
-            font-size: 0.85rem;
-            color: var(--text-dim);
-            margin-bottom: 6px;
-        }
+        .btn-action:active { transform: scale(0.97); }
 
         input {
             width: 100%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 15px;
             color: #fff;
-            outline: none;
             font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
         }
 
-        input:focus { border-color: var(--gold); }
+        input:focus { border-color: var(--accent); }
 
-        .modal {
+        #loader {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(5px);
-            display: none;
+            inset: 0;
+            background: var(--bg);
+            z-index: 9999;
+            display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 2000;
-            padding: 20px;
+            transition: opacity 0.5s;
         }
 
-        .modal-content {
-            background: var(--bg-color);
-            border: 1px solid var(--gold);
-            border-radius: 24px;
-            width: 100%;
-            max-width: 400px;
-            padding: 25px;
-            box-shadow: var(--accent-glow);
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
 
-        .profit-badge {
-            background: rgba(0, 255, 100, 0.1);
-            color: #00ff64;
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.85rem;
-        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
     </style>
 </head>
-<body>
+<body class="dark-mode">
     <div id="loader">
         <div class="spinner"></div>
     </div>
 
-    <div class="container">
-        <header>
-            <h1 class="header-logo">ARBITRAGE PRO</h1>
-            <p class="header-subtitle">Advanced Monitoring System</p>
-        </header>
-
-        <!-- Home Section -->
-        <div id="section-home" class="content-section active">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <i class="fa-solid fa-satellite-dish"></i>
-                    <div class="stat-value" id="count-channels">0</div>
-                    <div class="stat-label">القنوات المتابعة</div>
-                </div>
-                <div class="stat-card">
-                    <i class="fa-solid fa-bolt"></i>
-                    <div class="stat-value" id="count-opportunities">0</div>
-                    <div class="stat-label">فرص الربح المكتشفة</div>
-                </div>
-            </div>
-
-            <div class="section-title">آخر الفرص المكتشفة</div>
-            <div id="opportunities-list" class="item-list">
-                <!-- Data will be loaded here -->
-                <div style="text-align: center; color: var(--text-dim); padding: 20px;">جاري تحميل البيانات...</div>
-            </div>
+    <div class="top-bar">
+        <div class="nav-trigger" onclick="toggleSidebar()">
+            <i class="fa-solid fa-bars-staggered"></i>
         </div>
-
-        <!-- Channels Section -->
-        <div id="section-channels" class="content-section">
-            <div class="section-title">إدارة القنوات</div>
-            <button class="btn-primary" onclick="showAddChannelModal()" style="margin-bottom: 20px;">
-                <i class="fa-solid fa-plus"></i> إضافة قناة جديدة
-            </button>
-            <div id="channels-list" class="item-list">
-                <!-- Channels will be listed here -->
-            </div>
-        </div>
-
-        <!-- Settings Section -->
-        <div id="section-settings" class="content-section">
-            <div class="section-title">إعدادات النظام</div>
-            <div class="card">
-                <div class="input-group">
-                    <label>الحد الأدنى للربح ($)</label>
-                    <input type="number" id="min-profit-input" step="0.01" value="0.05">
-                </div>
-                <button class="btn-primary" onclick="saveSettings()">حفظ الإعدادات</button>
-            </div>
-        </div>
+        <div class="page-title">ARBITRAGE DASHBOARD</div>
+        <div class="user-avatar">A</div>
     </div>
 
-    <nav class="navbar">
-        <div class="nav-item active" onclick="switchTab('home', this)">
-            <i class="fa-solid fa-chart-line"></i>
-            <span>الرئيسية</span>
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    
+    <div class="sidebar" id="sidebar">
+        <div class="side-brand">
+            <div class="side-brand-dot"></div>
+            <div style="font-weight: 800; font-size: 1.2rem;">Arbitrage Pro</div>
         </div>
-        <div class="nav-item" onclick="switchTab('channels', this)">
-            <i class="fa-solid fa-tower-broadcast"></i>
-            <span>القنوات</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('settings', this)">
-            <i class="fa-solid fa-gears"></i>
-            <span>الإعدادات</span>
-        </div>
-    </nav>
-
-    <!-- Modal Add Channel -->
-    <div id="modal-add-channel" class="modal">
-        <div class="modal-content">
-            <h3 style="color: var(--gold); margin-bottom: 15px;">إضافة قناة جديدة</h3>
-            <div class="input-group">
-                <label>معرف القناة (Username)</label>
-                <input type="text" id="channel-username" placeholder="@ChannelName">
+        <div class="side-nav">
+            <div class="nav-item active" onclick="switchView('home', this)">
+                <i class="fa-solid fa-house"></i>
+                <span>الرئيسية</span>
             </div>
-            <button class="btn-primary" onclick="addChannel()">تأكيد الإضافة</button>
-            <button class="btn-primary" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-dim); margin-top: 10px;" onclick="closeModal()">إلغاء</button>
+            <div class="nav-item" onclick="switchView('channels', this)">
+                <i class="fa-solid fa-tower-broadcast"></i>
+                <span>القنوات</span>
+            </div>
+            <div class="nav-item" onclick="switchView('settings', this)">
+                <i class="fa-solid fa-gears"></i>
+                <span>الإعدادات</span>
+            </div>
         </div>
+        <div style="font-size: 0.7rem; color: var(--text-s); opacity: 0.5;">Version 2.0.1 Premium</div>
     </div>
+
+    <main class="main-content">
+        <!-- Home View -->
+        <div id="view-home" class="view-panel active">
+            <div class="info-card-stack">
+                <div class="info-card">
+                    <div class="info-card-l">
+                        <span class="info-card-lbl">القنوات المتابعة</span>
+                        <span class="info-card-val" id="count-channels">0</span>
+                    </div>
+                    <div class="info-card-icon"><i class="fa-solid fa-satellite"></i></div>
+                </div>
+                <div class="info-card">
+                    <div class="info-card-l">
+                        <span class="info-card-lbl">الفرص المكتشفة</span>
+                        <span class="info-card-val" id="count-opportunities">0</span>
+                    </div>
+                    <div class="info-card-icon"><i class="fa-solid fa-bolt"></i></div>
+                </div>
+            </div>
+
+            <div class="section-header">آخر التحديثات الحية</div>
+            <div id="opportunities-list">
+                <!-- Data here -->
+            </div>
+        </div>
+
+        <!-- Channels View -->
+        <div id="view-channels" class="view-panel">
+            <div class="section-header">إدارة المصادر</div>
+            <div style="margin-bottom: 25px;">
+                <p style="color: var(--text-s); font-size: 0.85rem; margin-bottom: 15px;">أضف معرفات القنوات التي تود مراقبتها بشكل آلي.</p>
+                <input type="text" id="channel-input" placeholder="@username">
+                <button class="btn-action" onclick="addChannel()">+ إضافة قناة مراقبة</button>
+            </div>
+            <div class="section-header">قائمة القنوات</div>
+            <div id="channels-list"></div>
+        </div>
+
+        <!-- Settings View -->
+        <div id="view-settings" class="view-panel">
+            <div class="section-header">إعدادات المحرك</div>
+            <div style="background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 20px; padding: 25px;">
+                <label style="display: block; font-size: 0.8rem; color: var(--text-s); margin-bottom: 10px;">الحد الأدنى للربح المعتمد ($)</label>
+                <input type="number" id="min-profit-input" step="0.01">
+                <p style="font-size: 0.7rem; color: var(--text-s); margin-top: 10px;">سيقوم البوت بتجاهل أي صفقة بربح أقل من هذه القيمة.</p>
+                <button class="btn-action" onclick="saveSettings()">تحديث الإعدادات</button>
+            </div>
+        </div>
+    </main>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-        tg.headerColor = '#050505';
-        tg.backgroundColor = '#050505';
+        tg.headerColor = '#111113';
+        tg.backgroundColor = '#1a1a1c';
 
-        // Fake Data for UI testing, will be replaced by API
-        let data = {
-            channels: [],
-            opportunities: [],
-            min_profit: 0.05
-        };
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebar-overlay').classList.toggle('show');
+            tg.HapticFeedback.impactOccurred('light');
+        }
 
-        function switchTab(id, el) {
-            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            document.getElementById('section-' + id).classList.add('active');
+        function switchView(id, el) {
+            document.querySelectorAll('.view-panel').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-' + id).classList.add('active');
             
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             el.classList.add('active');
             
+            toggleSidebar();
             tg.HapticFeedback.selectionChanged();
-        }
-
-        function showAddChannelModal() {
-            document.getElementById('modal-add-channel').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('modal-add-channel').style.display = 'none';
         }
 
         async function loadData() {
             try {
                 const res = await fetch('/api/dashboard/data');
-                data = await res.json();
-                renderUI();
+                const data = await res.json();
+                
+                document.getElementById('count-channels').innerText = data.channels.length;
+                document.getElementById('count-opportunities').innerText = data.opportunities.length;
+                document.getElementById('min-profit-input').value = data.min_profit;
+
+                // Render Channels
+                const cList = document.getElementById('channels-list');
+                cList.innerHTML = data.channels.map(c => `
+                    <div class="list-item">
+                        <div class="item-info">
+                            <h4>${c.username}</h4>
+                            <p>الحالة: مراقبة حية</p>
+                        </div>
+                        <div onclick="deleteChannel('${c.username}')" style="color: #ef4444; font-size: 1.2rem; cursor: pointer;">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </div>
+                    </div>
+                `).join('') || '<p style="text-align: center; color: var(--text-s);">لا توجد قنوات</p>';
+
+                // Render Opps
+                const oList = document.getElementById('opportunities-list');
+                oList.innerHTML = data.opportunities.map(o => `
+                    <div class="list-item">
+                        <div class="item-info">
+                            <h4>🌍 ${o.country}</h4>
+                            <p>${o.channel}</p>
+                        </div>
+                        <div class="profit-badge">+$${o.profit}</div>
+                    </div>
+                `).join('') || '<p style="text-align: center; color: var(--text-s);">في انتظار الفرص...</p>';
+
             } catch (e) {
-                console.error("Failed to load data", e);
+                console.error(e);
             } finally {
                 document.getElementById('loader').style.opacity = '0';
                 setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
             }
         }
 
-        function renderUI() {
-            document.getElementById('count-channels').innerText = data.channels.length;
-            document.getElementById('count-opportunities').innerText = data.opportunities.length;
-            document.getElementById('min-profit-input').value = data.min_profit;
-
-            // Render Channels
-            const cList = document.getElementById('channels-list');
-            cList.innerHTML = data.channels.map(c => `
-                <div class="list-item">
-                    <div class="item-info">
-                        <h4>${c.username}</h4>
-                        <p>النمط: ${c.pattern}</p>
-                    </div>
-                    <div class="item-actions">
-                        <button class="btn-icon delete" onclick="deleteChannel('${c.username}')">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            `).join('') || '<p style="text-align: center; color: var(--text-dim);">لا توجد قنوات بعد</p>';
-
-            // Render Opportunities
-            const oList = document.getElementById('opportunities-list');
-            oList.innerHTML = data.opportunities.map(o => `
-                <div class="list-item">
-                    <div class="item-info">
-                        <h4>🌍 ${o.country}</h4>
-                        <p>شراء: ${o.buy}$ | بيع: ${o.sell}$</p>
-                    </div>
-                    <div class="profit-badge">+$${o.profit}</div>
-                </div>
-            `).join('') || '<p style="text-align: center; color: var(--text-dim);">لا توجد فرص مكتشفة حالياً</p>';
-        }
-
         async function addChannel() {
-            const user = document.getElementById('channel-username').value;
-            if(!user) return tg.showAlert("يرجى إدخال المعرف");
-            
+            const user = document.getElementById('channel-input').value;
+            if(!user) return;
             const res = await fetch('/api/dashboard/channels', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({username: user})
             });
             if(res.ok) {
-                closeModal();
+                document.getElementById('channel-input').value = '';
                 loadData();
                 tg.HapticFeedback.notificationOccurred('success');
             }
         }
 
         async function deleteChannel(user) {
-            if(!confirm(`هل أنت متأكد من حذف ${user}؟`)) return;
             const res = await fetch(`/api/dashboard/channels/${user}`, {method: 'DELETE'});
             if(res.ok) {
                 loadData();
@@ -523,7 +507,7 @@
                 body: JSON.stringify({min_profit: min})
             });
             if(res.ok) {
-                tg.showAlert("تم حفظ الإعدادات بنجاح");
+                tg.showAlert("تم حفظ الإعدادات");
                 tg.HapticFeedback.notificationOccurred('success');
             }
         }
