@@ -637,7 +637,7 @@
             font-size: 1rem;
             font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 5px 15px var(--accent-glow);
+            box-shadow: none;
             transition: all 0.3s;
             display: flex;
             align-items: center;
@@ -790,10 +790,10 @@
                 
                 <div class="input-group">
                     <label>Channel Username</label>
-                    <input type="text" class="w-input" id="inline-channel-input" placeholder="@Channel">
+                    <input type="text" class="w-input" id="inline-channel-input" placeholder="@Channel" oninput="toggleAddChannelBtn()">
                 </div>
                 
-                <button class="btn-action-premium" style="background: #4c1d95;" onclick="addChannelInline()">Add Channel</button>
+                <button class="btn-action-premium" id="inline-add-channel-btn" style="background: #4c1d95;" onclick="addChannelInline()" disabled>Add Channel</button>
             </div>
 
             <div class="card" style="padding: 22px; margin-top: 25px;" id="channels-list-container">
@@ -1174,7 +1174,13 @@
         function toggleGetCodeBtn() {
             const phone = document.getElementById('inline-login-phone').value;
             const btn = document.getElementById('inline-get-code-btn');
-            btn.disabled = phone.trim().length < 5; // Enable after 5 chars
+            btn.disabled = phone.trim().length < 5;
+        }
+
+        function toggleAddChannelBtn() {
+            const user = document.getElementById('inline-channel-input').value.trim();
+            const btn = document.getElementById('inline-add-channel-btn');
+            btn.disabled = !(user.startsWith('@') && user.length >= 5); // @ + 4 chars
         }
 
         // --- Inline Form Handlers ---
