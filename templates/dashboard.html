@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Arbitrage Pro | Dashboard</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --accent: #5865F2;
@@ -33,7 +33,7 @@
         body {
             background-color: var(--bg);
             color: var(--text-p);
-            font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             height: 100vh;
             overflow: hidden;
             display: flex;
@@ -95,18 +95,18 @@
         .sidebar {
             position: fixed;
             top: 0;
-            right: 0; /* Changed to right for RTL */
+            left: 0;
             width: var(--sidebar-width);
             height: 100%;
             background: var(--bg-elevated);
             z-index: 3000;
-            transform: translateX(100%);
+            transform: translateX(-100%);
             transition: transform 0.3s var(--ease);
             padding: 40px 20px;
             display: flex;
             flex-direction: column;
             gap: 40px;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
         }
 
         .sidebar.open { transform: translateX(0); }
@@ -346,18 +346,17 @@
         <div class="side-nav">
             <div class="nav-item active" onclick="switchView('home', this)">
                 <i class="fa-solid fa-house"></i>
-                <span>الرئيسية</span>
+                <span>Home</span>
             </div>
             <div class="nav-item" onclick="switchView('channels', this)">
                 <i class="fa-solid fa-tower-broadcast"></i>
-                <span>القنوات</span>
+                <span>Channels</span>
             </div>
             <div class="nav-item" onclick="switchView('settings', this)">
                 <i class="fa-solid fa-gears"></i>
-                <span>الإعدادات</span>
+                <span>Settings</span>
             </div>
         </div>
-        <div style="font-size: 0.7rem; color: var(--text-s); opacity: 0.5;">Version 2.0.1 Premium</div>
     </div>
 
     <main class="main-content">
@@ -366,21 +365,21 @@
             <div class="info-card-stack">
                 <div class="info-card">
                     <div class="info-card-l">
-                        <span class="info-card-lbl">القنوات المتابعة</span>
+                        <span class="info-card-lbl">Monitored Channels</span>
                         <span class="info-card-val" id="count-channels">0</span>
                     </div>
                     <div class="info-card-icon"><i class="fa-solid fa-satellite"></i></div>
                 </div>
                 <div class="info-card">
                     <div class="info-card-l">
-                        <span class="info-card-lbl">الفرص المكتشفة</span>
+                        <span class="info-card-lbl">Opportunities Found</span>
                         <span class="info-card-val" id="count-opportunities">0</span>
                     </div>
                     <div class="info-card-icon"><i class="fa-solid fa-bolt"></i></div>
                 </div>
             </div>
 
-            <div class="section-header">آخر التحديثات الحية</div>
+            <div class="section-header">Recent Live Updates</div>
             <div id="opportunities-list">
                 <!-- Data here -->
             </div>
@@ -388,24 +387,24 @@
 
         <!-- Channels View -->
         <div id="view-channels" class="view-panel">
-            <div class="section-header">إدارة المصادر</div>
+            <div class="section-header">Source Management</div>
             <div style="margin-bottom: 25px;">
-                <p style="color: var(--text-s); font-size: 0.85rem; margin-bottom: 15px;">أضف معرفات القنوات التي تود مراقبتها بشكل آلي.</p>
+                <p style="color: var(--text-s); font-size: 0.85rem; margin-bottom: 15px;">Add channel usernames you want to monitor automatically.</p>
                 <input type="text" id="channel-input" placeholder="@username">
-                <button class="btn-action" onclick="addChannel()">+ إضافة قناة مراقبة</button>
+                <button class="btn-action" onclick="addChannel()">+ Add Monitoring Channel</button>
             </div>
-            <div class="section-header">قائمة القنوات</div>
+            <div class="section-header">Channel List</div>
             <div id="channels-list"></div>
         </div>
 
         <!-- Settings View -->
         <div id="view-settings" class="view-panel">
-            <div class="section-header">إعدادات المحرك</div>
+            <div class="section-header">Engine Settings</div>
             <div style="background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 20px; padding: 25px;">
-                <label style="display: block; font-size: 0.8rem; color: var(--text-s); margin-bottom: 10px;">الحد الأدنى للربح المعتمد ($)</label>
+                <label style="display: block; font-size: 0.8rem; color: var(--text-s); margin-bottom: 10px;">Minimum Profit Threshold ($)</label>
                 <input type="number" id="min-profit-input" step="0.01">
-                <p style="font-size: 0.7rem; color: var(--text-s); margin-top: 10px;">سيقوم البوت بتجاهل أي صفقة بربح أقل من هذه القيمة.</p>
-                <button class="btn-action" onclick="saveSettings()">تحديث الإعدادات</button>
+                <p style="font-size: 0.7rem; color: var(--text-s); margin-top: 10px;">The bot will ignore any deals with a profit lower than this value.</p>
+                <button class="btn-action" onclick="saveSettings()">Update Settings</button>
             </div>
         </div>
     </main>
@@ -448,13 +447,13 @@
                     <div class="list-item">
                         <div class="item-info">
                             <h4>${c.username}</h4>
-                            <p>الحالة: مراقبة حية</p>
+                            <p>Status: Live Monitoring</p>
                         </div>
                         <div onclick="deleteChannel('${c.username}')" style="color: #ef4444; font-size: 1.2rem; cursor: pointer;">
                             <i class="fa-solid fa-circle-xmark"></i>
                         </div>
                     </div>
-                `).join('') || '<p style="text-align: center; color: var(--text-s);">لا توجد قنوات</p>';
+                `).join('') || '<p style="text-align: center; color: var(--text-s);">No channels yet</p>';
 
                 // Render Opps
                 const oList = document.getElementById('opportunities-list');
@@ -466,7 +465,7 @@
                         </div>
                         <div class="profit-badge">+$${o.profit}</div>
                     </div>
-                `).join('') || '<p style="text-align: center; color: var(--text-s);">في انتظار الفرص...</p>';
+                `).join('') || '<p style="text-align: center; color: var(--text-s);">Waiting for opportunities...</p>';
 
             } catch (e) {
                 console.error(e);
@@ -507,7 +506,7 @@
                 body: JSON.stringify({min_profit: min})
             });
             if(res.ok) {
-                tg.showAlert("تم حفظ الإعدادات");
+                tg.showAlert("Settings Saved");
                 tg.HapticFeedback.notificationOccurred('success');
             }
         }

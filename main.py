@@ -49,11 +49,7 @@ class BotStates(StatesGroup):
 
 # Keyboards
 def main_keyboard(lang="en"):
-    from aiogram.types import WebAppInfo
-    webapp_url = WEBAPP_URL # Use the URL from config.py
-    
     return ReplyKeyboardMarkup(keyboard=[
-        [KeyboardButton(text="🌐 Open Dashboard", web_app=WebAppInfo(url=webapp_url))],
         [KeyboardButton(text=_("btn_add_account", lang)), KeyboardButton(text=_("btn_add_channel", lang))],
         [KeyboardButton(text=_("btn_manual_check", lang)), KeyboardButton(text=_("btn_list_channels", lang))],
         [KeyboardButton(text=_("btn_delete_channel", lang))]
@@ -66,9 +62,20 @@ def main_keyboard(lang="en"):
 async def start_cmd(message: types.Message, state: FSMContext):
     if message.from_user.id != ADMIN_ID:
         return
+    
+    from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
+    
+    # New welcome message and inline button
+    welcome_text = "Welcome to the Panel! 🚀\nClick the button below to open."
+    kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="Open", web_app=WebAppInfo(url=WEBAPP_URL))]
+    ])
+    
     lang = await get_user_language(message.from_user.id)
     await state.clear()
-    await message.answer(_("welcome", lang), reply_markup=main_keyboard(lang))
+    await message.answer(welcome_text, reply_markup=kb)
+    # Also send main keyboard
+    await message.answer("Main Menu:", reply_markup=main_keyboard(lang))
 
 # -- Login Flow --
 @dp.message(F.text.in_([STRINGS["btn_add_account"]["en"], STRINGS["btn_add_account"]["ar"]]))
@@ -345,6 +352,12 @@ async def main():
         types.BotCommand(command="start", description="Start the bot / القائمة الرئيسية"),
         types.BotCommand(command="lang", description="Change Language / تغيير اللغة")
     ])
+
+    from aiogram.types import MenuButtonWebApp, WebAppInfo
+    # Set the 'Open' button next to Menu
+    await bot.set_chat_menu_button(
+        menu_button=MenuButtonWebApp(text="Open", web_app=WebAppInfo(url=WEBAPP_URL))
+    )
 
     try:
         logger.info("Connecting Telethon client...")
