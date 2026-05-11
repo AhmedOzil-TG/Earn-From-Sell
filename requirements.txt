@@ -1,0 +1,9 @@
+aiogram
+telethon
+aiosqlite
+fastapi
+uvicorn
+httpx
+phonenumbers
+pydantic
+python-multipart
