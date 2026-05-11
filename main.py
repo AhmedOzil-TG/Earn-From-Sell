@@ -377,6 +377,15 @@ async def api_verify_password(data: LoginPassword):
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
+@app.post("/api/auth/logout")
+async def api_logout():
+    try:
+        if client.is_connected():
+            await client.log_out()
+        return {"status": "ok"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
 @app.get("/api/auth/status")
 async def api_auth_status():
     connected = await client.is_user_authorized() if client.is_connected() else False

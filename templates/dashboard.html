@@ -177,7 +177,7 @@
         }
         input:focus { border-color: var(--accent); }
 
-        /* --- Empty Placeholder (Store Style) --- */
+        /* --- Empty Placeholder --- */
         .empty-placeholder {
             text-align: center; padding: 40px 20px;
             background: var(--card-glass); border-radius: 16px;
@@ -213,9 +213,6 @@
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
-        .status-dot.online { background: var(--success); box-shadow: 0 0 10px var(--success); }
-        .status-dot.offline { background: var(--error); }
     </style>
 </head>
 <body>
@@ -272,21 +269,7 @@
                     <span>Linked Accounts</span>
                 </div>
                 <div id="linked-accounts-container">
-                    <div id="account-card" style="display: none;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                <div class="user-avatar" style="width: 50px; height: 50px; border-radius: 14px; font-size: 1.4rem;">T</div>
-                                <div>
-                                    <h4 id="acc-name" style="font-size: 1.1rem;">Telethon Client</h4>
-                                    <p id="acc-status" style="font-size: 0.85rem; margin-top: 4px;"><span class="status-dot offline"></span>Disconnected</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="empty-placeholder" id="account-empty">
-                        <i class="fas fa-history"></i>
-                        <p>No accounts linked found.</p>
-                    </div>
+                    <!-- Accounts items will be injected here -->
                 </div>
             </div>
         </div>
@@ -352,6 +335,14 @@
 
         let loginData = { phone: '', hash: '' };
 
+        function hexToRgba(hex, alpha) {
+            const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        const rowS = (c) => `background: ${hexToRgba(c, 0.02)}; border: 1px solid ${hexToRgba(c, 0.08)}; padding: 14px 18px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 10px;`;
+        const lblS = "color: var(--text-s); font-size: 0.8rem; font-weight: 500; text-transform: uppercase; opacity: 0.7; flex-shrink: 0;";
+
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('sidebar-overlay').classList.toggle('show');
@@ -364,10 +355,8 @@
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             
             let pageTitle = "Home";
-            if(el) {
-                el.classList.add('active');
-                pageTitle = el.getAttribute('data-page');
-            } else {
+            if(el) { el.classList.add('active'); pageTitle = el.getAttribute('data-page'); }
+            else {
                 const navItem = document.querySelector(`.nav-item[onclick*="${id}"]`);
                 if(navItem) { navItem.classList.add('active'); pageTitle = navItem.getAttribute('data-page'); }
             }
@@ -406,24 +395,53 @@
                     </div>
                 `).join('') || '<p style="text-align: center; color: var(--text-s);">Listening for opportunities...</p>';
 
-                // Check Auth Status
+                // Check Auth Status & Render Account Card
                 const authRes = await fetch('/api/auth/status');
                 const auth = await authRes.json();
+                const container = document.getElementById('linked-accounts-container');
+
                 if(auth.connected) {
-                    document.getElementById('account-card').style.display = 'block';
-                    document.getElementById('account-empty').style.display = 'none';
-                    document.getElementById('acc-name').innerText = auth.user || auth.phone;
-                    document.getElementById('acc-status').innerHTML = '<span class="status-dot online"></span>Connected';
-                    document.getElementById('user-initial').innerText = (auth.user || 'A')[0].toUpperCase();
+                    container.innerHTML = `
+                        <div class="card" style="display: flex; flex-direction: column; padding: 24px 20px 20px; box-shadow: none; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 0;">
+                            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+                                <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-s);"><i class="fas fa-user-shield" style="color: var(--accent); margin-right: 8px;"></i>Session Details</h3>
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                                <div style="${rowS('#10b981')}">
+                                    <span style="${lblS}">STATUS</span>
+                                    <span style="color: #10b981; font-weight: 700; font-size: 0.85rem; text-transform: uppercase;">CONNECTED</span>
+                                </div>
+                                <div style="${rowS('#8b5cf6')}">
+                                    <span style="${lblS}">NUMBER</span>
+                                    <span style="color: var(--text-p); font-weight: 700; font-size: 1.1rem; direction: ltr;">${auth.phone}</span>
+                                </div>
+                                <button class="btn-action" onclick="deleteAccount()" style="width: 100%; margin-top: 10px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); box-shadow: none;">
+                                    <i class="fa-solid fa-trash-can"></i> Delete Account
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('user-initial').innerText = (auth.user || auth.phone)[0].toUpperCase();
                 } else {
-                    document.getElementById('account-card').style.display = 'none';
-                    document.getElementById('account-empty').style.display = 'flex';
+                    container.innerHTML = `
+                        <div class="empty-placeholder">
+                            <i class="fas fa-history"></i>
+                            <p>No accounts linked found.</p>
+                        </div>
+                    `;
                 }
             } catch (e) { console.error(e); }
             finally {
                 document.getElementById('loader').style.opacity = '0';
                 setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
             }
+        }
+
+        async function deleteAccount() {
+            if(!confirm("Are you sure you want to delete this session?")) return;
+            // API call to delete session
+            await fetch('/api/auth/logout', {method: 'POST'});
+            loadData();
         }
 
         // --- Auth Flow ---
