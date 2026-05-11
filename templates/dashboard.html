@@ -26,6 +26,8 @@
             --sidebar-width: 280px;
             --success: #10b981;
             --error: #ef4444;
+            --btn-primary: #27272a;
+            --btn-hover: #3f3f46;
         }
 
         * {
@@ -112,7 +114,7 @@
             display: flex;
             flex-direction: column;
             gap: 40px;
-            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+            border-right: 1px solid var(--border);
         }
 
         .sidebar.open {
@@ -301,24 +303,39 @@
         }
 
         .btn-action {
-            background: var(--accent);
+            background: var(--btn-primary);
             color: white;
             padding: 15px 25px;
             border-radius: 14px;
-            border: none;
+            border: 1px solid var(--border);
             font-size: 0.9rem;
-            font-weight: 800;
+            font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 8px 25px var(--accent-glow);
-            transition: all 0.3s;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
         }
 
+        .btn-action:hover {
+            background: var(--btn-hover);
+            transform: translateY(-2px);
+        }
+
         .btn-action:active {
             transform: scale(0.97);
+        }
+
+        .btn-action.secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-s);
+        }
+
+        .btn-action.secondary:hover {
+            background: var(--card-glass);
+            color: var(--text-p);
         }
 
         input {
@@ -471,10 +488,10 @@
 
         <!-- Accounts View -->
         <div id="view-accounts" class="view-panel">
-            <div class="info-card" onclick="showLoginModal()">
+            <div class="info-card card-zoom" onclick="showLoginModal()">
                 <div class="info-card-l">
-                    <span class="info-card-lbl">Add New Account</span>
-                    <span class="info-card-val" style="font-size: 1.1rem;">Link Session</span>
+                    <span class="info-card-lbl">ACCOUNT MANAGEMENT</span>
+                    <span class="info-card-val">Add New Account</span>
                 </div>
                 <div class="info-card-icon" style="background: var(--accent); color: white;"><i
                         class="fa-solid fa-plus"></i></div>
@@ -494,7 +511,7 @@
         <!-- Channels View -->
         <div id="view-channels" class="view-panel">
             <div class="section-header" style="margin-top: 0;"><span>Source Control</span></div>
-            <div class="card">
+            <div class="card card-zoom">
                 <input type="text" id="channel-input" placeholder="@channel_username">
                 <button class="btn-action" style="width: 100%" onclick="addChannel()">+ Add Channel</button>
             </div>
@@ -514,7 +531,7 @@
         <!-- Settings View -->
         <div id="view-settings" class="view-panel">
             <div class="section-header" style="margin-top: 0;"><span>Preferences</span></div>
-            <div class="card">
+            <div class="card card-zoom">
                 <label style="display: block; font-size: 0.8rem; color: var(--text-s); margin-bottom: 10px;">Min Profit
                     Threshold ($)</label>
                 <input type="number" id="min-profit-input" step="0.01">
