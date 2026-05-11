@@ -645,6 +645,12 @@
             gap: 12px;
         }
 
+        .btn-action-premium:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
         .btn-action-premium:active {
             transform: scale(0.97);
         }
@@ -741,9 +747,9 @@
                 <div id="inline-step-phone">
                     <div class="input-group">
                         <label>Phone Number</label>
-                        <input type="text" class="w-input" id="inline-login-phone" placeholder="+123...">
+                        <input type="text" class="w-input" id="inline-login-phone" placeholder="+123..." oninput="toggleGetCodeBtn()">
                     </div>
-                    <button class="btn-action-premium" onclick="sendCodeInline()">Get Verification Code</button>
+                    <button class="btn-action-premium" id="inline-get-code-btn" onclick="sendCodeInline()" disabled>Get Verification Code</button>
                 </div>
 
                 <div id="inline-step-code" style="display: none;">
@@ -784,10 +790,10 @@
                 
                 <div class="input-group">
                     <label>Channel Username</label>
-                    <input type="text" class="w-input" id="inline-channel-input" placeholder="@channel_username">
+                    <input type="text" class="w-input" id="inline-channel-input" placeholder="@Channel">
                 </div>
                 
-                <button class="btn-action-premium" style="background: #4c1d95;" onclick="addChannelInline()">Link Source Channel</button>
+                <button class="btn-action-premium" style="background: #4c1d95;" onclick="addChannelInline()">Add Channel</button>
             </div>
 
             <div class="card" style="padding: 22px; margin-top: 25px;" id="channels-list-container">
@@ -1163,6 +1169,12 @@
                 body: JSON.stringify({ min_profit: min })
             });
             showToast("Settings saved!");
+        }
+
+        function toggleGetCodeBtn() {
+            const phone = document.getElementById('inline-login-phone').value;
+            const btn = document.getElementById('inline-get-code-btn');
+            btn.disabled = phone.trim().length < 5; // Enable after 5 chars
         }
 
         // --- Inline Form Handlers ---
