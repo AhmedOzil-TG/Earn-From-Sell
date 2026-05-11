@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 from aiogram.client.default import DefaultBotProperties
 bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode="Markdown"))
 dp = Dispatcher()
-client = TelegramClient('arbitrage_session', API_ID, API_HASH)
+client = TelegramClient('data/arbitrage_session', API_ID, API_HASH)
 
 # States
 class BotStates(StatesGroup):

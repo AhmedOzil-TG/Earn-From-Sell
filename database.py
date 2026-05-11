@@ -1,9 +1,11 @@
 import aiosqlite
 import os
 
-DATABASE_PATH = "bot_data.db"
+DATABASE_PATH = "data/bot_data.db"
 
 async def init_db():
+    if not os.path.exists("data"):
+        os.makedirs("data")
     async with aiosqlite.connect(DATABASE_PATH) as db:
         await db.execute("PRAGMA journal_mode=WAL;")
         # Create table if not exists
