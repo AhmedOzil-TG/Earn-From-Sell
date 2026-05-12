@@ -1090,7 +1090,7 @@
                                 </div>
                                 <div style="${rowS('#8b5cf6')}">
                                     <span style="${lblS}">USERNAME</span>
-                                    <span style="color: var(--text-s); font-weight: 700; font-size: 1.1rem;">${c.username}</span>
+                                    <span style="color: var(--text-s); font-weight: 500; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: right;">${c.username}</span>
                                 </div>
                                 <button class="btn-action" onclick="askDeleteChannel('${c.username}')" style="width: 100%; height: 52px; background: rgba(239, 68, 68, 0.05); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.1); box-shadow: none; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 12px; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);">
                                     <i class="fa-solid fa-trash-can"></i> DELETE CHANNEL
@@ -1213,7 +1213,7 @@
         }
 
         function askDeleteChannel(user) {
-            showConfirmModal(`Are you sure you want to remove ${user}?`, async () => {
+            showConfirmModal("Are you sure you want to remove this channel?", async () => {
                 await fetch(`/api/dashboard/channels/${user}`, { method: 'DELETE' });
                 loadData();
                 showToast("Channel removed successfully!");
