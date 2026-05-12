@@ -816,6 +816,11 @@
                         oninput="toggleAddChannelBtn()">
                 </div>
 
+                <div class="input-group">
+                    <label>Friendly Name (Optional)</label>
+                    <input type="text" class="w-input" id="inline-channel-name" placeholder="e.g. My Shop">
+                </div>
+
                 <button class="btn-action-premium" id="inline-add-channel-btn" style="background: #4c1d95;"
                     onclick="addChannelInline()" disabled>Add Channel</button>
             </div>
@@ -845,6 +850,11 @@
                         placeholder="https://api.example.com" oninput="toggleAddApiBtn()">
                 </div>
 
+                <div class="input-group">
+                    <label>Friendly Name (Optional)</label>
+                    <input type="text" class="w-input" id="inline-api-server-name" placeholder="e.g. Primary API">
+                </div>
+
                 <button class="btn-action-premium" id="inline-add-api-btn" style="background: #059669;"
                     onclick="addApiServerInline()" disabled>Add API Server</button>
             </div>
@@ -864,7 +874,11 @@
         <div id="view-scraper" class="view-panel">
             <div class="card" style="padding: 25px;">
                 <div class="input-group"
-                    onclick="openSelector('API Server', (dataCache.api_servers || []).map(s => s.url), document.getElementById('scraper-server-val').innerText, (val) => document.getElementById('scraper-server-val').innerText = val)"
+                    onclick="openSelector('API Server', (dataCache.api_servers || []).map(s => s.name || s.url), document.getElementById('scraper-server-val').innerText, (val) => {
+                        const s = dataCache.api_servers.find(x => (x.name || x.url) === val);
+                        document.getElementById('scraper-server-val').innerText = val;
+                        document.getElementById('scraper-server-val').dataset.url = s.url;
+                    })"
                     style="cursor: pointer;">
                     <label>API Server</label>
                     <div id="scraper-server-val" class="w-input"
@@ -872,7 +886,11 @@
                         Select Server</div>
                 </div>
                 <div class="input-group"
-                    onclick="openSelector('Source Channel', (dataCache.channels || []).map(c => c.username), document.getElementById('scraper-channel-val').innerText, (val) => document.getElementById('scraper-channel-val').innerText = val)"
+                    onclick="openSelector('Source Channel', (dataCache.channels || []).map(c => c.name || c.username), document.getElementById('scraper-channel-val').innerText, (val) => {
+                        const c = dataCache.channels.find(x => (x.name || x.username) === val);
+                        document.getElementById('scraper-channel-val').innerText = val;
+                        document.getElementById('scraper-channel-val').dataset.username = c.username;
+                    })"
                     style="cursor: pointer;">
                     <label>Source Channel</label>
                     <div id="scraper-channel-val" class="w-input"
@@ -1093,7 +1111,7 @@
                     channelsContainer.innerHTML = [...data.channels].reverse().map(c => `
                         <div class="card card-zoom" style="padding: 24px 20px 20px; box-shadow: none; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 0; cursor: pointer;">
                             <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
-                                <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-s);"><i class="fas fa-satellite-dish" style="color: var(--accent); margin-right: 8px;"></i>Channel</h3>
+                                <h3 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #fff;"><i class="fas fa-satellite-dish" style="color: var(--accent); margin-right: 8px;"></i>${c.name || 'Source Channel'}</h3>
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 12px;">
                                 <div style="${rowS('#10b981')}">
@@ -1101,7 +1119,7 @@
                                     <span style="color: #10b981; font-weight: 700; font-size: 0.85rem; text-transform: uppercase;">ACTIVE</span>
                                 </div>
                                 <div style="${rowS('#8b5cf6')}">
-                                    <span style="${lblS}">USERNAME</span>
+                                    <span style="${lblS}">IDENTIFIER</span>
                                     <span style="color: var(--text-s); font-weight: 500; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: right;">${c.username}</span>
                                 </div>
                                 <button class="btn-action" onclick="askDeleteChannel('${c.username}')" style="width: 100%; height: 52px; background: rgba(239, 68, 68, 0.05); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.1); box-shadow: none; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 12px; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);">
@@ -1126,7 +1144,7 @@
                     apiContainer.innerHTML = [...servers].reverse().map(s => `
                         <div class="card card-zoom" style="padding: 24px 20px 20px; box-shadow: none; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 0; cursor: pointer;">
                             <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
-                                <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-s);"><i class="fas fa-server" style="color: #10b981; margin-right: 8px;"></i>Server</h3>
+                                <h3 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #fff;"><i class="fas fa-server" style="color: #10b981; margin-right: 8px;"></i>${s.name || 'API Server'}</h3>
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 12px;">
                                 <div style="${rowS('#10b981')}">
@@ -1134,8 +1152,8 @@
                                     <span style="color: #10b981; font-weight: 700; font-size: 0.85rem; text-transform: uppercase;">CONNECTED</span>
                                 </div>
                                 <div style="${rowS('#0ea5e9')}">
-                                    <span style="${lblS}">LINK</span>
-                                    <span style="color: var(--text-s); font-weight: 700; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${s.url}</span>
+                                    <span style="${lblS}">ENDPOINT</span>
+                                    <span style="color: var(--text-s); font-weight: 700; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: right;">${s.url}</span>
                                 </div>
                                 <button class="btn-action" onclick="askDeleteApiServer('${s.url}')" style="width: 100%; height: 52px; background: rgba(239, 68, 68, 0.05); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.1); box-shadow: none; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 12px; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);">
                                     <i class="fa-solid fa-trash-can"></i> REMOVE SERVER
@@ -1153,12 +1171,16 @@
                 }
 
 
-                document.getElementById('live-feed').innerHTML = data.opportunities.map(o => `
-                    <div class="list-item">
-                        <div class="item-info"><h4>🌍 ${o.country}</h4><p>${o.channel}</p></div>
-                        <div class="profit-badge">+$${o.profit}</div>
-                    </div>
-                `).join('') || '<p style="text-align: center; color: var(--text-s);">Listening for opportunities...</p>';
+                document.getElementById('live-feed').innerHTML = data.opportunities.map(o => {
+                    const ch = data.channels.find(c => c.username === o.channel);
+                    const displayName = ch ? (ch.name || ch.username) : o.channel;
+                    return `
+                        <div class="list-item">
+                            <div class="item-info"><h4>🌍 ${o.country}</h4><p>${displayName}</p></div>
+                            <div class="profit-badge">+$${o.profit}</div>
+                        </div>
+                    `;
+                }).join('') || '<p style="text-align: center; color: var(--text-s);">Listening for opportunities...</p>';
 
                 // Check Auth Status & Render Account Card
                 const authRes = await fetch('/api/auth/status');
@@ -1343,8 +1365,8 @@
         }
 
         async function runManualCheck() {
-            const server = document.getElementById('scraper-server-val').innerText.trim();
-            const channel = document.getElementById('scraper-channel-val').innerText.trim();
+            const server = document.getElementById('scraper-server-val').dataset.url || document.getElementById('scraper-server-val').innerText.trim();
+            const channel = document.getElementById('scraper-channel-val').dataset.username || document.getElementById('scraper-channel-val').innerText.trim();
             if (!server || !channel || server === 'Select Server' || channel === 'Select Channel') return showToast("Select both server and channel", "error");
 
             const btn = document.getElementById('btn-run-check');
@@ -1429,6 +1451,7 @@
         // --- Inline Form Handlers ---
         async function addApiServerInline() {
             const url = document.getElementById('inline-api-server-input').value.trim();
+            const name = document.getElementById('inline-api-server-name').value.trim();
             if (!url) return;
             // Duplicate check
             if ((dataCache.api_servers || []).some(s => s.url === url)) {
@@ -1436,7 +1459,7 @@
             }
             const res = await fetch('/api/dashboard/api-servers', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url })
+                body: JSON.stringify({ url, name })
             });
             const data = await res.json();
             if (data.status === 'ok') {
@@ -1504,6 +1527,7 @@
 
         async function addChannelInline() {
             const user = document.getElementById('inline-channel-input').value.trim();
+            const name = document.getElementById('inline-channel-name').value.trim();
             if (!user) return;
             // Duplicate check
             if ((dataCache.channels || []).some(c => c.username === user)) {
@@ -1511,7 +1535,7 @@
             }
             const res = await fetch('/api/dashboard/channels', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: user })
+                body: JSON.stringify({ username: user, name })
             });
             const data = await res.json();
             if (data.status === 'ok') {

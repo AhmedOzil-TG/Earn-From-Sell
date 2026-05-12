@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from typing import Optional
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
@@ -54,6 +55,7 @@ class BotStates(StatesGroup):
     waiting_for_code = State()
     waiting_for_password = State()
     waiting_for_channel_username = State()
+    waiting_for_channel_name = State()
     waiting_for_channel_sample = State()
     waiting_for_channel_confirm = State()
     waiting_for_channel_pattern = State()
@@ -152,9 +154,19 @@ async def process_channel_username(message: types.Message, state: FSMContext):
     if not any(username.startswith(p) for p in ["@", "-", "http"]) and not username.isdigit():
         username = "@" + username
     
-    # We no longer need patterns! The bot will universally extract phone prefixes and prices.
-    await add_channel(username, "UNIVERSAL")
-    await message.answer(_("channel_added", lang, username), reply_markup=main_keyboard(lang))
+    await state.update_data(channel_id=username)
+    await message.answer(_("add_channel_name_prompt", lang))
+    await state.set_state(BotStates.waiting_for_channel_name)
+
+@dp.message(BotStates.waiting_for_channel_name)
+async def process_channel_name(message: types.Message, state: FSMContext):
+    lang = await get_user_language(message.from_user.id)
+    name = message.text.strip()
+    data = await state.get_data()
+    username = data['channel_id']
+    
+    await add_channel(username, "UNIVERSAL", name)
+    await message.answer(_("channel_added", lang, name, username), reply_markup=main_keyboard(lang))
     await state.clear()
 
 @dp.message(F.text.in_([STRINGS["btn_list_channels"]["en"], STRINGS["btn_list_channels"]["ar"]]))
@@ -293,16 +305,16 @@ async def telethon_handler(event):
         matched_channel_name = None
         pattern = None
         
-        for db_user, db_pattern in channels:
+        for db_user, db_pattern, db_name in channels:
             db_u_clean = db_user.replace("https://t.me/", "").replace("@", "").strip()
             
             if chat_username and chat_username.lower() == db_u_clean.lower():
                 pattern = db_pattern
-                matched_channel_name = db_user
+                matched_channel_name = db_name or db_user
                 break
             elif chat_id == db_user or chat_id.replace("-100", "") == db_user.replace("-100", ""):
                 pattern = db_pattern
-                matched_channel_name = db_user
+                matched_channel_name = db_name or db_user
                 break
 
         if not pattern: return
@@ -373,7 +385,7 @@ async def get_dashboard_data():
     stats = await get_stats()
     opps = await get_opportunities(10)
     channels_raw = await get_channels_with_patterns()
-    channels = [{"username": c[0], "pattern": c[1]} for c in channels_raw]
+    channels = [{"username": c[0], "pattern": c[1], "name": c[2]} for c in channels_raw]
     api_servers = await get_api_servers()
     
     return {
@@ -385,10 +397,11 @@ async def get_dashboard_data():
 
 class ChannelData(BaseModel):
     username: str
+    name: Optional[str] = None
 
 @app.post("/api/dashboard/channels")
 async def api_add_channel(data: ChannelData):
-    await add_channel(data.username, "UNIVERSAL")
+    await add_channel(data.username, "UNIVERSAL", data.name)
     return {"status": "ok"}
 
 @app.delete("/api/dashboard/channels/{username}")
@@ -398,10 +411,11 @@ async def api_delete_channel(username: str):
 
 class ApiServerData(BaseModel):
     url: str
+    name: Optional[str] = None
 
 @app.post("/api/dashboard/api-servers")
 async def api_add_server(data: ApiServerData):
-    await add_api_server(data.url)
+    await add_api_server(data.url, data.name)
     return {"status": "ok"}
 
 @app.delete("/api/dashboard/api-servers")

@@ -51,9 +51,13 @@ STRINGS = {
         "en": "Please send the channel username (e.g. @channel_name) or the numeric ID (e.g. -100123...):",
         "ar": "يرجى إرسال معرف القناة (مثال: @channel_name) أو الآيدي الرقمي (مثال: -100123...):"
     },
+    "add_channel_name_prompt": {
+        "en": "Perfect! Now enter a friendly name for this channel (e.g. My Favorite Store):",
+        "ar": "ممتاز! الآن أدخل اسماً مستعاراً لهذه القناة (مثال: متجري المفضل):"
+    },
     "channel_added": {
-        "en": "✅ Channel {} added successfully!\n\n💡 Thanks to the new AI system, the bot will automatically extract country prices from this channel regardless of language or format.",
-        "ar": "✅ تم إضافة القناة {} بنجاح!\n\n💡 بفضل نظام الذكاء الاصطناعي الجديد، سيقوم البوت باستخراج أسعار الدول من هذه القناة تلقائياً مهما كانت لغتها أو شكلها."
+        "en": "✅ Channel '{}' (ID: {}) added successfully!",
+        "ar": "✅ تم إضافة القناة '{}' (المعرف: {}) بنجاح!"
     },
     "no_channels": {
         "en": "No tracked channels found.",

@@ -16,12 +16,13 @@ async def init_db():
                 pattern TEXT
             )
         """)
-        # Migration: Check if 'pattern' column exists (for users with old schema)
-        try:
-            await db.execute("ALTER TABLE channels ADD COLUMN pattern TEXT")
-        except:
-            # Column already exists
-            pass
+        # Migration: Add 'name' column to channels and api_servers if they don't exist
+        try: await db.execute("ALTER TABLE channels ADD COLUMN name TEXT")
+        except: pass
+        try: await db.execute("ALTER TABLE api_servers ADD COLUMN name TEXT")
+        except: pass
+        try: await db.execute("ALTER TABLE channels ADD COLUMN pattern TEXT")
+        except: pass
             
         await db.execute("""
             CREATE TABLE IF NOT EXISTS settings (
@@ -65,19 +66,19 @@ async def set_user_language(user_id: int, lang: str):
         await db.execute("INSERT OR REPLACE INTO users (user_id, language) VALUES (?, ?)", (user_id, lang))
         await db.commit()
 
-async def add_channel(username: str, pattern: str):
+async def add_channel(username: str, pattern: str, name: str = None):
     async with aiosqlite.connect(DATABASE_PATH) as db:
-        await db.execute("INSERT OR REPLACE INTO channels (username, pattern) VALUES (?, ?)", (username, pattern))
+        await db.execute("INSERT OR REPLACE INTO channels (username, pattern, name) VALUES (?, ?, ?)", (username, pattern, name))
         await db.commit()
 
 async def get_channels_with_patterns():
     async with aiosqlite.connect(DATABASE_PATH) as db:
-        async with db.execute("SELECT username, pattern FROM channels") as cursor:
+        async with db.execute("SELECT username, pattern, name FROM channels") as cursor:
             return await cursor.fetchall()
 
-async def get_channel_pattern(username: str):
+async def get_channel_pattern(username: str) -> str:
     async with aiosqlite.connect(DATABASE_PATH) as db:
-        async with db.execute("SELECT pattern FROM channels WHERE username = ?", (username,)) as cursor:
+        async with db.execute("SELECT pattern FROM channels WHERE username = ? OR name = ?", (username, username)) as cursor:
             row = await cursor.fetchone()
             return row[0] if row else None
 
@@ -106,16 +107,16 @@ async def get_stats():
             opp_count = (await cursor.fetchone())[0]
         return {"channel_count": channel_count, "opportunity_count": opp_count}
 
-async def add_api_server(url: str):
+async def add_api_server(url: str, name: str = None):
     async with aiosqlite.connect(DATABASE_PATH) as db:
-        await db.execute("INSERT OR IGNORE INTO api_servers (url) VALUES (?)", (url,))
+        await db.execute("INSERT OR REPLACE INTO api_servers (url, name) VALUES (?, ?)", (url, name))
         await db.commit()
 
 async def get_api_servers():
     async with aiosqlite.connect(DATABASE_PATH) as db:
-        async with db.execute("SELECT url FROM api_servers") as cursor:
+        async with db.execute("SELECT id, url, name FROM api_servers") as cursor:
             rows = await cursor.fetchall()
-            return [{"url": r[0]} for r in rows]
+            return [{"id": r[0], "url": r[1], "name": r[2]} for r in rows]
 
 async def remove_api_server(url: str):
     async with aiosqlite.connect(DATABASE_PATH) as db:
