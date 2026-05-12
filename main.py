@@ -148,7 +148,9 @@ async def add_channel_start(message: types.Message, state: FSMContext):
 async def process_channel_username(message: types.Message, state: FSMContext):
     lang = await get_user_language(message.from_user.id)
     username = message.text.strip()
-    if not username.startswith("@"): username = "@" + username
+    # Only add @ if it doesn't look like an ID, a link, or already has an @
+    if not any(username.startswith(p) for p in ["@", "-", "http"]) and not username.isdigit():
+        username = "@" + username
     
     # We no longer need patterns! The bot will universally extract phone prefixes and prices.
     await add_channel(username, "UNIVERSAL")

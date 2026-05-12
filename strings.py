@@ -48,8 +48,8 @@ STRINGS = {
         "ar": "❌ خطأ: {}"
     },
     "add_channel_prompt": {
-        "en": "Please send the channel username (e.g. @channel_name):",
-        "ar": "يرجى إرسال معرف القناة (مثال: @channel_name):"
+        "en": "Please send the channel username (e.g. @channel_name) or the numeric ID (e.g. -100123...):",
+        "ar": "يرجى إرسال معرف القناة (مثال: @channel_name) أو الآيدي الرقمي (مثال: -100123...):"
     },
     "channel_added": {
         "en": "✅ Channel {} added successfully!\n\n💡 Thanks to the new AI system, the bot will automatically extract country prices from this channel regardless of language or format.",
