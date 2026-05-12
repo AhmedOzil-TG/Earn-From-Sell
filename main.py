@@ -241,7 +241,7 @@ async def process_manual_check(message: types.Message, state: FSMContext):
             
             for country, sell in latest_prices.items():
                 if country in buy_prices:
-                    buy_info = buy_prices[country]
+                    buy_info = buy_prices[country][0]
                     buy = buy_info["price"]
                     profit = sell - buy
                     all_checks.append((country, buy, sell, profit, channel_user))
@@ -302,17 +302,25 @@ async def telethon_handler(event):
     
     for country, sell in results:
         if country in buy_prices:
-            buy_info = buy_prices[country]
-            buy = buy_info["price"]
-            server_url = buy_info["server"]
-            profit = sell - buy
-            if profit >= MIN_PROFIT:
-                # Save to database for dashboard
-                await save_opportunity(country, buy, sell, profit, matched_channel_name)
+            profitable_sources = []
+            for buy_info in buy_prices[country]:
+                buy = buy_info["price"]
+                server_url = buy_info["server"]
+                profit = sell - buy
+                if profit >= MIN_PROFIT:
+                    profitable_sources.append({"buy": buy, "profit": profit, "server": server_url})
+            
+            if profitable_sources:
+                best = profitable_sources[0]
+                # Save the best to database for dashboard
+                await save_opportunity(country, best["buy"], sell, best["profit"], matched_channel_name)
                 
-                profit_str = f"{profit:.2f}"
                 country_display = get_country_display(country)
-                msg = _("profit_alert", admin_lang, country_display, buy, sell, profit_str, matched_channel_name, server_url)
+                msg = f"• New Profit Opportunity 🔔\n\n• For country :- {country_display}\n• Sell :- ${sell} 💵\n• Sell Source :- {matched_channel_name}\n\n🛒 *Buy Options:*\n"
+                
+                for src in profitable_sources:
+                    msg += f"• Buy :- ${src['buy']} 💵\n• Profit :- ${src['profit']:.2f} 💵\n• Buy Source :- {src['server']}\n\n"
+                
                 await bot.send_message(ADMIN_ID, msg, disable_web_page_preview=True)
 
 # -- Language Selection --
@@ -477,17 +485,18 @@ async def api_manual_check(req: ManualCheckRequest):
         
         for country, sell in latest_prices.items():
             if country in buy_prices:
-                buy_info = buy_prices[country]
-                buy = buy_info["price"]
-                profit = sell - buy
-                if profit > 0:
-                    results_summary.append({
-                        "country": country,
-                        "buy": buy,
-                        "sell": sell,
-                        "profit": round(profit, 2),
-                        "channel": req.channel
-                    })
+                for buy_info in buy_prices[country]:
+                    buy = buy_info["price"]
+                    profit = sell - buy
+                    if profit > 0:
+                        results_summary.append({
+                            "country": country,
+                            "buy": buy,
+                            "sell": sell,
+                            "profit": round(profit, 2),
+                            "server": buy_info["server"],
+                            "channel": req.channel
+                        })
         return {"status": "ok", "results": results_summary}
     except Exception as e:
         logger.error(f"Manual check error: {e}")
