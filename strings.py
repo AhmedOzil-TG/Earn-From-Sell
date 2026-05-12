@@ -92,8 +92,8 @@ STRINGS = {
         "ar": "🌍 {}:\nشراء ${}\nبيع ${}\nالربح: ${}\n+-----------+-------------+----------+----------|\n"
     },
     "profit_alert": {
-        "en": "🔔 *New Profit Opportunity!*\n\n🌍 Country: *{}*\n🛒 Buy: *${}* (Source: {})\n📈 Sell: *${}* (Source: {})\n💵 Profit: *${}*",
-        "ar": "🔔 *New Profit Opportunity!*\n\n🌍 Country: *{}*\n🛒 Buy: *${}* (Source: {})\n📈 Sell: *${}* (Source: {})\n💵 Profit: *${}*"
+        "en": "• New Profit Opportunity 🔔\n\n• For country :- {}\n• Buy :- ${} 💵\n\n• Sell :- ${} 💵\n• Profit :- ${} 💵\n\n• Sell Source :- {}\n• Buy Source :- {}",
+        "ar": "• New Profit Opportunity 🔔\n\n• For country :- {}\n• Buy :- ${} 💵\n\n• Sell :- ${} 💵\n• Profit :- ${} 💵\n\n• Sell Source :- {}\n• Buy Source :- {}"
     },
     "lang_prompt": {
         "en": "Please choose your preferred language:",

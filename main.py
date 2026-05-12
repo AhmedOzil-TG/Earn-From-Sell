@@ -20,6 +20,18 @@ from fastapi.responses import HTMLResponse
 import uvicorn
 from pydantic import BaseModel
 import json
+import pycountry
+
+def get_country_display(iso_code):
+    if not iso_code or len(iso_code) != 2:
+        return iso_code
+    try:
+        emoji = chr(ord(iso_code[0].upper()) + 127397) + chr(ord(iso_code[1].upper()) + 127397)
+        country = pycountry.countries.get(alpha_2=iso_code.upper())
+        name = country.name if country else iso_code
+        return f"{name}{emoji}"
+    except:
+        return iso_code
 
 app = FastAPI()
 # Store recent opportunities in memory for faster access, or use DB
@@ -299,7 +311,8 @@ async def telethon_handler(event):
                 await save_opportunity(country, buy, sell, profit, matched_channel_name)
                 
                 profit_str = f"{profit:.2f}"
-                msg = _("profit_alert", admin_lang, country, buy, server_url, sell, matched_channel_name, profit_str)
+                country_display = get_country_display(country)
+                msg = _("profit_alert", admin_lang, country_display, buy, sell, profit_str, matched_channel_name, server_url)
                 await bot.send_message(ADMIN_ID, msg, disable_web_page_preview=True)
 
 # -- Language Selection --
