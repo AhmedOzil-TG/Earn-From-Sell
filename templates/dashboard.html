@@ -1417,7 +1417,7 @@
         function toggleAddChannelBtn() {
             const user = document.getElementById('inline-channel-input').value.trim();
             const btn = document.getElementById('inline-add-channel-btn');
-            btn.disabled = !(user.startsWith('@') && user.length >= 5); // @ + 4 chars
+            btn.disabled = user.length < 4;
         }
 
         function toggleAddApiBtn() {
