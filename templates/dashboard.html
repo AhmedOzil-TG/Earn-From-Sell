@@ -1422,8 +1422,12 @@
 
         // --- Inline Form Handlers ---
         async function addApiServerInline() {
-            const url = document.getElementById('inline-api-server-input').value;
+            const url = document.getElementById('inline-api-server-input').value.trim();
             if (!url) return;
+            // Duplicate check
+            if ((dataCache.api_servers || []).some(s => s.url === url)) {
+                return showToast("This server already exists!", 'error');
+            }
             const res = await fetch('/api/dashboard/api-servers', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ url })
@@ -1433,7 +1437,7 @@
                 document.getElementById('inline-api-server-input').value = '';
                 loadData();
                 showToast("API Server added!");
-            } else showToast(data.message, 'error');
+            } else showToast(data.message || "Failed to add server", 'error');
         }
 
         function askDeleteApiServer(url) {
@@ -1447,7 +1451,7 @@
                 else showToast(data.message, 'error');
                 closeConfirmModal();
             };
-            document.getElementById('confirm-text').innerText = `Are you sure you want to remove the server: ${url}?`;
+            document.getElementById('confirm-text').innerText = "Are you sure you want to delete this server?";
             document.getElementById('modal-confirm').style.display = 'flex';
         }
         async function sendCodeInline() {
@@ -1493,15 +1497,22 @@
         }
 
         async function addChannelInline() {
-            const user = document.getElementById('inline-channel-input').value;
+            const user = document.getElementById('inline-channel-input').value.trim();
             if (!user) return;
-            await fetch('/api/dashboard/channels', {
+            // Duplicate check
+            if ((dataCache.channels || []).some(c => c.username === user)) {
+                return showToast("This channel already exists!", 'error');
+            }
+            const res = await fetch('/api/dashboard/channels', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: user })
             });
-            document.getElementById('inline-channel-input').value = '';
-            loadData();
-            showToast("Channel linked successfully!");
+            const data = await res.json();
+            if (data.status === 'ok') {
+                document.getElementById('inline-channel-input').value = '';
+                loadData();
+                showToast("Channel linked successfully!");
+            } else showToast(data.message || "Failed to add channel", 'error');
         }
 
         window.onload = loadData;
