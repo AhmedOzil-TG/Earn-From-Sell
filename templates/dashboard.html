@@ -1275,12 +1275,16 @@
         function openSelector(title, options, currentValue, callback) {
             document.getElementById('selector-title').innerText = title;
             const container = document.getElementById('selector-options');
-            container.innerHTML = options.map(opt => {
+            
+            // Reorder options to put current selection at top
+            const sortedOptions = [...options].sort((a, b) => (a === currentValue ? -1 : b === currentValue ? 1 : 0));
+            
+            container.innerHTML = sortedOptions.map(opt => {
                 const isSelected = opt === currentValue;
                 const borderStyle = isSelected ? 'border-color: var(--accent); background: rgba(88, 101, 242, 0.05);' : '';
                 return `
                     <div class="card" onclick="selectOption('${opt}', ${callback.toString()})" 
-                         style="margin-bottom: 0; padding: 15px; cursor: pointer; text-align: left; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; ${borderStyle}">
+                         style="margin-bottom: 0; padding: 15px; cursor: pointer; text-align: left; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; box-shadow: none; ${borderStyle}">
                         ${isSelected ? '<i class="fa-solid fa-circle-check" style="color: var(--accent); margin-right: 8px;"></i>' : ''}
                         ${opt}
                     </div>
