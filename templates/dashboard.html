@@ -1125,7 +1125,7 @@
                 const apiContainer = document.getElementById('api-servers-list');
                 const servers = data.api_servers || [];
                 if (servers.length > 0) {
-                    apiContainer.innerHTML = servers.map(s => `
+                    apiContainer.innerHTML = [...servers].reverse().map(s => `
                         <div class="card card-zoom" style="padding: 24px 20px 20px; box-shadow: none; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 0; cursor: pointer;">
                             <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
                                 <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-s);"><i class="fas fa-server" style="color: #10b981; margin-right: 8px;"></i>Server</h3>
@@ -1136,7 +1136,7 @@
                                     <span style="color: #10b981; font-weight: 700; font-size: 0.85rem; text-transform: uppercase;">CONNECTED</span>
                                 </div>
                                 <div style="${rowS('#0ea5e9')}">
-                                    <span style="${lblS}">ENDPOINT</span>
+                                    <span style="${lblS}">LINK</span>
                                     <span style="color: var(--text-s); font-weight: 700; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${s.url}</span>
                                 </div>
                                 <button class="btn-action" onclick="askDeleteApiServer('${s.url}')" style="width: 100%; height: 52px; background: rgba(239, 68, 68, 0.05); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.1); box-shadow: none; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 12px; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);">
