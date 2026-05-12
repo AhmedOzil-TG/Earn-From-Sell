@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import aiosqlite
 from typing import Optional
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
@@ -13,7 +14,8 @@ from config import API_ID, API_HASH, BOT_TOKEN, ADMIN_ID, MIN_PROFIT, WEBAPP_URL
 from scrapers import parse_price_message, fetch_buy_prices_api
 from database import (init_db, add_channel, get_channels_with_patterns, remove_channel, 
                      get_channel_pattern, get_user_language, set_user_language, save_opportunity, 
-                     get_opportunities, get_stats, add_api_server, get_api_servers, remove_api_server)
+                     get_opportunities, get_stats, add_api_server, get_api_servers, remove_api_server,
+                     DATABASE_PATH)
 from strings import _, STRINGS
 
 from fastapi import FastAPI, Request
@@ -231,8 +233,11 @@ async def process_manual_check(message: types.Message, state: FSMContext):
     if choice == "All Channels" or choice == "كل القنوات":
         to_check = await get_channels_with_patterns()
     else:
-        pattern = await get_channel_pattern(choice)
-        if pattern: to_check = [(choice, pattern)]
+        # Try finding by name or username
+        async with aiosqlite.connect(DATABASE_PATH) as db:
+            async with db.execute("SELECT username, pattern, name FROM channels WHERE username = ? OR name = ?", (choice, choice)) as cursor:
+                row = await cursor.fetchone()
+                if row: to_check = [row]
     
     if not to_check:
         await message.answer(_("error", lang, "Channel not found."))
@@ -242,8 +247,9 @@ async def process_manual_check(message: types.Message, state: FSMContext):
     opportunities = []
     if not client.is_connected(): await client.connect()
 
-    for channel_user, pattern in to_check:
+    for channel_user, pattern, channel_name in to_check:
         try:
+            display_name = channel_name or channel_user
             # If it's a numeric ID, convert to int for Telethon
             target = channel_user
             if str(target).startswith("-") or str(target).isdigit():
@@ -265,11 +271,11 @@ async def process_manual_check(message: types.Message, state: FSMContext):
                     buy_info = buy_prices[country][0]
                     buy = buy_info["price"]
                     profit = sell - buy
-                    all_checks.append((country, buy, sell, profit, channel_user))
+                    all_checks.append((country, buy, sell, profit, display_name))
                     if profit >= MIN_PROFIT:
-                        opportunities.append((country, buy, sell, profit, channel_user))
+                        opportunities.append((country, buy, sell, profit, display_name))
                 else:
-                    all_checks.append((country, "N/A", sell, 0.0, channel_user))
+                    all_checks.append((country, "N/A", sell, 0.0, display_name))
         except Exception as e: logger.error(f"Error checking {channel_user}: {e}")
 
     if not all_checks:
@@ -352,6 +358,10 @@ async def telethon_handler(event):
                     await bot.send_message(ADMIN_ID, msg, disable_web_page_preview=True, parse_mode="HTML")
     except Exception as e:
         logger.error(f"Telethon handler error: {e}")
+        if "authorization has been invalidated" in str(e).lower() or "session_revoked" in str(e).lower():
+            try:
+                await bot.send_message(ADMIN_ID, "⚠️ <b>Telegram Session Expired!</b>\nYour account has been logged out or the session is invalid. Please use /start and link your account again.", parse_mode="HTML")
+            except: pass
 
 # -- Language Selection --
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
