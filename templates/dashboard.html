@@ -1040,6 +1040,8 @@
             // Reset Scroll Position to Top
             document.querySelector('.main-content').scrollTop = 0;
 
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
             let pageTitle = "Home";
             if (el) { el.classList.add('active'); pageTitle = el.getAttribute('data-page'); }
             else {
