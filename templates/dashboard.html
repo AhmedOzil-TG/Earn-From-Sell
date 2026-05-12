@@ -1036,7 +1036,9 @@
         function switchView(id, el) {
             document.querySelectorAll('.view-panel').forEach(v => v.classList.remove('active'));
             document.getElementById('view-' + id).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            // Reset Scroll Position to Top
+            document.querySelector('.main-content').scrollTop = 0;
 
             let pageTitle = "Home";
             if (el) { el.classList.add('active'); pageTitle = el.getAttribute('data-page'); }
@@ -1045,7 +1047,7 @@
                 if (navItem) { navItem.classList.add('active'); pageTitle = navItem.getAttribute('data-page'); }
             }
             document.getElementById('current-page-title').innerText = pageTitle;
-            localStorage.setItem('active_view', id);
+            
             if (window.innerWidth < 800) {
                 document.getElementById('sidebar').classList.remove('open');
                 document.getElementById('sidebar-overlay').classList.remove('show');
@@ -1054,8 +1056,7 @@
         }
 
         async function loadData() {
-            const savedView = localStorage.getItem('active_view') || 'home';
-            switchView(savedView);
+            switchView('home'); // Always open on Home
 
             try {
                 const res = await fetch('/api/dashboard/data');
