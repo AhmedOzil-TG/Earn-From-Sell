@@ -848,13 +848,13 @@
         <!-- Manual Check View -->
         <div id="view-scraper" class="view-panel">
             <div class="card" style="padding: 25px;">
-                <div class="input-group">
+                <div class="input-group" onclick="openSelector('API Server', (dataCache.api_servers || []).map(s => s.url), (val) => document.getElementById('scraper-server-val').innerText = val)" style="cursor: pointer;">
                     <label>API Server</label>
-                    <select id="scraper-server-select" class="w-input" style="font-size: 1rem !important; background: transparent !important; border: none !important; color: #fff !important; width: 100%; outline: none; cursor: pointer;"></select>
+                    <div id="scraper-server-val" class="w-input" style="font-size: 1rem !important; min-height: 32px; display: flex; align-items: center; color: #fff;">Select Server</div>
                 </div>
-                <div class="input-group">
+                <div class="input-group" onclick="openSelector('Source Channel', (dataCache.channels || []).map(c => c.username), (val) => document.getElementById('scraper-channel-val').innerText = val)" style="cursor: pointer;">
                     <label>Source Channel</label>
-                    <select id="scraper-channel-select" class="w-input" style="font-size: 1rem !important; background: transparent !important; border: none !important; color: #fff !important; width: 100%; outline: none; cursor: pointer;"></select>
+                    <div id="scraper-channel-val" class="w-input" style="font-size: 1rem !important; min-height: 32px; display: flex; align-items: center; color: #fff;">Select Channel</div>
                 </div>
                 <button class="btn-action-premium" style="width: 100%; background: var(--accent);" onclick="runManualCheck()" id="btn-run-check">
                     <i class="fa-solid fa-play"></i> Start Analysis
@@ -947,12 +947,27 @@
         </div>
     </div>
 
+    <!-- Custom Selector Modal -->
+    <div id="selector-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px; padding: 30px;">
+            <div class="modal-header">
+                <div class="modal-icon"><i class="fa-solid fa-list-ul"></i></div>
+                <h3 class="modal-title" id="selector-title">Select Item</h3>
+            </div>
+            <div id="selector-options" style="display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto;">
+                <!-- Options will be injected here -->
+            </div>
+            <button class="btn-action secondary" style="width: 100%; margin-top: 20px;" onclick="closeSelector()">Cancel</button>
+        </div>
+    </div>
+
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
         tg.headerColor = '#111113';
         tg.backgroundColor = '#111113';
 
+        let dataCache = {};
         let loginData = { phone: '', hash: '' };
         let confirmCallback = null;
 
@@ -1030,11 +1045,19 @@
                 const res = await fetch('/api/dashboard/data');
                 const data = await res.json();
 
+                dataCache = data;
+
                 document.getElementById('stat-channels').innerText = data.channels.length;
                 document.getElementById('stat-opps').innerText = data.opportunities.length;
                 document.getElementById('min-profit-input').value = data.min_profit;
 
-                // Render Channels as Cards
+                // Set default values if selects are empty
+                if (document.getElementById('scraper-server-val').innerText === 'Select Server' && data.api_servers.length > 0) {
+                    document.getElementById('scraper-server-val').innerText = data.api_servers[0].url;
+                }
+                if (document.getElementById('scraper-channel-val').innerText === 'Select Channel' && data.channels.length > 0) {
+                    document.getElementById('scraper-channel-val').innerText = data.channels[0].username;
+                }
                 const channelsContainer = document.getElementById('channels-list');
                 if (data.channels.length > 0) {
                     channelsContainer.innerHTML = data.channels.map(c => `
@@ -1099,12 +1122,6 @@
                     `;
                 }
 
-                // Update Scraper Selects
-                const serverSelect = document.getElementById('scraper-server-select');
-                const channelSelect = document.getElementById('scraper-channel-select');
-                
-                serverSelect.innerHTML = (data.api_servers || []).map(s => `<option value="${s.url}">${s.url}</option>`).join('') || '<option value="">No Servers</option>';
-                channelSelect.innerHTML = (data.channels || []).map(c => `<option value="${c.username}">${c.username}</option>`).join('') || '<option value="">No Channels</option>';
                 
                 document.getElementById('live-feed').innerHTML = data.opportunities.map(o => `
                     <div class="list-item">
@@ -1255,10 +1272,32 @@
         }
 
         // --- Actions ---
+        function openSelector(title, options, callback) {
+            document.getElementById('selector-title').innerText = title;
+            const container = document.getElementById('selector-options');
+            container.innerHTML = options.map(opt => `
+                <div class="card" onclick="selectOption('${opt}', ${callback.toString()})" style="margin-bottom: 0; padding: 15px; cursor: pointer; text-align: left; font-weight: 600;">
+                    ${opt}
+                </div>
+            `).join('') || '<p style="text-align:center; opacity:0.5;">No options available</p>';
+            document.getElementById('selector-modal').style.display = 'flex';
+            tg.HapticFeedback.impactOccurred('medium');
+        }
+
+        window.selectOption = function(val, callback) {
+            callback(val);
+            closeSelector();
+            tg.HapticFeedback.notificationOccurred('success');
+        };
+
+        function closeSelector() {
+            document.getElementById('selector-modal').style.display = 'none';
+        }
+
         async function runManualCheck() {
-            const server = document.getElementById('scraper-server-select').value;
-            const channel = document.getElementById('scraper-channel-select').value;
-            if (!server || !channel) return showToast("Select both server and channel", "error");
+            const server = document.getElementById('scraper-server-val').innerText;
+            const channel = document.getElementById('scraper-channel-val').innerText;
+            if (server === 'Select Server' || channel === 'Select Channel') return showToast("Select both server and channel", "error");
 
             const btn = document.getElementById('btn-run-check');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analyzing...';
@@ -1276,7 +1315,7 @@
                             <div style="display: flex; flex-direction: column; gap: 12px;">
                                 <div style="${rowS('#0ea5e9')}">
                                     <span style="${lblS}">COUNTRY</span>
-                                    <span style="color: var(--text-s); font-weight: 700; font-size: 1rem;">${getFlagEmoji(r.country)} ${getCountryName(r.country)}</span>
+                                    <span style="color: var(--text-s); font-weight: 700; font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: right;">${getFlagEmoji(r.country)} ${getCountryName(r.country)}</span>
                                 </div>
                                 <div style="${rowS('#10b981')}">
                                     <span style="${lblS}">PROFIT</span>
