@@ -64,11 +64,6 @@
             background-clip: padding-box;
         }
 
-        /* --- Selector Modal Scrollbar --- */
-        .selector-scroll::-webkit-scrollbar { width: 5px; }
-        .selector-scroll::-webkit-scrollbar-track { background: transparent; }
-        .selector-scroll::-webkit-scrollbar-thumb { background: #8b5cf6; border-radius: 10px; }
-
         /* --- Top Bar --- */
         .top-bar {
             height: 70px;
@@ -855,7 +850,8 @@
                     onclick="addApiServerInline()" disabled>Add API Server</button>
             </div>
 
-            <div class="card" style="padding: 22px; margin-top: 25px; margin-bottom: 0;" id="api-servers-card-container">
+            <div class="card" style="padding: 22px; margin-top: 25px; margin-bottom: 0;"
+                id="api-servers-card-container">
                 <div class="section-header" style="margin-top: 0; margin-bottom: 35px;">
                     <i class="fa-solid fa-server"></i><span>Configured Servers</span>
                 </div>
@@ -868,15 +864,24 @@
         <!-- Manual Check View -->
         <div id="view-scraper" class="view-panel">
             <div class="card" style="padding: 25px;">
-                <div class="input-group" onclick="openSelector('API Server', (dataCache.api_servers || []).map(s => s.url), document.getElementById('scraper-server-val').innerText, (val) => document.getElementById('scraper-server-val').innerText = val)" style="cursor: pointer;">
+                <div class="input-group"
+                    onclick="openSelector('API Server', (dataCache.api_servers || []).map(s => s.url), document.getElementById('scraper-server-val').innerText, (val) => document.getElementById('scraper-server-val').innerText = val)"
+                    style="cursor: pointer;">
                     <label>API Server</label>
-                    <div id="scraper-server-val" class="w-input" style="font-size: 1rem !important; min-height: 32px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff; line-height: 32px;">Select Server</div>
+                    <div id="scraper-server-val" class="w-input"
+                        style="font-size: 1rem !important; min-height: 32px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff; line-height: 32px;">
+                        Select Server</div>
                 </div>
-                <div class="input-group" onclick="openSelector('Source Channel', (dataCache.channels || []).map(c => c.username), document.getElementById('scraper-channel-val').innerText, (val) => document.getElementById('scraper-channel-val').innerText = val)" style="cursor: pointer;">
+                <div class="input-group"
+                    onclick="openSelector('Source Channel', (dataCache.channels || []).map(c => c.username), document.getElementById('scraper-channel-val').innerText, (val) => document.getElementById('scraper-channel-val').innerText = val)"
+                    style="cursor: pointer;">
                     <label>Source Channel</label>
-                    <div id="scraper-channel-val" class="w-input" style="font-size: 1rem !important; min-height: 32px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff; line-height: 32px;">Select Channel</div>
+                    <div id="scraper-channel-val" class="w-input"
+                        style="font-size: 1rem !important; min-height: 32px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff; line-height: 32px;">
+                        Select Channel</div>
                 </div>
-                <button class="btn-action-premium" style="width: 100%; background: var(--accent);" onclick="runManualCheck()" id="btn-run-check">
+                <button class="btn-action-premium" style="width: 100%; background: var(--accent);"
+                    onclick="runManualCheck()" id="btn-run-check">
                     <i class="fa-solid fa-play"></i> Start Analysis
                 </button>
             </div>
@@ -974,10 +979,12 @@
                 <div class="modal-icon"><i class="fa-solid fa-list-ul"></i></div>
                 <h3 class="modal-title" id="selector-title">Select Item</h3>
             </div>
-            <div id="selector-options" class="selector-scroll" style="display: flex; flex-direction: column; gap: 10px; max-height: 55vh; overflow-y: auto; padding-right: 4px;">
+            <div id="selector-options"
+                style="display: flex; flex-direction: column; gap: 10px; max-height: 240px; overflow-y: auto; overflow-x: hidden; padding-right: 6px;">
                 <!-- Options will be injected here -->
             </div>
-            <button class="btn-action secondary" style="width: 100%; margin-top: 20px;" onclick="closeSelector()">Cancel</button>
+            <button class="btn-action secondary" style="width: 100%; margin-top: 20px;"
+                onclick="closeSelector()">Cancel</button>
         </div>
     </div>
 
@@ -1054,7 +1061,7 @@
             }
             document.getElementById('current-page-title').innerText = pageTitle;
             sessionStorage.setItem('active_view', id);
-            
+
             if (window.innerWidth < 800) {
                 document.getElementById('sidebar').classList.remove('open');
                 document.getElementById('sidebar-overlay').classList.remove('show');
@@ -1147,7 +1154,7 @@
                     `;
                 }
 
-                
+
                 document.getElementById('live-feed').innerHTML = data.opportunities.map(o => `
                     <div class="list-item">
                         <div class="item-info"><h4>🌍 ${o.country}</h4><p>${o.channel}</p></div>
@@ -1300,10 +1307,10 @@
         function openSelector(title, options, currentValue, callback) {
             document.getElementById('selector-title').innerText = title;
             const container = document.getElementById('selector-options');
-            
+
             // Reorder options to put current selection at top
             const sortedOptions = [...options].sort((a, b) => (a === currentValue ? -1 : b === currentValue ? 1 : 0));
-            
+
             container.innerHTML = sortedOptions.map(opt => {
                 const isSelected = opt === currentValue;
                 const borderStyle = isSelected ? 'border-color: var(--accent); background: rgba(88, 101, 242, 0.05);' : '';
@@ -1319,7 +1326,7 @@
             tg.HapticFeedback.impactOccurred('medium');
         }
 
-        window.selectOption = function(val, callback) {
+        window.selectOption = function (val, callback) {
             callback(val);
             closeSelector();
             tg.HapticFeedback.notificationOccurred('success');
@@ -1338,7 +1345,7 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analyzing...';
             btn.disabled = true;
             try {
-                const res = await fetch('/api/dashboard/manual-check', { 
+                const res = await fetch('/api/dashboard/manual-check', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ server, channel })
