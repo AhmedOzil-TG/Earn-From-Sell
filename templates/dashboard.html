@@ -970,6 +970,15 @@
             return String.fromCodePoint(...codePoints);
         }
 
+        function getCountryName(countryCode) {
+            try {
+                const displayNames = new Intl.DisplayNames(['en'], { type: 'region' });
+                return displayNames.of(countryCode.toUpperCase()) || countryCode;
+            } catch (e) {
+                return countryCode;
+            }
+        }
+
         // Shared Row Style (to ensure uniform size)
         const rowS = (c) => `height: 52px; background: ${hexToRgba(c, 0.02)}; border: 1px solid ${hexToRgba(c, 0.08)}; padding: 0 18px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; gap: 15px; width: 100%;`;
         const lblS = "color: var(--text-s); font-size: 0.8rem; font-weight: 500; text-transform: uppercase; opacity: 0.7; flex-shrink: 0;";
@@ -1267,7 +1276,7 @@
                             <div style="display: flex; flex-direction: column; gap: 12px;">
                                 <div style="${rowS('#0ea5e9')}">
                                     <span style="${lblS}">COUNTRY</span>
-                                    <span style="color: var(--text-s); font-weight: 700; font-size: 1rem;">${getFlagEmoji(r.country)} ${r.country}</span>
+                                    <span style="color: var(--text-s); font-weight: 700; font-size: 1rem;">${getFlagEmoji(r.country)} ${getCountryName(r.country)}</span>
                                 </div>
                                 <div style="${rowS('#10b981')}">
                                     <span style="${lblS}">PROFIT</span>
