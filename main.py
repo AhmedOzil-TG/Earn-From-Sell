@@ -447,13 +447,14 @@ async def api_manual_check(req: ManualCheckRequest):
             if country in buy_prices:
                 buy = buy_prices[country]
                 profit = sell - buy
-                results_summary.append({
-                    "country": country,
-                    "buy": buy,
-                    "sell": sell,
-                    "profit": round(profit, 2),
-                    "channel": req.channel
-                })
+                if profit > 0:
+                    results_summary.append({
+                        "country": country,
+                        "buy": buy,
+                        "sell": sell,
+                        "profit": round(profit, 2),
+                        "channel": req.channel
+                    })
         return {"status": "ok", "results": results_summary}
     except Exception as e:
         logger.error(f"Manual check error: {e}")
