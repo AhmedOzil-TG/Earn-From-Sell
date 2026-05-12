@@ -268,60 +268,62 @@ async def process_manual_check(message: types.Message, state: FSMContext):
 # --- Telethon Monitoring ---
 @client.on(events.NewMessage(incoming=True))
 async def telethon_handler(event):
-    if not event.message.message: return
-    # Get sender info
-    chat = await event.get_chat()
-    chat_username = getattr(chat, 'username', None)
-    chat_id = str(event.chat_id)
-    
-    channels = await get_channels_with_patterns()
-    matched_channel_name = None
-    pattern = None
-    
-    for db_user, db_pattern in channels:
-        db_u_clean = db_user.replace("https://t.me/", "").replace("@", "").strip()
+    try:
+        if not event.message.message: return
+        # Get sender info
+        chat = await event.get_chat()
+        chat_username = getattr(chat, 'username', None)
+        chat_id = str(event.chat_id)
         
-        if chat_username and chat_username.lower() == db_u_clean.lower():
-            pattern = db_pattern
-            matched_channel_name = db_user
-            break
-        elif chat_id == db_user or chat_id.replace("-100", "") == db_user.replace("-100", ""):
-            pattern = db_pattern
-            matched_channel_name = db_user
-            break
-
-    if not pattern: return
-
-    results = parse_price_message(event.message.message, pattern)
-    if not results: return
-    
-    servers_data = await get_api_servers()
-    server_urls = [s['url'] for s in servers_data]
-    buy_prices = await fetch_buy_prices_api(server_urls)
-    admin_lang = await get_user_language(ADMIN_ID)
-    
-    for country, sell in results:
-        if country in buy_prices:
-            profitable_sources = []
-            for buy_info in buy_prices[country]:
-                buy = buy_info["price"]
-                server_url = buy_info["server"]
-                profit = sell - buy
-                if profit >= MIN_PROFIT:
-                    profitable_sources.append({"buy": buy, "profit": profit, "server": server_url})
+        channels = await get_channels_with_patterns()
+        matched_channel_name = None
+        pattern = None
+        
+        for db_user, db_pattern in channels:
+            db_u_clean = db_user.replace("https://t.me/", "").replace("@", "").strip()
             
-            if profitable_sources:
-                best = profitable_sources[0]
-                # Save the best to database for dashboard
-                await save_opportunity(country, best["buy"], sell, best["profit"], matched_channel_name)
+            if chat_username and chat_username.lower() == db_u_clean.lower():
+                pattern = db_pattern
+                matched_channel_name = db_user
+                break
+            elif chat_id == db_user or chat_id.replace("-100", "") == db_user.replace("-100", ""):
+                pattern = db_pattern
+                matched_channel_name = db_user
+                break
+
+        if not pattern: return
+
+        results = parse_price_message(event.message.message, pattern)
+        if not results: return
+        
+        servers_data = await get_api_servers()
+        server_urls = [s['url'] for s in servers_data]
+        buy_prices = await fetch_buy_prices_api(server_urls)
+        
+        for country, sell in results:
+            if country in buy_prices:
+                profitable_sources = []
+                for buy_info in buy_prices[country]:
+                    buy = buy_info["price"]
+                    server_url = buy_info["server"]
+                    profit = sell - buy
+                    if profit >= MIN_PROFIT:
+                        profitable_sources.append({"buy": buy, "profit": profit, "server": server_url})
                 
-                country_display = get_country_display(country)
-                msg = f"• New Profit Opportunity 🔔\n\n• For country :- {country_display}\n• Sell :- ${sell} 💵\n• Sell Source :- {matched_channel_name}\n\n🛒 *Buy Options:*\n"
-                
-                for src in profitable_sources:
-                    msg += f"• Buy :- ${src['buy']} 💵\n• Profit :- ${src['profit']:.2f} 💵\n• Buy Source :- {src['server']}\n\n"
-                
-                await bot.send_message(ADMIN_ID, msg, disable_web_page_preview=True)
+                if profitable_sources:
+                    best = profitable_sources[0]
+                    # Save the best to database for dashboard
+                    await save_opportunity(country, best["buy"], sell, best["profit"], matched_channel_name)
+                    
+                    country_display = get_country_display(country)
+                    msg = f"• New Profit Opportunity 🔔\n\n• For country :- {country_display}\n• Sell :- ${sell} 💵\n• Sell Source :- {matched_channel_name}\n\n🛒 <b>Buy Options:</b>\n"
+                    
+                    for src in profitable_sources:
+                        msg += f"• Buy :- ${src['buy']} 💵\n• Profit :- ${src['profit']:.2f} 💵\n• Buy Source :- {src['server']}\n\n"
+                    
+                    await bot.send_message(ADMIN_ID, msg, disable_web_page_preview=True, parse_mode="HTML")
+    except Exception as e:
+        logger.error(f"Telethon handler error: {e}")
 
 # -- Language Selection --
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
