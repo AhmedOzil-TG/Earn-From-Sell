@@ -270,10 +270,15 @@ async def process_manual_check(message: types.Message, state: FSMContext):
 async def telethon_handler(event):
     try:
         if not event.message.message: return
-        # Get sender info
-        chat = await event.get_chat()
-        chat_username = getattr(chat, 'username', None)
         chat_id = str(event.chat_id)
+        chat_username = getattr(event.chat, 'username', None) if hasattr(event, 'chat') else None
+        
+        if not chat_username:
+            try:
+                chat = await event.get_chat()
+                chat_username = getattr(chat, 'username', None)
+            except Exception:
+                pass
         
         channels = await get_channels_with_patterns()
         matched_channel_name = None
@@ -526,6 +531,13 @@ async def main():
         logger.info("Connecting Telethon client...")
         await client.connect()
         logger.info("Telethon client connected.")
+        
+        # Fetch dialogs to populate entity cache, so incoming channel messages aren't ignored
+        if await client.is_user_authorized():
+            logger.info("User is authorized. Fetching dialogs to cache entities...")
+            await client.get_dialogs(limit=100)
+            logger.info("Dialogs cached.")
+            
     except Exception as e:
         logger.error(f"Failed to connect Telethon: {e}")
 
