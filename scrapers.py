@@ -5,24 +5,36 @@ import phonenumbers
 
 logger = logging.getLogger(__name__)
 
-# Mapping Persian/Arabic country names to ISO codes (as fallback)
-COUNTRY_MAP = {
-    "لیتوانی": "LT",
-    "عربستان": "SA",
-    "روسیه": "RU",
-    "برزیل": "BR",
-    "آلمان": "DE",
+import pycountry
+
+# Comprehensive country mapping including common translations
+COUNTRY_LOOKUP = {
+    # Manual additions for common Arabic/Persian names
+    "أمريكا": "US", "امريكا": "US", "الولايات المتحدة": "US", "ایالات متحده": "US",
+    "كندا": "CA", "كانادا": "CA", "کانادا": "CA",
+    "روسيا": "RU", "روسیه": "RU",
+    "البرازيل": "BR", "برزیل": "BR",
+    "ألمانيا": "DE", "آلمان": "DE",
+    "البرتغال": "PT", "پرتغال": "PT",
+    "فرنسا": "FR", "فرانسه": "FR",
+    "بريطانيا": "GB", "انگلستان": "GB", "المملكة المتحدة": "GB",
+    "إسبانيا": "ES", "اسپانیا": "ES",
+    "إيطاليا": "IT", "ایتالیا": "IT",
+    "تركيا": "TR", "ترکیه": "TR",
+    "مصر": "EG",
+    "السعودية": "SA", "عربستان": "SA",
+    "الإمارات": "AE", "امارات": "AE",
+    "العراق": "IQ",
+    "قزاقستان": "KZ", "كازاخستان": "KZ",
 }
 
-# Mapping of keywords to ISO codes for disambiguation
-COUNTRY_KEYWORDS = {
-    "US": ["usa", "united states", "أمريكا", "امريكا", "ایالات متحده"],
-    "CA": ["canada", "كانادا", "کانادا"],
-    "RU": ["russia", "روسیه", "روسيا"],
-    "KZ": ["kazakhstan", "قزاقستان", "كازاخستان"],
-    "PR": ["puerto rico", "بورتوريكو"],
-    "DO": ["dominican", "الدومينيكان"],
-}
+# Auto-populate with English names from pycountry
+for country in pycountry.countries:
+    COUNTRY_LOOKUP[country.name.lower()] = country.alpha_2
+    if hasattr(country, 'common_name'):
+        COUNTRY_LOOKUP[country.common_name.lower()] = country.alpha_2
+    if hasattr(country, 'official_name'):
+        COUNTRY_LOOKUP[country.official_name.lower()] = country.alpha_2
 
 def parse_price_message(text: str, pattern: str = None):
     results = []
@@ -30,28 +42,49 @@ def parse_price_message(text: str, pattern: str = None):
         lines = text.split('\n')
         for line in lines:
             line_lower = line.lower()
+            
+            # 1. Look for Country Name
+            iso_code = None
+            # Check manual/common names first for performance and specificity
+            for name, code in COUNTRY_LOOKUP.items():
+                if name.lower() in line_lower:
+                    iso_code = code
+                    break
+            
+            # 2. Look for Phone Prefix (e.g. +1, +44)
             prefix_matches = re.findall(r'\+(\d{1,4})\b', line)
+            if prefix_matches:
+                prefix = int(prefix_matches[0])
+                # If we haven't found a code by name yet, use the prefix
+                if not iso_code:
+                    iso_code = phonenumbers.region_code_for_country_code(prefix)
+            
+            # 3. Look for Price
             price_matches = re.findall(r'(?:(\d+\.\d+|\d+)\s*\$|\$\s*(\d+\.\d+|\d+))', line)
             
-            if prefix_matches and price_matches:
-                prefix = int(prefix_matches[0])
-                # Find default region code
-                code = phonenumbers.region_code_for_country_code(prefix)
-                
-                # Check for other regions with same prefix (like Canada for +1)
-                all_regions = phonenumbers.country_code_to_region_code.get(prefix, ())
-                if len(all_regions) > 1:
-                    for region in all_regions:
-                        keywords = COUNTRY_KEYWORDS.get(region, [])
-                        if any(kw in line_lower for kw in keywords):
-                            code = region
-                            break
-                
-                price_str = price_matches[0][0] or price_matches[0][1]
-                sell_price = float(price_str)
-                
-                if code and code != "ZZ":
-                    results.append((code, sell_price))
+            if iso_code and iso_code != "ZZ" and price_matches:
+                p1, p2 = price_matches[0]
+                sell_price = float(p1 or p2)
+                results.append((iso_code, sell_price))
+                    
+        # Fallback for single-country messages where components are on different lines
+        if not results:
+            text_lower = text.lower()
+            iso_code = None
+            for name, code in COUNTRY_LOOKUP.items():
+                if name.lower() in text_lower:
+                    iso_code = code
+                    break
+            
+            prefix_matches = re.findall(r'\+(\d{1,4})\b', text)
+            if prefix_matches and not iso_code:
+                iso_code = phonenumbers.region_code_for_country_code(int(prefix_matches[0]))
+            
+            price_matches = re.findall(r'(?:(\d+\.\d+|\d+)\s*\$|\$\s*(\d+\.\d+|\d+))', text)
+            if iso_code and iso_code != "ZZ" and price_matches:
+                p1, p2 = price_matches[0]
+                sell_price = float(p1 or p2)
+                results.append((iso_code, sell_price))
                     
     except Exception as e:
         logger.error(f"Error parsing message: {e}")
