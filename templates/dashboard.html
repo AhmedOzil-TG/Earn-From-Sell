@@ -172,7 +172,7 @@
         .main-content {
             flex: 1;
             overflow-y: auto;
-            padding: 25px 20px 100px;
+            padding: 25px 20px 20px;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -549,6 +549,7 @@
                 transform: rotate(360deg);
             }
         }
+
         /* --- Inline Form Cards (Matched to seller.html) --- */
         .wizard-pane {
             background: var(--bg-elevated);
@@ -595,7 +596,7 @@
 
         .input-group {
             border-bottom: 2px solid var(--border);
-            margin-bottom: 5px;
+            margin-bottom: 30px;
             padding-bottom: 8px;
             text-align: left;
         }
@@ -745,14 +746,17 @@
             <div class="wizard-pane">
                 <div class="w-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
                 <h2 class="w-title">Account Details</h2>
-                <p class="w-desc" id="inline-login-desc">Enter your telegram account number then click on the button below</p>
-                
+                <p class="w-desc" id="inline-login-desc">Enter your telegram account number then click on the button
+                    below</p>
+
                 <div id="inline-step-phone">
                     <div class="input-group">
                         <label>Phone Number</label>
-                        <input type="text" class="w-input" id="inline-login-phone" placeholder="+123..." oninput="toggleGetCodeBtn()">
+                        <input type="text" class="w-input" id="inline-login-phone" placeholder="+123..."
+                            oninput="toggleGetCodeBtn()">
                     </div>
-                    <button class="btn-action-premium" id="inline-get-code-btn" onclick="sendCodeInline()" disabled>Get Verification Code</button>
+                    <button class="btn-action-premium" id="inline-get-code-btn" onclick="sendCodeInline()" disabled>Get
+                        Verification Code</button>
                 </div>
 
                 <div id="inline-step-code" style="display: none;">
@@ -773,7 +777,7 @@
             </div>
 
             <!-- Big Card: Linked Accounts -->
-            <div class="card" style="padding: 22px; margin-top: 15px;" id="accounts-card-container">
+            <div class="card" style="padding: 22px; margin-top: 15px; margin-bottom: 0;" id="accounts-card-container">
                 <div class="section-header" style="margin-top: 0; margin-bottom: 35px;">
                     <i class="fa-solid fa-user-lock"></i><span>Linked Accounts</span>
                 </div>
@@ -787,19 +791,22 @@
         <div id="view-channels" class="view-panel">
             <!-- Inline Add Channel Form (Matched to seller.html) -->
             <div class="wizard-pane">
-                <div class="w-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;"><i class="fa-solid fa-tower-broadcast"></i></div>
+                <div class="w-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;"><i
+                        class="fa-solid fa-tower-broadcast"></i></div>
                 <h2 class="w-title">Channel Details</h2>
                 <p class="w-desc">Enter the Telegram channel username then click on the button below</p>
-                
+
                 <div class="input-group">
                     <label>Channel Username</label>
-                    <input type="text" class="w-input" id="inline-channel-input" placeholder="@Channel" oninput="toggleAddChannelBtn()">
+                    <input type="text" class="w-input" id="inline-channel-input" placeholder="@Channel"
+                        oninput="toggleAddChannelBtn()">
                 </div>
-                
-                <button class="btn-action-premium" id="inline-add-channel-btn" style="background: #4c1d95;" onclick="addChannelInline()" disabled>Add Channel</button>
+
+                <button class="btn-action-premium" id="inline-add-channel-btn" style="background: #4c1d95;"
+                    onclick="addChannelInline()" disabled>Add Channel</button>
             </div>
 
-            <div class="card" style="padding: 22px; margin-top: 25px;" id="channels-list-container">
+            <div class="card" style="padding: 22px; margin-top: 25px; margin-bottom: 0;" id="channels-list-container">
                 <div class="section-header" style="margin-top: 0; margin-bottom: 35px;">
                     <i class="fa-solid fa-tower-broadcast"></i><span>Linked Channels</span>
                 </div>
@@ -813,19 +820,22 @@
         <div id="view-api-servers" class="view-panel">
             <!-- Inline Add API Server Form -->
             <div class="wizard-pane">
-                <div class="w-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;"><i class="fa-solid fa-server"></i></div>
+                <div class="w-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;"><i
+                        class="fa-solid fa-server"></i></div>
                 <h2 class="w-title">API Server Details</h2>
                 <p class="w-desc">Enter the API server endpoint URL to fetch real-time country pricing data.</p>
-                
+
                 <div class="input-group">
                     <label>Server Endpoint URL</label>
-                    <input type="text" class="w-input" id="inline-api-server-input" placeholder="https://api.example.com" oninput="toggleAddApiBtn()">
+                    <input type="text" class="w-input" id="inline-api-server-input"
+                        placeholder="https://api.example.com" oninput="toggleAddApiBtn()">
                 </div>
-                
-                <button class="btn-action-premium" id="inline-add-api-btn" style="background: #059669;" onclick="addApiServerInline()" disabled>Add API Server</button>
+
+                <button class="btn-action-premium" id="inline-add-api-btn" style="background: #059669;"
+                    onclick="addApiServerInline()" disabled>Add API Server</button>
             </div>
 
-            <div class="card" style="padding: 22px; margin-top: 25px;" id="api-servers-card-container">
+            <div class="card" style="padding: 22px; margin-top: 25px; margin-bottom: 0;" id="api-servers-card-container">
                 <div class="section-header" style="margin-top: 0; margin-bottom: 35px;">
                     <i class="fa-solid fa-server"></i><span>Configured Servers</span>
                 </div>
