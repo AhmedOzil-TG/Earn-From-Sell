@@ -417,40 +417,46 @@ async def api_auth_status():
     }
 
 # --- Manual Check API ---
+class ManualCheckRequest(BaseModel):
+    server: str
+    channel: str
+
 @app.post("/api/dashboard/manual-check")
-async def api_manual_check():
+async def api_manual_check(req: ManualCheckRequest):
     try:
-        servers_data = await get_api_servers()
-        server_urls = [s['url'] for s in servers_data]
-        buy_prices = await fetch_buy_prices_api(server_urls)
+        # Fetch buy prices ONLY from the selected server
+        buy_prices = await fetch_buy_prices_api([req.server])
         
-        channels = await get_channels_with_patterns()
+        # Get pattern for the selected channel
+        pattern = await get_channel_pattern(req.channel)
+        if not pattern: pattern = "UNIVERSAL"
         
         if not client.is_connected(): await client.connect()
         
         results_summary = []
-        for channel_user, pattern in channels:
-            msgs = await client.get_messages(channel_user, limit=20)
-            latest_prices = {}
-            for msg in msgs:
-                if not msg.text: continue
-                found = parse_price_message(msg.text, pattern)
-                for country, sell in found:
-                    if country not in latest_prices: latest_prices[country] = sell
-            
-            for country, sell in latest_prices.items():
-                if country in buy_prices:
-                    buy = buy_prices[country]
-                    profit = sell - buy
-                    results_summary.append({
-                        "country": country,
-                        "buy": buy,
-                        "sell": sell,
-                        "profit": round(profit, 2),
-                        "channel": channel_user
-                    })
+        msgs = await client.get_messages(req.channel, limit=20)
+        
+        latest_prices = {}
+        for msg in msgs:
+            if not msg.text: continue
+            found = parse_price_message(msg.text, pattern)
+            for country, sell in found:
+                if country not in latest_prices: latest_prices[country] = sell
+        
+        for country, sell in latest_prices.items():
+            if country in buy_prices:
+                buy = buy_prices[country]
+                profit = sell - buy
+                results_summary.append({
+                    "country": country,
+                    "buy": buy,
+                    "sell": sell,
+                    "profit": round(profit, 2),
+                    "channel": req.channel
+                })
         return {"status": "ok", "results": results_summary}
     except Exception as e:
+        logger.error(f"Manual check error: {e}")
         return {"status": "error", "message": str(e)}
 
 # --- Main ---

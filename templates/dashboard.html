@@ -710,7 +710,7 @@
                     class="fa-solid fa-tower-broadcast"></i><span>Channels</span></div>
             <div class="nav-item" data-page="API Servers" onclick="switchView('api-servers', this)"><i
                     class="fa-solid fa-server"></i><span>API Servers</span></div>
-            <div class="nav-item" data-page="Scraper" onclick="switchView('scraper', this)"><i
+            <div class="nav-item" data-page="Manual Check" onclick="switchView('scraper', this)"><i
                     class="fa-solid fa-magnifying-glass-chart"></i><span>Manual Check</span></div>
             <div class="nav-item" data-page="Settings" onclick="switchView('settings', this)"><i
                     class="fa-solid fa-gears"></i><span>Settings</span></div>
@@ -845,14 +845,23 @@
             </div>
         </div>
 
-        <!-- Scraper View -->
+        <!-- Manual Check View -->
         <div id="view-scraper" class="view-panel">
-            <div class="section-header" style="margin-top: 0;"><span>Heuristic Scraper</span></div>
-            <button class="btn-action" style="width: 100%; margin-bottom: 20px;" onclick="runManualCheck()"
-                id="btn-run-check">
-                <i class="fa-solid fa-play"></i> Run Universal Check Now
-            </button>
-            <div id="check-results"></div>
+            <div class="section-header" style="margin-top: 0;"><span>Manual Check</span></div>
+            <div class="card" style="padding: 25px;">
+                <div class="input-group">
+                    <label>API Server</label>
+                    <select id="scraper-server-select" class="w-input" style="font-size: 1rem !important; background: transparent !important; border: none !important; color: #fff !important; width: 100%; outline: none; cursor: pointer;"></select>
+                </div>
+                <div class="input-group">
+                    <label>Source Channel</label>
+                    <select id="scraper-channel-select" class="w-input" style="font-size: 1rem !important; background: transparent !important; border: none !important; color: #fff !important; width: 100%; outline: none; cursor: pointer;"></select>
+                </div>
+                <button class="btn-action-premium" style="width: 100%; background: var(--accent);" onclick="runManualCheck()" id="btn-run-check">
+                    <i class="fa-solid fa-play"></i> Start Analysis
+                </button>
+            </div>
+            <div id="check-results" style="margin-top: 20px;"></div>
         </div>
 
         <!-- Settings View -->
@@ -1062,6 +1071,13 @@
                     `;
                 }
 
+                // Update Scraper Selects
+                const serverSelect = document.getElementById('scraper-server-select');
+                const channelSelect = document.getElementById('scraper-channel-select');
+                
+                serverSelect.innerHTML = (data.api_servers || []).map(s => `<option value="${s.url}">${s.url}</option>`).join('') || '<option value="">No Servers</option>';
+                channelSelect.innerHTML = (data.channels || []).map(c => `<option value="${c.username}">${c.username}</option>`).join('') || '<option value="">No Channels</option>';
+                
                 document.getElementById('live-feed').innerHTML = data.opportunities.map(o => `
                     <div class="list-item">
                         <div class="item-info"><h4>🌍 ${o.country}</h4><p>${o.channel}</p></div>
@@ -1212,11 +1228,19 @@
 
         // --- Actions ---
         async function runManualCheck() {
+            const server = document.getElementById('scraper-server-select').value;
+            const channel = document.getElementById('scraper-channel-select').value;
+            if (!server || !channel) return showToast("Select both server and channel", "error");
+
             const btn = document.getElementById('btn-run-check');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking Channels...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analyzing...';
             btn.disabled = true;
             try {
-                const res = await fetch('/api/dashboard/manual-check', { method: 'POST' });
+                const res = await fetch('/api/dashboard/manual-check', { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ server, channel })
+                });
                 const data = await res.json();
                 if (data.status === 'ok') {
                     document.getElementById('check-results').innerHTML = data.results.map(r => `
@@ -1225,11 +1249,13 @@
                             <div class="profit-badge">+$${r.profit}</div>
                         </div>
                     `).join('') || '<p style="text-align: center; color: var(--text-s);">No profit opportunities found.</p>';
-                    showToast("Check completed!");
+                    showToast("Analysis completed!");
+                } else {
+                    showToast(data.message || "Check failed", 'error');
                 }
             } catch (e) { showToast("Check failed", 'error'); }
             finally {
-                btn.innerHTML = '<i class="fa-solid fa-play"></i> Run Universal Check Now';
+                btn.innerHTML = '<i class="fa-solid fa-play"></i> Start Analysis';
                 btn.disabled = false;
             }
         }
