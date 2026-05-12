@@ -498,7 +498,6 @@
             color: var(--text-p);
             font-weight: 600;
             font-size: 0.85rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -880,8 +879,7 @@
                         style="font-size: 1rem !important; min-height: 32px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff; line-height: 32px;">
                         Select Channel</div>
                 </div>
-                <button class="btn-action-premium" style="width: 100%; background: var(--accent);"
-                    onclick="runManualCheck()" id="btn-run-check">
+                <button class="btn-action-premium" style="width: 100%; background: var(--accent);" onclick="runManualCheck()" id="btn-run-check" disabled>
                     <i class="fa-solid fa-play"></i> Start Analysis
                 </button>
             </div>
@@ -1084,11 +1082,11 @@
                 document.getElementById('min-profit-input').value = data.min_profit;
 
                 // Set default values if selects are empty
-                if (document.getElementById('scraper-server-val').innerText === 'Select Server' && data.api_servers.length > 0) {
-                    document.getElementById('scraper-server-val').innerText = data.api_servers[0].url;
+                if (document.getElementById('scraper-server-val').innerText !== 'Select Server' && data.api_servers.length === 0) {
+                    document.getElementById('scraper-server-val').innerText = 'Select Server';
                 }
-                if (document.getElementById('scraper-channel-val').innerText === 'Select Channel' && data.channels.length > 0) {
-                    document.getElementById('scraper-channel-val').innerText = data.channels[0].username;
+                if (document.getElementById('scraper-channel-val').innerText !== 'Select Channel' && data.channels.length === 0) {
+                    document.getElementById('scraper-channel-val').innerText = 'Select Channel';
                 }
                 const channelsContainer = document.getElementById('channels-list');
                 if (data.channels.length > 0) {
@@ -1330,7 +1328,15 @@
             callback(val);
             closeSelector();
             tg.HapticFeedback.notificationOccurred('success');
+            validateManualCheckBtn();
         };
+
+        function validateManualCheckBtn() {
+            const server = document.getElementById('scraper-server-val').innerText.trim();
+            const channel = document.getElementById('scraper-channel-val').innerText.trim();
+            const btn = document.getElementById('btn-run-check');
+            btn.disabled = (!server || !channel || server === 'Select Server' || channel === 'Select Channel');
+        }
 
         function closeSelector() {
             document.getElementById('selector-modal').style.display = 'none';
