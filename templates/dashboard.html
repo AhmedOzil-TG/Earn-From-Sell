@@ -850,11 +850,11 @@
             <div class="card" style="padding: 25px;">
                 <div class="input-group" onclick="openSelector('API Server', (dataCache.api_servers || []).map(s => s.url), (val) => document.getElementById('scraper-server-val').innerText = val)" style="cursor: pointer;">
                     <label>API Server</label>
-                    <div id="scraper-server-val" class="w-input" style="font-size: 1rem !important; min-height: 32px; display: flex; align-items: center; color: #fff;">Select Server</div>
+                    <div id="scraper-server-val" class="w-input" style="font-size: 1rem !important; min-height: 32px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff; line-height: 32px;">Select Server</div>
                 </div>
                 <div class="input-group" onclick="openSelector('Source Channel', (dataCache.channels || []).map(c => c.username), (val) => document.getElementById('scraper-channel-val').innerText = val)" style="cursor: pointer;">
                     <label>Source Channel</label>
-                    <div id="scraper-channel-val" class="w-input" style="font-size: 1rem !important; min-height: 32px; display: flex; align-items: center; color: #fff;">Select Channel</div>
+                    <div id="scraper-channel-val" class="w-input" style="font-size: 1rem !important; min-height: 32px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff; line-height: 32px;">Select Channel</div>
                 </div>
                 <button class="btn-action-premium" style="width: 100%; background: var(--accent);" onclick="runManualCheck()" id="btn-run-check">
                     <i class="fa-solid fa-play"></i> Start Analysis
