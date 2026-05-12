@@ -808,17 +808,16 @@
                 <div class="w-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;"><i
                         class="fa-solid fa-tower-broadcast"></i></div>
                 <h2 class="w-title">Channel Details</h2>
-                <p class="w-desc">Enter the Telegram channel username then click on the button below</p>
-
                 <div class="input-group">
-                    <label>Channel Username</label>
-                    <input type="text" class="w-input" id="inline-channel-input" placeholder="@Channel"
+                    <label>NAME</label>
+                    <input type="text" class="w-input" id="inline-channel-name" placeholder="e.g. Main Store"
                         oninput="toggleAddChannelBtn()">
                 </div>
 
                 <div class="input-group">
-                    <label>Friendly Name (Optional)</label>
-                    <input type="text" class="w-input" id="inline-channel-name" placeholder="e.g. My Shop">
+                    <label>USERNAME</label>
+                    <input type="text" class="w-input" id="inline-channel-input" placeholder="@Channel"
+                        oninput="toggleAddChannelBtn()">
                 </div>
 
                 <button class="btn-action-premium" id="inline-add-channel-btn" style="background: #4c1d95;"
@@ -842,17 +841,16 @@
                 <div class="w-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;"><i
                         class="fa-solid fa-server"></i></div>
                 <h2 class="w-title">API Server Details</h2>
-                <p class="w-desc">Enter the API server endpoint URL to fetch real-time country pricing data.</p>
-
                 <div class="input-group">
-                    <label>Server Endpoint URL</label>
-                    <input type="text" class="w-input" id="inline-api-server-input"
-                        placeholder="https://api.example.com" oninput="toggleAddApiBtn()">
+                    <label>NAME</label>
+                    <input type="text" class="w-input" id="inline-api-server-name" placeholder="e.g. Primary API"
+                        oninput="toggleAddApiBtn()">
                 </div>
 
                 <div class="input-group">
-                    <label>Friendly Name (Optional)</label>
-                    <input type="text" class="w-input" id="inline-api-server-name" placeholder="e.g. Primary API">
+                    <label>LINK</label>
+                    <input type="text" class="w-input" id="inline-api-server-input"
+                        placeholder="https://api.example.com" oninput="toggleAddApiBtn()">
                 </div>
 
                 <button class="btn-action-premium" id="inline-add-api-btn" style="background: #059669;"
@@ -1114,12 +1112,16 @@
                                 <h3 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #fff;"><i class="fas fa-satellite-dish" style="color: var(--accent); margin-right: 8px;"></i>${c.name || 'Source Channel'}</h3>
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <div style="${rowS('#8b5cf6')}">
+                                    <span style="${lblS}">NAME</span>
+                                    <span style="color: var(--text-s); font-weight: 700; font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: right;">${c.name || 'N/A'}</span>
+                                </div>
                                 <div style="${rowS('#10b981')}">
                                     <span style="${lblS}">STATUS</span>
                                     <span style="color: #10b981; font-weight: 700; font-size: 0.85rem; text-transform: uppercase;">ACTIVE</span>
                                 </div>
                                 <div style="${rowS('#8b5cf6')}">
-                                    <span style="${lblS}">IDENTIFIER</span>
+                                    <span style="${lblS}">USERNAME</span>
                                     <span style="color: var(--text-s); font-weight: 500; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: right;">${c.username}</span>
                                 </div>
                                 <button class="btn-action" onclick="askDeleteChannel('${c.username}')" style="width: 100%; height: 52px; background: rgba(239, 68, 68, 0.05); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.1); box-shadow: none; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 12px; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);">
@@ -1148,11 +1150,15 @@
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 12px;">
                                 <div style="${rowS('#10b981')}">
+                                    <span style="${lblS}">NAME</span>
+                                    <span style="color: var(--text-s); font-weight: 700; font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: right;">${s.name || 'N/A'}</span>
+                                </div>
+                                <div style="${rowS('#10b981')}">
                                     <span style="${lblS}">STATUS</span>
                                     <span style="color: #10b981; font-weight: 700; font-size: 0.85rem; text-transform: uppercase;">CONNECTED</span>
                                 </div>
                                 <div style="${rowS('#0ea5e9')}">
-                                    <span style="${lblS}">ENDPOINT</span>
+                                    <span style="${lblS}">LINK</span>
                                     <span style="color: var(--text-s); font-weight: 700; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: right;">${s.url}</span>
                                 </div>
                                 <button class="btn-action" onclick="askDeleteApiServer('${s.url}')" style="width: 100%; height: 52px; background: rgba(239, 68, 68, 0.05); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.1); box-shadow: none; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 12px; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);">
@@ -1438,14 +1444,16 @@
 
         function toggleAddChannelBtn() {
             const user = document.getElementById('inline-channel-input').value.trim();
+            const name = document.getElementById('inline-channel-name').value.trim();
             const btn = document.getElementById('inline-add-channel-btn');
-            btn.disabled = user.length < 4;
+            btn.disabled = user.length < 4 || name.length < 2;
         }
 
         function toggleAddApiBtn() {
             const url = document.getElementById('inline-api-server-input').value.trim();
+            const name = document.getElementById('inline-api-server-name').value.trim();
             const btn = document.getElementById('inline-add-api-btn');
-            btn.disabled = url.length < 10 || !url.startsWith('http');
+            btn.disabled = url.length < 10 || !url.startsWith('http') || name.length < 2;
         }
 
         // --- Inline Form Handlers ---
