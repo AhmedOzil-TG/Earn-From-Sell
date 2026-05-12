@@ -847,7 +847,6 @@
 
         <!-- Manual Check View -->
         <div id="view-scraper" class="view-panel">
-            <div class="section-header" style="margin-top: 0;"><span>Manual Check</span></div>
             <div class="card" style="padding: 25px;">
                 <div class="input-group">
                     <label>API Server</label>
@@ -861,7 +860,18 @@
                     <i class="fa-solid fa-play"></i> Start Analysis
                 </button>
             </div>
-            <div id="check-results" style="margin-top: 20px;"></div>
+
+            <div class="card" style="padding: 22px; margin-top: 25px; margin-bottom: 0;">
+                <div class="section-header" style="margin-top: 0; margin-bottom: 35px;">
+                    <i class="fa-solid fa-square-poll-vertical"></i><span>Check Result</span>
+                </div>
+                <div id="check-results" style="display: flex; flex-direction: column; gap: 15px;">
+                    <div class="empty-placeholder">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <p>No results yet. Start analysis to see findings.</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Settings View -->
@@ -1244,11 +1254,27 @@
                 const data = await res.json();
                 if (data.status === 'ok') {
                     document.getElementById('check-results').innerHTML = data.results.map(r => `
-                        <div class="list-item">
-                            <div class="item-info"><h4>${r.country}</h4><p>${r.channel} | Buy: ${r.buy}$ | Sell: ${r.sell}$</p></div>
-                            <div class="profit-badge">+$${r.profit}</div>
+                        <div class="card card-zoom" style="padding: 24px 20px 20px; box-shadow: none; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 0; cursor: pointer;">
+                            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+                                <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-s);"><i class="fas fa-flag" style="color: #0ea5e9; margin-right: 8px;"></i>${r.country}</h3>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <div style="${rowS('#10b981')}">
+                                    <span style="${lblS}">PROFIT</span>
+                                    <span style="color: #10b981; font-weight: 700; font-size: 1.1rem;">+$${r.profit}</span>
+                                </div>
+                                <div style="${rowS('#a1a1aa')}">
+                                    <span style="${lblS}">DETAILS</span>
+                                    <span style="color: var(--text-s); font-weight: 600; font-size: 0.85rem;">Buy: ${r.buy}$ | Sell: ${r.sell}$</span>
+                                </div>
+                            </div>
                         </div>
-                    `).join('') || '<p style="text-align: center; color: var(--text-s);">No profit opportunities found.</p>';
+                    `).join('') || `
+                        <div class="empty-placeholder">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <p>No profit opportunities found for this selection.</p>
+                        </div>
+                    `;
                     showToast("Analysis completed!");
                 } else {
                     showToast(data.message || "Check failed", 'error');
