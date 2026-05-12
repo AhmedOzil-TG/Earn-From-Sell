@@ -1048,6 +1048,7 @@
                 if (navItem) { navItem.classList.add('active'); pageTitle = navItem.getAttribute('data-page'); }
             }
             document.getElementById('current-page-title').innerText = pageTitle;
+            localStorage.setItem('active_view', id);
             
             if (window.innerWidth < 800) {
                 document.getElementById('sidebar').classList.remove('open');
@@ -1057,7 +1058,8 @@
         }
 
         async function loadData() {
-            switchView('home'); // Always open on Home
+            const savedView = localStorage.getItem('active_view') || 'home';
+            switchView(savedView);
 
             try {
                 const res = await fetch('/api/dashboard/data');
