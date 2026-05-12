@@ -67,14 +67,25 @@ async def fetch_buy_prices_api(server_urls: list):
             try:
                 response = await client.get(url)
                 data = response.json()
-                if data.get("ok"):
-                    # Assuming the structure is result -> countries -> '1' (common pattern)
-                    countries_data = data["result"]["countries"]["1"]
-                    for k, v in countries_data.items():
-                        price = float(v)
-                        # Update if not present or found better price (lower buy price is better)
-                        if k not in aggregated_prices or price < aggregated_prices[k]["price"]:
-                            aggregated_prices[k] = {"price": price, "server": url}
+                if data.get("ok") and isinstance(data.get("result"), dict):
+                    result = data["result"]
+                    countries_container = result.get("countries", {})
+                    if isinstance(countries_container, dict):
+                        # The pattern usually is result -> countries -> '1'
+                        countries_data = countries_container.get("1", {})
+                        if isinstance(countries_data, dict):
+                            for k, v in countries_data.items():
+                                try:
+                                    price = float(v)
+                                    if k not in aggregated_prices:
+                                        aggregated_prices[k] = []
+                                    aggregated_prices[k].append({"price": price, "server": url})
+                                except (ValueError, TypeError):
+                                    continue
             except Exception as e:
                 logger.error(f"Error fetching from {url}: {e}")
+    
+    # Sort lists so cheapest is first
+    for k in aggregated_prices:
+        aggregated_prices[k].sort(key=lambda x: x["price"])
     return aggregated_prices
