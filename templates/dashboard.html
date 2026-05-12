@@ -1114,15 +1114,15 @@
                                 <h3 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #fff;"><i class="fas fa-satellite-dish" style="color: var(--accent); margin-right: 8px;"></i>${c.name || 'Source Channel'}</h3>
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 12px;">
-                                <div style="${rowS('#8b5cf6')}">
-                                    <span style="${lblS}">NAME</span>
-                                    <span style="color: var(--text-s); font-weight: 700; font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: right;">${c.name || 'N/A'}</span>
-                                </div>
                                 <div style="${rowS('#10b981')}">
                                     <span style="${lblS}">STATUS</span>
                                     <span style="color: #10b981; font-weight: 700; font-size: 0.85rem; text-transform: uppercase;">ACTIVE</span>
                                 </div>
                                 <div style="${rowS('#8b5cf6')}">
+                                    <span style="${lblS}">NAME</span>
+                                    <span style="color: var(--text-s); font-weight: 700; font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: right;">${c.name || 'N/A'}</span>
+                                </div>
+                                <div style="${rowS('#0ea5e9')}">
                                     <span style="${lblS}">USERNAME</span>
                                     <span style="color: var(--text-s); font-weight: 500; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: right;">${c.username}</span>
                                 </div>
@@ -1152,12 +1152,12 @@
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 12px;">
                                 <div style="${rowS('#10b981')}">
-                                    <span style="${lblS}">NAME</span>
-                                    <span style="color: var(--text-s); font-weight: 700; font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: right;">${s.name || 'N/A'}</span>
-                                </div>
-                                <div style="${rowS('#10b981')}">
                                     <span style="${lblS}">STATUS</span>
                                     <span style="color: #10b981; font-weight: 700; font-size: 0.85rem; text-transform: uppercase;">CONNECTED</span>
+                                </div>
+                                <div style="${rowS('#8b5cf6')}">
+                                    <span style="${lblS}">NAME</span>
+                                    <span style="color: var(--text-s); font-weight: 700; font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: right;">${s.name || 'N/A'}</span>
                                 </div>
                                 <div style="${rowS('#0ea5e9')}">
                                     <span style="${lblS}">LINK</span>
