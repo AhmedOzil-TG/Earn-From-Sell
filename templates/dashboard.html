@@ -1080,7 +1080,7 @@
                 }
                 const channelsContainer = document.getElementById('channels-list');
                 if (data.channels.length > 0) {
-                    channelsContainer.innerHTML = data.channels.map(c => `
+                    channelsContainer.innerHTML = [...data.channels].reverse().map(c => `
                         <div class="card card-zoom" style="padding: 24px 20px 20px; box-shadow: none; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 0; cursor: pointer;">
                             <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
                                 <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-s);"><i class="fas fa-satellite-dish" style="color: var(--accent); margin-right: 8px;"></i>Channel</h3>
