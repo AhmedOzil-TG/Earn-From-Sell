@@ -48,6 +48,22 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 7px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
         /* --- Top Bar --- */
         .top-bar {
             height: 70px;
