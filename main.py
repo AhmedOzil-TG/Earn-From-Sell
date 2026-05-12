@@ -253,14 +253,30 @@ async def process_manual_check(message: types.Message, state: FSMContext):
     await state.clear()
 
 # --- Telethon Monitoring ---
-@client.on(events.NewMessage)
+@client.on(events.NewMessage(incoming=True))
 async def telethon_handler(event):
     if not event.message.message: return
-    # Get sender username
+    # Get sender info
     chat = await event.get_chat()
-    username = f"@{chat.username}" if hasattr(chat, 'username') and chat.username else str(event.chat_id)
+    chat_username = getattr(chat, 'username', None)
+    chat_id = str(event.chat_id)
     
-    pattern = await get_channel_pattern(username)
+    channels = await get_channels_with_patterns()
+    matched_channel_name = None
+    pattern = None
+    
+    for db_user, db_pattern in channels:
+        db_u_clean = db_user.replace("https://t.me/", "").replace("@", "").strip()
+        
+        if chat_username and chat_username.lower() == db_u_clean.lower():
+            pattern = db_pattern
+            matched_channel_name = db_user
+            break
+        elif chat_id == db_user or chat_id.replace("-100", "") == db_user.replace("-100", ""):
+            pattern = db_pattern
+            matched_channel_name = db_user
+            break
+
     if not pattern: return
 
     results = parse_price_message(event.message.message, pattern)
@@ -277,10 +293,10 @@ async def telethon_handler(event):
             profit = sell - buy
             if profit >= MIN_PROFIT:
                 # Save to database for dashboard
-                await save_opportunity(country, buy, sell, profit, username)
+                await save_opportunity(country, buy, sell, profit, matched_channel_name)
                 
                 profit_str = f"{profit:.2f}"
-                msg = _("profit_alert", admin_lang, country, buy, sell, profit_str, username)
+                msg = _("profit_alert", admin_lang, country, buy, sell, profit_str, matched_channel_name)
                 await bot.send_message(ADMIN_ID, msg)
 
 # -- Language Selection --
