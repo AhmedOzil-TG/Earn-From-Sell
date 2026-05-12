@@ -848,11 +848,11 @@
         <!-- Manual Check View -->
         <div id="view-scraper" class="view-panel">
             <div class="card" style="padding: 25px;">
-                <div class="input-group" onclick="openSelector('API Server', (dataCache.api_servers || []).map(s => s.url), (val) => document.getElementById('scraper-server-val').innerText = val)" style="cursor: pointer;">
+                <div class="input-group" onclick="openSelector('API Server', (dataCache.api_servers || []).map(s => s.url), document.getElementById('scraper-server-val').innerText, (val) => document.getElementById('scraper-server-val').innerText = val)" style="cursor: pointer;">
                     <label>API Server</label>
                     <div id="scraper-server-val" class="w-input" style="font-size: 1rem !important; min-height: 32px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff; line-height: 32px;">Select Server</div>
                 </div>
-                <div class="input-group" onclick="openSelector('Source Channel', (dataCache.channels || []).map(c => c.username), (val) => document.getElementById('scraper-channel-val').innerText = val)" style="cursor: pointer;">
+                <div class="input-group" onclick="openSelector('Source Channel', (dataCache.channels || []).map(c => c.username), document.getElementById('scraper-channel-val').innerText, (val) => document.getElementById('scraper-channel-val').innerText = val)" style="cursor: pointer;">
                     <label>Source Channel</label>
                     <div id="scraper-channel-val" class="w-input" style="font-size: 1rem !important; min-height: 32px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff; line-height: 32px;">Select Channel</div>
                 </div>
@@ -1272,14 +1272,20 @@
         }
 
         // --- Actions ---
-        function openSelector(title, options, callback) {
+        function openSelector(title, options, currentValue, callback) {
             document.getElementById('selector-title').innerText = title;
             const container = document.getElementById('selector-options');
-            container.innerHTML = options.map(opt => `
-                <div class="card" onclick="selectOption('${opt}', ${callback.toString()})" style="margin-bottom: 0; padding: 15px; cursor: pointer; text-align: left; font-weight: 600;">
-                    ${opt}
-                </div>
-            `).join('') || '<p style="text-align:center; opacity:0.5;">No options available</p>';
+            container.innerHTML = options.map(opt => {
+                const isSelected = opt === currentValue;
+                const borderStyle = isSelected ? 'border-color: var(--accent); background: rgba(88, 101, 242, 0.05);' : '';
+                return `
+                    <div class="card" onclick="selectOption('${opt}', ${callback.toString()})" 
+                         style="margin-bottom: 0; padding: 15px; cursor: pointer; text-align: left; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; ${borderStyle}">
+                        ${isSelected ? '<i class="fa-solid fa-circle-check" style="color: var(--accent); margin-right: 8px;"></i>' : ''}
+                        ${opt}
+                    </div>
+                `;
+            }).join('') || '<p style="text-align:center; opacity:0.5;">No options available</p>';
             document.getElementById('selector-modal').style.display = 'flex';
             tg.HapticFeedback.impactOccurred('medium');
         }
