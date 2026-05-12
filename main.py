@@ -232,7 +232,13 @@ async def process_manual_check(message: types.Message, state: FSMContext):
 
     for channel_user, pattern in to_check:
         try:
-            msgs = await client.get_messages(channel_user, limit=30)
+            # If it's a numeric ID, convert to int for Telethon
+            target = channel_user
+            if str(target).startswith("-") or str(target).isdigit():
+                try: target = int(target)
+                except: pass
+                
+            msgs = await client.get_messages(target, limit=30)
             
             latest_prices = {} # Dictionary to store only the latest price for each country
             for msg in msgs:
@@ -486,7 +492,14 @@ async def api_manual_check(req: ManualCheckRequest):
         if not client.is_connected(): await client.connect()
         
         results_summary = []
-        msgs = await client.get_messages(req.channel, limit=20)
+        
+        # If it's a numeric ID, convert to int for Telethon
+        target = req.channel
+        if str(target).startswith("-") or str(target).isdigit():
+            try: target = int(target)
+            except: pass
+
+        msgs = await client.get_messages(target, limit=20)
         
         latest_prices = {}
         for msg in msgs:
