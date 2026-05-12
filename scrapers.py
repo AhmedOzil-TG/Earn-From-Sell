@@ -5,85 +5,92 @@ import phonenumbers
 
 logger = logging.getLogger(__name__)
 
+import os
+import json
+from deep_translator import GoogleTranslator
 import pycountry
 
-# Comprehensive country mapping including common translations
-COUNTRY_LOOKUP = {
-    # Manual additions for common Arabic/Persian names
-    "أمريكا": "US", "امريكا": "US", "الولايات المتحدة": "US", "ایالات متحده": "US",
-    "كندا": "CA", "كانادا": "CA", "کانادا": "CA",
-    "روسيا": "RU", "روسیه": "RU",
-    "البرازيل": "BR", "برزیل": "BR",
-    "ألمانيا": "DE", "آلمان": "DE",
-    "البرتغال": "PT", "پرتغال": "PT",
-    "فرنسا": "FR", "فرانسه": "FR",
-    "بريطانيا": "GB", "انگلستان": "GB", "المملكة المتحدة": "GB",
-    "إسبانيا": "ES", "اسپانیا": "ES",
-    "إيطاليا": "IT", "ایتالیا": "IT",
-    "تركيا": "TR", "ترکیه": "TR",
-    "مصر": "EG",
-    "السعودية": "SA", "عربستان": "SA",
-    "الإمارات": "AE", "امارات": "AE",
-    "العراق": "IQ",
-    "قزاقستان": "KZ", "كازاخستان": "KZ",
-}
+# Path for persistent translation cache
+CACHE_PATH = "data/country_cache.json"
 
-# Auto-populate with English names from pycountry
-for country in pycountry.countries:
-    COUNTRY_LOOKUP[country.name.lower()] = country.alpha_2
-    if hasattr(country, 'common_name'):
-        COUNTRY_LOOKUP[country.common_name.lower()] = country.alpha_2
-    if hasattr(country, 'official_name'):
-        COUNTRY_LOOKUP[country.official_name.lower()] = country.alpha_2
+def load_cache():
+    if os.path.exists(CACHE_PATH):
+        try:
+            with open(CACHE_PATH, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except: return {}
+    return {}
+
+def save_cache(cache):
+    os.makedirs("data", exist_ok=True)
+    with open(CACHE_PATH, "w", encoding="utf-8") as f:
+        json.dump(cache, f, ensure_ascii=False, indent=2)
+
+TRANSLATION_CACHE = load_cache()
+
+def get_iso_from_name(name: str):
+    name = name.strip().lower()
+    if not name or len(name) < 2: return None
+    
+    # 1. Check local cache
+    if name in TRANSLATION_CACHE:
+        return TRANSLATION_CACHE[name]
+    
+    # 2. Try direct match with pycountry (English)
+    try:
+        match = pycountry.countries.search_fuzzy(name)
+        if match:
+            code = match[0].alpha_2
+            TRANSLATION_CACHE[name] = code
+            save_cache(TRANSLATION_CACHE)
+            return code
+    except: pass
+    
+    # 3. Translate to English using Google
+    try:
+        translated = GoogleTranslator(source='auto', target='en').translate(name)
+        match = pycountry.countries.search_fuzzy(translated)
+        if match:
+            code = match[0].alpha_2
+            TRANSLATION_CACHE[name] = code # Cache the ORIGINAL name
+            save_cache(TRANSLATION_CACHE)
+            return code
+    except Exception as e:
+        logger.error(f"Translation error for {name}: {e}")
+        
+    return None
 
 def parse_price_message(text: str, pattern: str = None):
     results = []
     try:
         lines = text.split('\n')
         for line in lines:
-            line_lower = line.lower()
+            line = line.strip()
+            if not line: continue
             
-            # 1. Look for Country Name
-            iso_code = None
-            # Check manual/common names first for performance and specificity
-            for name, code in COUNTRY_LOOKUP.items():
-                if name.lower() in line_lower:
-                    iso_code = code
-                    break
-            
-            # 2. Look for Phone Prefix (e.g. +1, +44)
-            prefix_matches = re.findall(r'\+(\d{1,4})\b', line)
-            if prefix_matches:
-                prefix = int(prefix_matches[0])
-                # If we haven't found a code by name yet, use the prefix
-                if not iso_code:
-                    iso_code = phonenumbers.region_code_for_country_code(prefix)
-            
-            # 3. Look for Price
+            # Find price
             price_matches = re.findall(r'(?:(\d+\.\d+|\d+)\s*\$|\$\s*(\d+\.\d+|\d+))', line)
+            if not price_matches: continue
             
-            if iso_code and iso_code != "ZZ" and price_matches:
-                p1, p2 = price_matches[0]
-                sell_price = float(p1 or p2)
-                results.append((iso_code, sell_price))
-                    
-        # Fallback for single-country messages where components are on different lines
-        if not results:
-            text_lower = text.lower()
-            iso_code = None
-            for name, code in COUNTRY_LOOKUP.items():
-                if name.lower() in text_lower:
-                    iso_code = code
-                    break
+            p1, p2 = price_matches[0]
+            sell_price = float(p1 or p2)
             
-            prefix_matches = re.findall(r'\+(\d{1,4})\b', text)
-            if prefix_matches and not iso_code:
-                iso_code = phonenumbers.region_code_for_country_code(int(prefix_matches[0]))
+            # Extract country candidate: strip price, prefix, and symbols
+            candidate = line
+            candidate = re.sub(r'(?:\d+\.\d+|\d+)\s*\$|\$\s*(\d+\.\d+|\d+)', '', candidate)
+            prefix_matches = re.findall(r'\+(\d{1,4})\b', candidate)
+            candidate = re.sub(r'\+\d{1,4}\b', '', candidate)
+            candidate = re.sub(r'[^\w\s]', '', candidate) # Remove emojis/symbols
+            candidate = candidate.strip()
             
-            price_matches = re.findall(r'(?:(\d+\.\d+|\d+)\s*\$|\$\s*(\d+\.\d+|\d+))', text)
-            if iso_code and iso_code != "ZZ" and price_matches:
-                p1, p2 = price_matches[0]
-                sell_price = float(p1 or p2)
+            iso_code = get_iso_from_name(candidate)
+            
+            # Fallback to prefix if name failed
+            if not iso_code and prefix_matches:
+                prefix = int(prefix_matches[0])
+                iso_code = phonenumbers.region_code_for_country_code(prefix)
+            
+            if iso_code and iso_code != "ZZ":
                 results.append((iso_code, sell_price))
                     
     except Exception as e:

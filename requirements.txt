@@ -8,3 +8,4 @@ phonenumbers
 pydantic
 python-multipart
 pycountry
+deep-translator
