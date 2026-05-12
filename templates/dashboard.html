@@ -64,6 +64,11 @@
             background-clip: padding-box;
         }
 
+        /* --- Selector Modal Scrollbar --- */
+        .selector-scroll::-webkit-scrollbar { width: 5px; }
+        .selector-scroll::-webkit-scrollbar-track { background: transparent; }
+        .selector-scroll::-webkit-scrollbar-thumb { background: #8b5cf6; border-radius: 10px; }
+
         /* --- Top Bar --- */
         .top-bar {
             height: 70px;
@@ -969,7 +974,7 @@
                 <div class="modal-icon"><i class="fa-solid fa-list-ul"></i></div>
                 <h3 class="modal-title" id="selector-title">Select Item</h3>
             </div>
-            <div id="selector-options" style="display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto;">
+            <div id="selector-options" class="selector-scroll" style="display: flex; flex-direction: column; gap: 10px; max-height: 55vh; overflow-y: auto; padding-right: 4px;">
                 <!-- Options will be injected here -->
             </div>
             <button class="btn-action secondary" style="width: 100%; margin-top: 20px;" onclick="closeSelector()">Cancel</button>
