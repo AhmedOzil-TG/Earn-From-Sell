@@ -961,6 +961,15 @@
             return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }
 
+        function getFlagEmoji(countryCode) {
+            if (!countryCode || countryCode.length !== 2) return '🌍';
+            const codePoints = countryCode
+                .toUpperCase()
+                .split('')
+                .map(char => 127397 + char.charCodeAt());
+            return String.fromCodePoint(...codePoints);
+        }
+
         // Shared Row Style (to ensure uniform size)
         const rowS = (c) => `height: 52px; background: ${hexToRgba(c, 0.02)}; border: 1px solid ${hexToRgba(c, 0.08)}; padding: 0 18px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; gap: 15px; width: 100%;`;
         const lblS = "color: var(--text-s); font-size: 0.8rem; font-weight: 500; text-transform: uppercase; opacity: 0.7; flex-shrink: 0;";
@@ -1255,17 +1264,22 @@
                 if (data.status === 'ok') {
                     document.getElementById('check-results').innerHTML = data.results.map(r => `
                         <div class="card card-zoom" style="padding: 24px 20px 20px; box-shadow: none; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 0; cursor: pointer;">
-                            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
-                                <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-s);"><i class="fas fa-flag" style="color: #0ea5e9; margin-right: 8px;"></i>${r.country}</h3>
-                            </div>
                             <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <div style="${rowS('#0ea5e9')}">
+                                    <span style="${lblS}">COUNTRY</span>
+                                    <span style="color: var(--text-s); font-weight: 700; font-size: 1rem;">${getFlagEmoji(r.country)} ${r.country}</span>
+                                </div>
                                 <div style="${rowS('#10b981')}">
                                     <span style="${lblS}">PROFIT</span>
-                                    <span style="color: #10b981; font-weight: 700; font-size: 1.1rem;">+$${r.profit}</span>
+                                    <span style="color: #10b981; font-weight: 800; font-size: 1.1rem;">+$${r.profit}</span>
                                 </div>
-                                <div style="${rowS('#a1a1aa')}">
-                                    <span style="${lblS}">DETAILS</span>
-                                    <span style="color: var(--text-s); font-weight: 600; font-size: 0.85rem;">Buy: ${r.buy}$ | Sell: ${r.sell}$</span>
+                                <div style="${rowS('#f59e0b')}">
+                                    <span style="${lblS}">BUY PRICE</span>
+                                    <span style="color: var(--text-s); font-weight: 700; font-size: 0.95rem;">${r.buy}$</span>
+                                </div>
+                                <div style="${rowS('#3b82f6')}">
+                                    <span style="${lblS}">SELL PRICE</span>
+                                    <span style="color: var(--text-s); font-weight: 700; font-size: 0.95rem;">${r.sell}$</span>
                                 </div>
                             </div>
                         </div>
