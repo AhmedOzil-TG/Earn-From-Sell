@@ -1325,9 +1325,9 @@
         }
 
         async function runManualCheck() {
-            const server = document.getElementById('scraper-server-val').innerText;
-            const channel = document.getElementById('scraper-channel-val').innerText;
-            if (server === 'Select Server' || channel === 'Select Channel') return showToast("Select both server and channel", "error");
+            const server = document.getElementById('scraper-server-val').innerText.trim();
+            const channel = document.getElementById('scraper-channel-val').innerText.trim();
+            if (!server || !channel || server === 'Select Server' || channel === 'Select Channel') return showToast("Select both server and channel", "error");
 
             const btn = document.getElementById('btn-run-check');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analyzing...';
@@ -1342,6 +1342,9 @@
                 if (data.status === 'ok') {
                     document.getElementById('check-results').innerHTML = data.results.map(r => `
                         <div class="card card-zoom" style="padding: 24px 20px 20px; box-shadow: none; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 0; cursor: pointer;">
+                            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+                                <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-s);"><i class="fas fa-chart-line" style="color: #10b981; margin-right: 8px;"></i>Opportunity</h3>
+                            </div>
                             <div style="display: flex; flex-direction: column; gap: 12px;">
                                 <div style="${rowS('#0ea5e9')}">
                                     <span style="${lblS}">COUNTRY</span>
