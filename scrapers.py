@@ -71,9 +71,10 @@ async def fetch_buy_prices_api(server_urls: list):
                     # Assuming the structure is result -> countries -> '1' (common pattern)
                     countries_data = data["result"]["countries"]["1"]
                     for k, v in countries_data.items():
+                        price = float(v)
                         # Update if not present or found better price (lower buy price is better)
-                        if k not in aggregated_prices or float(v) < aggregated_prices[k]:
-                            aggregated_prices[k] = float(v)
+                        if k not in aggregated_prices or price < aggregated_prices[k]["price"]:
+                            aggregated_prices[k] = {"price": price, "server": url}
             except Exception as e:
                 logger.error(f"Error fetching from {url}: {e}")
     return aggregated_prices
