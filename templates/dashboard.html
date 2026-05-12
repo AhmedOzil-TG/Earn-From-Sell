@@ -202,6 +202,7 @@
             border: 1px solid var(--border);
             border-radius: 18px;
             padding: 22px;
+            color: var(--text-p);
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
             margin-bottom: 15px;
             transition: transform 0.3s var(--ease);
@@ -356,7 +357,7 @@
             width: 100%;
             background: var(--bg-elevated);
             border: 1px solid var(--border);
-            border-radius: 14px;
+            border-radius: 4px;
             padding: 15px 18px;
             color: #fff;
             font-size: 0.95rem;
@@ -1009,6 +1010,13 @@
                             </div>
                         </div>
                     `).join('');
+                } else {
+                    channelsContainer.innerHTML = `
+                        <div class="empty-placeholder">
+                            <i class="fas fa-tower-broadcast"></i>
+                            <p>No active sources found.</p>
+                        </div>
+                    `;
                 }
 
                 // Render API Servers
