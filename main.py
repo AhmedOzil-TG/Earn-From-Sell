@@ -21,6 +21,7 @@ import uvicorn
 from pydantic import BaseModel
 import json
 import pycountry
+import html
 
 def get_country_display(iso_code):
     if not iso_code or len(iso_code) != 2:
@@ -321,10 +322,12 @@ async def telethon_handler(event):
                     await save_opportunity(country, best["buy"], sell, best["profit"], matched_channel_name)
                     
                     country_display = get_country_display(country)
-                    msg = f"• New Profit Opportunity 🔔\n\n• For country :- {country_display}\n• Sell :- ${sell} 💵\n• Sell Source :- {matched_channel_name}\n\n🛒 <b>Buy Options:</b>\n"
+                    safe_channel = html.escape(matched_channel_name)
+                    msg = f"• New Profit Opportunity 🔔\n\n• For country :- {country_display}\n• Sell :- ${sell} 💵\n• Sell Source :- {safe_channel}\n\n🛒 <b>Buy Options:</b>\n"
                     
                     for src in profitable_sources:
-                        msg += f"• Buy :- ${src['buy']} 💵\n• Profit :- ${src['profit']:.2f} 💵\n• Buy Source :- {src['server']}\n\n"
+                        safe_server = html.escape(src['server'])
+                        msg += f"• Buy :- ${src['buy']} 💵\n• Profit :- ${src['profit']:.2f} 💵\n• Buy Source :- {safe_server}\n\n"
                     
                     await bot.send_message(ADMIN_ID, msg, disable_web_page_preview=True, parse_mode="HTML")
     except Exception as e:
